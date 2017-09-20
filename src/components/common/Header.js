@@ -53,8 +53,6 @@ export const Header = (props) => {
         );    
 }
 
-const { width, height } = Dimensions.get('window');
-
 const styles = StyleSheet.create({
     containerStyle: {
         flexDirection: 'row',   
@@ -74,7 +72,7 @@ const styles = StyleSheet.create({
         })        
     },    
     titleStyle: {        
-        fontSize: 25,
+        fontSize: 27,
         fontWeight: '500',        
     },    
     buttonTextStyle: {

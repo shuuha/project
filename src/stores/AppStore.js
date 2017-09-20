@@ -12,7 +12,7 @@ export class AppStore{
 
     @action
     loadData(){
-        const temp = require('../data/data.json');
+        let temp = require('../data/data.json');        
         this.pages = Object.keys(temp).map(q => new PageStore(temp[q]));
     }
     

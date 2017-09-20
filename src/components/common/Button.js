@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     textStyleMain: {
-        fontSize: 20,
+        fontSize: 25,
         fontWeight: '500'
     },
     buttonDisabled: {

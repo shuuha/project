@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Text, View, BackHandler } from 'react-native';
-import { Button, Input, Header, InputConfirm } from './common';
+import { Text, BackHandler, ScrollView } from 'react-native';
+import { Button, Input, Header, InputQuestion } from './common';
 import { observer, inject } from 'mobx-react/native';
 
 
@@ -23,7 +23,7 @@ class Page extends Component{
                 handleSubmit, navButtonEnabled, 
                 inputsAreValid, nextPage } = this.props.page;                
         return(
-            <View>
+            <ScrollView>
                 <Header
                     header={headerTitle}                    
                     disabled={!navButtonEnabled}
@@ -31,16 +31,19 @@ class Page extends Component{
                     /> 
 
                 { inputs.map(input => <Input
-                                        key={input.id}
-                                        {...input}
-                                        onChangeText={(text)=> input.handleChange(text)}  />)}                   
+                                        key={input.id}                                        
+                                        placeholder={input.placeholder}
+                                        value={input.value}
+                                        label={input.label}                                        
+                                        onChangeText={(text)=> input.handleChange(text)}
+                                          />)}                   
 
                 <Button
                     label={buttonLabel}
-                    disabled={!inputsAreValid}                    
+                    disabled={!inputsAreValid}
                     onPress={()=>this.props.store.goForward(this.props.history, nextPage)}
                     />
-            </View>
+            </ScrollView>
         );
     }
 }

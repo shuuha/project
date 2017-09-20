@@ -9,11 +9,12 @@ export default class PageStore{
     _page;
     _nextPage;
 
-    constructor({ page, nextID, header, type, inputs, nextLabel: button }){
+    constructor({ page, nextPage, header, type, inputs, nextLabel: button }){
         this._headerTitle = header;
         this._buttonLabel = button;
         this._page = page;
-        this._nextPage = nextID;
+        this._nextPage = nextPage;
+
         this.inputs = Object.keys(inputs).map(q => new InputStore(inputs[q], type));    // array of inputs        
     }
 
@@ -32,7 +33,7 @@ export default class PageStore{
     @computed
     get inputsAreValid(){        
         return this.inputs.every(i => i.isValid);
-    }    
+    }
 
     get page(){
         let retVal = '/';

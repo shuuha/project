@@ -1,118 +1,102 @@
-
-{ 
+{
   "0": { 
-  "page": 0,
-  "header" : "welcome", 
-  "type" : 2,       //  (1 = single input, 2 = multiple inputs, 3 = yes no questions)
-  "inputs": {        
-    "0": {
-      "placeholder": "Type in the cars signnumber",
-      "value": "",
-      "question": "how do you do?",
-      "format" :  {     // always open to suggestions, if you can se a bether way to format this
-        "characters" : "ABCDEFGHIJKLMNOPQRSTVUWXYZØÆÅ",         // norwegian caracters
-        "numbers" : "123456789 ", 
-        "minlength" : 2,
-        "maxlength" : 7,
-        "required" : true
-      }
-    }  
-  },
+  "page": 0,                  // current page id
+  "nextPage": 1,              // next page id
   "nextLabel" : "continue",     // continue button label
-  "nextID" : 1,                 // scrren number to contunue to. 
-  "nextActive" : false         // true false shal the continue button be active from start
- },
-   "1": { 
-  "page": 1,
-  "header" : "Car info", 
-  "type" : 1,       //  (1 = single input, 2 = multiple inputs, 3 = yes no questions)
-  "inputs": {        
+  "header" : "welcome",        
+  "type" : 1,       //  1 - inputs,   2 - yes no questions
+  "inputs": {
     "0": {
-      "placeholder": "Some car information", 
-      "value": "",
-      "format" :  {     // always open to suggestions, if you can se a bether way to format this
+      "placeholder": "Type in the cars signnumber",       
+      "format" :  {     
         "characters" : "ABCDEFGHIJKLMNOPQRSTVUWXYZØÆÅ",         // norwegian caracters
-        "numbers" : "123456789 ", 
-        "minlength" : 1,
-        "maxlength" : 10,
-        "required" : true
+        "numbers" : "123456789 ",                               // numbers        
+        "maxlength" : 7,
+        "required" : true                                       // true - check for the input format
       }
     },
-    "1": {            
-      "label": "Sign number",       
-      "value" : "WW 12345",     
-        "format" :  {     // always open to suggestions, if you can se a bether way to format this
+    "1": {
+      "placeholder": "Type in some interesting stuff",       
+      "format" :  {     
         "characters" : "ABCDEFGHIJKLMNOPQRSTVUWXYZØÆÅ",         // norwegian caracters
-        "numbers" : "123456789 ", 
-        "minlength" : 2,
+        "numbers" : "123456789 ",                               // numbers        
         "maxlength" : 7,
-        "required" : true
-      }      
-    },     
-    "2": {            
-      "label": "Color",       
-      "value" : "Blue",         
-      "format" : {     // always open to suggestions, if you can se a bether way to format this
-        "characters" : "ABCDEFGHIJKLMNOPQRSTVUWXYZØÆÅ",         // norwegian caracters
-        "numbers" : "123456789 ", 
-        "minlength" : 2,
-        "maxlength" : 7,
-        "required" : false
-      }      
-    }  
-  //   "3": {            
-  //     "label": "Parking",       
-  //     "value" : "Structure 82, fild 1",         
-  //     "format" :  "text",
-  //     "require" : true  
-  // },
-  },
-  "nextLabel" : "go ahead",     // continue button label
-  "nextID" : 2,                 // scrren number to contunue to. 
-  "nextActive" : false         // true false shal the continue button be active from start
- },
-   "2": { 
-  "page": 2,
-  "header" : "page three", 
-  "type" : 1,       //  (1 = single input, 2 = multiple inputs, 3 = yes no questions)
-  "inputs": {        
-    "0": {
-      "placeholder": "Type in the cars signnumber",
-      "value": "",      
-      "format" :  {     // always open to suggestions, if you can se a bether way to format this
-        "characters" : "ABCDEFGHIJKLMNOPQRSTVUWXYZØÆÅ",         // norwegian caracters
-        "numbers" : "123456789 ", 
-        "minlength" : 2,
-        "maxlength" : 7,
-        "required" : true
+        "required" : false                                       // true - check for the input format
       }
-    }  
+    }
+   }
   },
-  "nextLabel" : "continue",     // continue button label
-  "nextID" : 3,                 // scrren number to contunue to. 
-  "nextActive" : false         // true false shal the continue button be active from start
- }
+"1": { 
+  "page": 1,                  // current page id
+  "nextPage": 2,              // next page id
+  "nextLabel" : "Go on",      // continue button label
+  "header" : "moto cars",
+  "type" : 1,       //  1 - inputs,   2 - yes no questions
+  "inputs": {
+    "0": {
+      "label": "Sign number 1",
+      "placeholder": "Type in the moto cars",       
+      "format" :  {
+        "characters" : "ABCDEFGHIJKLMNOPQRSTVUWXYZØÆÅ",         // norwegian caracters
+        "numbers" : "123456789 ",                               // numbers        
+        "maxlength" : 7,
+        "required" : true                                       // true - check for the input format
+      }
+    },
+    "1": {
+      "label": "Sign number 1",
+      "placeholder": "Input Type 2",       
+      "format" :  {
+        "characters" : "ABCDEFGHIJKLMNOPQRSTVUWXYZØÆÅ",         // norwegian caracters
+        "numbers" : "123456789 ",                               // numbers        
+        "maxlength" : 7,
+        "required" : true                                       // true - check for the input format
+      }
+    },
+    "2": {
+      "label": "Sign number 1",
+      "placeholder": "Input Type 2",       
+      "format" :  {
+        "characters" : "ABCDEFGHIJKLMNOPQRSTVUWXYZØÆÅ",         // norwegian caracters
+        "numbers" : "123456789 ",                               // numbers        
+        "maxlength" : 7,
+        "required" : true                                       // true - check for the input format
+      }
+    },
+     "3": {
+      "label": "Sign number 1",
+      "placeholder": "Input Type 2",       
+      "format" :  {
+        "characters" : "ABCDEFGHIJKLMNOPQRSTVUWXYZØÆÅ",         // norwegian caracters
+        "numbers" : "123456789 ",                               // numbers        
+        "maxlength" : 7,
+        "required" : true                                       // true - check for the input format
+        }
+      }
+    }
+  }
 }
-// "1": {
-//   "page": 1,                    
-//   "header" : "carinfo",            
-//   "type" : 2,         
+
+//  },
+//    "1": { 
+//   "page": 1,
+//   "header" : "Car info", 
+//   "type" : 1,       //  (1 = single input, 2 = multiple inputs, 3 = yes no questions)
 //   "inputs": {        
-//     "0": {            
-//       "label": "Car type",       
-//       "value" : "Wolswagen",        
-//         "format" :  {     // always open to suggestions, if you can se a bether way to format this
+//     "0": {
+//       "placeholder": "Some car information", 
+//       "value": "",
+//       "format" :  {     // always open to suggestions, if you can se a bether way to format this
 //         "characters" : "ABCDEFGHIJKLMNOPQRSTVUWXYZØÆÅ",         // norwegian caracters
 //         "numbers" : "123456789 ", 
-//         "minlength" : 2,
-//         "maxlength" : 7,
+//         "minlength" : 1,
+//         "maxlength" : 10,
 //         "required" : true
-//       }      
-//     }  
-//     },  
+//       }
+//     },
 //     "1": {            
-//       "label": "Sign number",       
-//       "value" : "WW 12345",     
+//         "label": "Sign number",       
+//         "value" : "WW 12345",     
 //         "format" :  {     // always open to suggestions, if you can se a bether way to format this
 //         "characters" : "ABCDEFGHIJKLMNOPQRSTVUWXYZØÆÅ",         // norwegian caracters
 //         "numbers" : "123456789 ", 
@@ -124,32 +108,104 @@
 //     "2": {            
 //       "label": "Color",       
 //       "value" : "Blue",         
-//       "format" :  "text",
-//       "require" : true 
-//     },  
-//     "3": {            
-//       "label": "Parking",       
-//       "value" : "Structure 82, fild 1",         
-//       "format" :  "text",
-//       "require" : true 
-//       },
-  
-//   "nextLabel" : "Verify this data",     
-//   "nextID" : 2,                         
-//   "nextActive" : true
-// },
-// "2": {
-//   "page": 3,
-//   "header" : "finished", 
-//   "type" : 1,       
-//   "inputs": {        
-//     "0": {                
-//       "value": "its uppdated",      
-//       "edible" : false
-//     }
+//       "format" : {     // always open to suggestions, if you can se a bether way to format this
+//         "characters" : "ABCDEFGHIJKLMNOPQRSTVUWXYZØÆÅ",         // norwegian caracters
+//         "numbers" : "123456789 ", 
+//         "minlength" : 2,
+//         "maxlength" : 7,
+//         "required" : false
+//       }      
+//     }  
+//   //   "3": {            
+//   //     "label": "Parking",       
+//   //     "value" : "Structure 82, fild 1",         
+//   //     "format" :  "text",
+//   //     "require" : true  
+//   // },
 //   },
-//   "nextLabel" : "",     
-//   "nextID" : false,                
+//   "nextLabel" : "go ahead",     // continue button label
+//   "nextID" : 2,                 // scrren number to contunue to. 
+//   "nextActive" : false         // true false shal the continue button be active from start
+//  },
+//    "2": { 
+//   "page": 2,
+//   "header" : "page three", 
+//   "type" : 1,       //  (1 = single input, 2 = multiple inputs, 3 = yes no questions)
+//   "inputs": {        
+//     "0": {
+//       "placeholder": "Type in the cars signnumber",
+//       "value": "",      
+//       "format" :  {     // always open to suggestions, if you can se a bether way to format this
+//         "characters" : "ABCDEFGHIJKLMNOPQRSTVUWXYZØÆÅ",         // norwegian caracters
+//         "numbers" : "123456789 ", 
+//         "minlength" : 2,
+//         "maxlength" : 7,
+//         "required" : true
+//       }
+//     }  
+//   },
+//   "nextLabel" : "continue",     // continue button label
+//   "nextID" : 3,                 // scrren number to contunue to. 
 //   "nextActive" : false         // true false shal the continue button be active from start
 //  }
 // }
+// // "1": {
+// //   "page": 1,                    
+// //   "header" : "carinfo",            
+// //   "type" : 2,         
+// //   "inputs": {        
+// //     "0": {            
+// //       "label": "Car type",       
+// //       "value" : "Wolswagen",        
+// //         "format" :  {     // always open to suggestions, if you can se a bether way to format this
+// //         "characters" : "ABCDEFGHIJKLMNOPQRSTVUWXYZØÆÅ",         // norwegian caracters
+// //         "numbers" : "123456789 ", 
+// //         "minlength" : 2,
+// //         "maxlength" : 7,
+// //         "required" : true
+// //       }      
+// //     }  
+// //     },  
+// //     "1": {            
+// //       "label": "Sign number",       
+// //       "value" : "WW 12345",     
+// //         "format" :  {     // always open to suggestions, if you can se a bether way to format this
+// //         "characters" : "ABCDEFGHIJKLMNOPQRSTVUWXYZØÆÅ",         // norwegian caracters
+// //         "numbers" : "123456789 ", 
+// //         "minlength" : 2,
+// //         "maxlength" : 7,
+// //         "required" : true
+// //       }      
+// //     },     
+// //     "2": {            
+// //       "label": "Color",       
+// //       "value" : "Blue",         
+// //       "format" :  "text",
+// //       "require" : true 
+// //     },  
+// //     "3": {            
+// //       "label": "Parking",       
+// //       "value" : "Structure 82, fild 1",         
+// //       "format" :  "text",
+// //       "require" : true 
+// //       },
+  
+// //   "nextLabel" : "Verify this data",     
+// //   "nextID" : 2,                         
+// //   "nextActive" : true
+// // },
+// // "2": {
+// //   "page": 3,
+// //   "header" : "finished", 
+// //   "type" : 1,       
+// //   "inputs": {        
+// //     "0": {                
+// //       "value": "its uppdated",      
+// //       "edible" : false
+// //     }
+// //   },
+// //   "nextLabel" : "",     
+// //   "nextID" : false,                
+// //   "nextActive" : false         // true false shal the continue button be active from start
+// //  }
+// // }

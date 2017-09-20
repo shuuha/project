@@ -7,12 +7,12 @@ export const Input = (props) => {
                 placeholderTextColor,
                 secureTextEntry, style
                 } = props;
-
+                
         const { containerStyle, labelStyle, inputStyle } = styles;
 
     return(
         <View style={containerStyle} >
-            <Text style={labelStyle} >{label}</Text>
+            {/*<Text style={labelStyle} >{label}</Text>*/}
             <TextInput
                 style={[inputStyle, style]}
                 value={value}
@@ -33,7 +33,8 @@ const styles = StyleSheet.create({
     containerStyle: {
         flexDirection: 'row',
         alignItems: 'center',
-        margin: 10
+        justifyContent: 'center',
+        margin: 30
     },
     labelStyle: {
         flex: 1,
@@ -42,6 +43,6 @@ const styles = StyleSheet.create({
     },
     inputStyle: {
         flex: 2,
-        fontSize: 16
+        fontSize: 22
     }
 })
