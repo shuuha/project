@@ -28,14 +28,19 @@ class Page extends Component{
                 inputsAreValid, nextPage, isActive } = this.props.page;
         return(
             <ScrollView >             
-                <View   style={{ height: height -30, justifyContent: 'space-between' }}>
+                <View   style={{
+                                flex: 1,
+                                flexDirection: 'column',
+                                height: height -30, 
+                                alignItems: 'center',
+                                justifyContent: 'space-between' }}>
                 <Header
                     header={headerTitle}                    
                     disabled={!navButtonEnabled}
                     onPress={()=>this.props.store.goBack(this.props.history)}
                     /> 
                 
-                    <View >
+                    <View  style={{ width }} >
                         
                         { type === 1 && inputs.map(i => <Input                       
                                                 key={i.id}
