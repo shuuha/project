@@ -1,31 +1,36 @@
 import React, { Component } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Platform } from 'react-native';
-import { Button } from './Button';
 
-export const InputQuestion = ({text, onPressYes, onPressNo, disabled}) => {        
+import { Icon } from './Icon';
+
+export const InputQuestion = ({text, onPress, isActive}) => {
 
     return(
         <View style={styles.containerStyleMain} > 
-            <View style={styles.labelContainerStyle}  >
-                <Text style={styles.labelTextStyle} >{text}</Text>
+            <View style={styles.textContainerStyle}  >
+                <Text style={styles.textStyle} >{text}</Text>
             </View>
 
-            <View style={ !disabled && { opacity: 0}} >
-                <Button 
-                    key={1} 
-                    label='Yes'
-                    onPress={onPressYes}
-                    disabled={disabled}
-                    containerStyle={styles.buttonContainerStyle}
-                    textStyle={{color: 'rgb(249, 249, 249)'}}
+            <View style={styles.iconsContainerStyle} >
+                <Icon                    
+                    onPress={()=> onPress(1)}                       // 1 because 1 is used to mean true
+                    iconName='checkbox-marked-circle-outline'
+                    text='Yes'
+                    isActive={isActive}
+
+                />
+                <Icon                    
+                    onPress={()=> onPress(0)}                       // 0 used to mean false
+                    iconName='close-circle-outline'
+                    text='No'
+                    isActive={isActive}
+                    
                     />
-                <Button 
-                    key={2} 
-                    label='No' 
-                    onPress={onPressNo}
-                    disabled={disabled}
-                    containerStyle={[styles.buttonContainerStyle, {backgroundColor: 'rgb(196, 47, 21)'}]}
-                    textStyle={{color: 'rgb(249, 249, 249)'}}
+                <Icon                    
+                    onPress={()=> onPress(2)}
+                    iconName='help-circle-outline'
+                    text='Not sure'
+                    isActive={isActive}
                     />
             </View>
         </View>
@@ -33,21 +38,43 @@ export const InputQuestion = ({text, onPressYes, onPressNo, disabled}) => {
 }
 
 const styles = StyleSheet.create({
-    containerStyleMain:{
+    containerStyleMain:{        
+        alignItems: 'center',
+        justifyContent: 'space-around',        
+        margin: 25,
+        borderColor: 'rgb(43, 45, 45)',
+        // borderWidth: 1,
+        borderRadius: 5,        
+        ...Platform.select({
+            ios: {
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.3
+            },
+            android: {
+                elevation: 2
+            }
+        })
+    },
+    textContainerStyle: { 
+        flexDirection: 'row',        
+        backgroundColor: 'rgb(87, 178, 224)',
+        borderRadius: 3,
+        padding: 5        
+
+    },
+    textStyle:{
+        flex: 1,
+        fontSize: 28,
+        textAlign: 'center',
+        color: 'rgb(230, 236, 239)',
+
+    },    
+    iconsContainerStyle:{
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between',
-        backgroundColor: 'rgb(227, 233, 244)',
-        marginVertical: 10,
-        marginHorizontal: 10,
-        elevation: 3
-    },
-
-    buttonContainerStyle:{
-        height: 40,
-        width: 100,
-        backgroundColor: 'rgb(52, 165, 14)',
-        margin: 10,
+        justifyContent: 'space-around',
+        
         ...Platform.select({
             ios: {
                 shadowColor: '#000',
@@ -59,11 +86,4 @@ const styles = StyleSheet.create({
             }
         })
     },
-    labelContainerStyle: {
-        marginLeft: 10,        
-        flex: 1
-    },
-    labelTextStyle:{
-        fontSize: 18
-    }    
 });

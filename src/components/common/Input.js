@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, StyleSheet } from 'react-native';
+import { View, Text, TextInput, StyleSheet, Platform } from 'react-native';
 
 export const Input = (props) => {
         const { value, label, placeholder, autoCorrect, 
@@ -23,7 +23,8 @@ export const Input = (props) => {
                 onChangeText={onChangeText}
                 placeholderTextColor={placeholderTextColor}
                 secureTextEntry={secureTextEntry}
-                
+                underlineColorAndroid='rgba(0,0,0,0)'
+                placeholderTextColor='rgb(194, 196, 198)'
                 />
         </View>
     );
@@ -43,6 +44,7 @@ const styles = StyleSheet.create({
     },
     inputStyle: {
         flex: 2,
-        fontSize: 22
+        fontSize: 22,
+        textAlign: 'center' 
     }
 })

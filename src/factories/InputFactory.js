@@ -27,7 +27,7 @@ export default class InputFactory{
             case 'maxlength':
                 return text => {
                         const temp =  text.length !=0 && text.length <= value;
-                        console.log('max: ', temp);
+                        // console.log('max: ', temp);
                         return temp };                    
             }        
     }

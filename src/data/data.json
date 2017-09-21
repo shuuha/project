@@ -4,10 +4,11 @@
   "nextPage": 1,              // next page id
   "nextLabel" : "continue",     // continue button label
   "header" : "welcome",        
-  "type" : 1,       //  1 - inputs,   2 - yes no questions
+  "type" : 2,       //  1 - inputs,   2 - yes no questions
   "inputs": {
     "0": {
-      "placeholder": "Type in the cars signnumber",       
+      "placeholder": "Type in the cars signnumber",
+      "text": "Do you like pizza?",
       "format" :  {     
         "characters" : "ABCDEFGHIJKLMNOPQRSTVUWXYZØÆÅ",         // norwegian caracters
         "numbers" : "123456789 ",                               // numbers        

@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, TouchableWithoutFeedback, Platform } from 'react-native';
 
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+
 export const Header = (props) => {
     const { header, onForwarPress, onPress, disabled, style } = props;    
 
@@ -13,8 +15,12 @@ export const Header = (props) => {
                     onPress={onPress}
                     >
                     <View>
-                        <Text style={[styles.buttonTextStyle, disabled && styles.buttonDisabled ]} 
-                            >{'< back'}</Text>
+                        <Icon 
+                            name='keyboard-backspace'
+                            size={40}                            
+                        />
+                        {/*<Text style={[styles.buttonTextStyle, disabled && styles.buttonDisabled ]} 
+                            >{'< back'}</Text>*/}
                     </View>
                 </TouchableWithoutFeedback>
             </View>
@@ -29,7 +35,11 @@ export const Header = (props) => {
                     style={{ flex: 1}}
                     >
                     <View>
-                        <Text style={styles.buttonDisabled}>{'< back'}</Text>
+                                            <Icon 
+                            name='keyboard-backspace'
+                            size={40}                            
+                        />
+                        {/*<Text style={styles.buttonDisabled}>{'< back'}</Text>*/}
                     </View>
                 </TouchableWithoutFeedback>
             </View>
@@ -72,8 +82,8 @@ const styles = StyleSheet.create({
         })        
     },    
     titleStyle: {        
-        fontSize: 27,
-        fontWeight: '500',        
+        fontSize: 30,
+        fontWeight: '900',        
     },    
     buttonTextStyle: {
         fontSize: 25,

@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
         height: 50,
         width: 300,
         borderRadius: 5,
-        marginTop: 20,
+        marginVertical: 50,
         backgroundColor: 'rgb(66, 134, 244)',
         alignSelf: 'center',
         ...Platform.select({

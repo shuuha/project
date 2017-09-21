@@ -9,11 +9,14 @@ export default class PageStore{
     _page;
     _nextPage;
 
+    @observable isActive;
+
     constructor({ page, nextPage, header, type, inputs, nextLabel: button }){
         this._headerTitle = header;
         this._buttonLabel = button;
         this._page = page;
         this._nextPage = nextPage;
+        this.type = type;
 
         this.inputs = Object.keys(inputs).map(q => new InputStore(inputs[q], type));    // array of inputs        
     }
