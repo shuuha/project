@@ -1,16 +1,13 @@
 import React, { Component } from 'react';
-import { View, Text, BackHandler, ScrollView, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, BackHandler } from 'react-native';
 import { Button, Input, Header, Icon, InputQuestion } from './common';
 import { observer, inject } from 'mobx-react/native';
-
-
-
-const {width, height } = Dimensions.get('window');
 
 @inject('store')
 @observer
 class Page extends Component{
 
+    
     componentWillMount(){        
         BackHandler.addEventListener('hardwareBackPress', 
             ()=> this.props.store.BackHandler(this.props.history));
@@ -21,32 +18,37 @@ class Page extends Component{
             ()=> this.props.store.BackHandler(this.props.history));
     }
 
+
     render(){
-        console.log('render');
+        console.log(this.props);
         const { headerTitle, buttonLabel, inputs, type,
                 handleSubmit, navButtonEnabled, 
                 inputsAreValid, nextPage, isActive } = this.props.page;
         return(
-            <ScrollView >             
-                <View   style={{
-                                flex: 1,
-                                flexDirection: 'column',
-                                height: height -30, 
-                                alignItems: 'center',
-                                justifyContent: 'space-between' }}>
-                <Header
+            <ScrollView                 
+                stickyHeaderIndices={[0]}
+                    >
+            
+                <Header                    
                     header={headerTitle}                    
                     disabled={!navButtonEnabled}
                     onPress={()=>this.props.store.goBack(this.props.history)}
                     /> 
-                
-                    <View  style={{ width }} >
+            
+            
+                    <View 
+                        style={{ 
+                            flex: 1,                            
+                            justifyContent: 'space-around',
+                            alignItems: 'center'}}
+                         >
                         
                         { type === 1 && inputs.map(i => <Input                       
                                                 key={i.id}
                                                 placeholder={i.placeholder}
                                                 value={i.value}
-                                                label={i.label}                                        
+                                                label={i.label}
+                                                maxLength={i.maxLength}
                                                 onChangeText={(text)=> i.handleChange(text)}
                                                 />)}
                         { type === 2 && inputs.map(i => <InputQuestion
@@ -55,28 +57,14 @@ class Page extends Component{
                                                 onPress={(e)=> i.handleYesNoPress(e)}
                                                 isActive={i.isActive}
                                                 />)}
-                    </View>
+                    </View>                
                 
-
-                        
-
-                {/*<InputQuestion 
-                    text='what is your favorite color? The answer can be yes and no and not sure'
-                    isActive={isActive}
-                    onPress={this.handlePress.bind(this)}*/}
-
-
-                {/*/>*/}
-
-                <Button                    
-                    label={buttonLabel}
-                    disabled={!inputsAreValid}
-                    onPress={()=>this.props.store.goForward(this.props.history, nextPage)}
-                    />
-
-
-                    <Text></Text>
-                </View>
+                    <Button
+                        label={buttonLabel}
+                        disabled={!inputsAreValid}
+                        onPress={()=>this.props.store.goForward(this.props.history, nextPage)}
+                    />               
+                
             </ScrollView>
           
         );

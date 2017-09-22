@@ -38,6 +38,7 @@ export default class PageStore{
         return this.inputs.every(i => i.isValid);
     }
 
+
     get page(){
         let retVal = '/';
         if(this._page > 0)

@@ -4,229 +4,105 @@
   "nextPage": 1,              // next page id
   "nextLabel" : "continue",     // continue button label
   "header" : "welcome",        
-  "type" : 1,       //  1 - inputs,   2 - yes no questions
+  "type" : 1,               //  1 - inputs,   2 - yes no questions
   "inputs": {
     "0": {
-      "placeholder": "Type in the cars signnumber",
-      "text": "Do you like pizza?",
+      "placeholder": "Input type 1",      
       "format" :  {     
         "characters" : "ABCDEFGHIJKLMNOPQRSTVUWXYZØÆÅ",         // norwegian caracters
-        "numbers" : "123456789 ",                               // numbers        
+        "numbers" : "123456789",                               // numbers
+        "minlength": 2,
         "maxlength" : 7,
-        "required" : true                                       // true - check for the input format
-      }
-    },
-    "1": {
-      "placeholder": "Type in some interesting stuff",       
-      "format" :  {     
-        // "characters" : "ABCDEFGHIJKLMNOPQRSTVUWXYZØÆÅ",         // norwegian caracters
-        "numbers" : "123456789 ",                               // numbers        
-        "maxlength" : 7,
-        "required" : true                                       // true - check for the input format
+        "required" : true
+        }  
       }
     }
-   }
   },
 "1": { 
-  "page": 1,                  // current page id
-  "nextPage": 2,              // next page id
-  "nextLabel" : "Go on",      // continue button label
+  "page": 1,                
+  "nextPage": 2,            
+  "nextLabel" : "Go on",    
   "header" : "moto cars",
-  "type" : 1,       //  1 - inputs,   2 - yes no questions
+  "type" : 1,       
   "inputs": {
     "0": {
       "label": "Sign number 1",
-      "placeholder": "Type in the moto cars",       
+      "placeholder": "Input type 1",       
       "format" :  {
         "characters" : "ABCDEFGHIJKLMNOPQRSTVUWXYZØÆÅ",         // norwegian caracters
         "numbers" : "123456789 ",                               // numbers        
+        "minlength": 2,
         "maxlength" : 7,
-        "required" : true                                       // true - check for the input format
+        "required" : true                                       
       }
     },
     "1": {
       "label": "Sign number 1",
-      "placeholder": "Input Type 2",       
+      "placeholder": "Input Type 1",       
       "format" :  {
         "characters" : "ABCDEFGHIJKLMNOPQRSTVUWXYZØÆÅ",         // norwegian caracters
         "numbers" : "123456789 ",                               // numbers        
+        "minlength": 2,
         "maxlength" : 7,
-        "required" : true                                       // true - check for the input format
-      }
-    },
+        "required" : true                                       
+        }
+      },
     "2": {
-      "label": "Sign number 1",
-      "placeholder": "Input Type 2",       
-      "format" :  {
+      "placeholder": "Type in some interesting stuff",       
+      "format" :  {     
         "characters" : "ABCDEFGHIJKLMNOPQRSTVUWXYZØÆÅ",         // norwegian caracters
-        "numbers" : "123456789 ",                               // numbers        
+        "numbers" : "123456789",                               // numbers        
+        "minlength": 2,
         "maxlength" : 7,
-        "required" : true                                       // true - check for the input format
+        "required" : false                                   
+        }
+      } 
+    }
+  },
+  "2": { 
+  "page": 2,                
+  "nextPage": 3,            
+  "nextLabel" : "Move further",    
+  "header" : "Sport cars",
+  "type" : 2,
+  "inputs": {
+    "0": {
+      "text": "Required for this question is true",   // question field      
+        "required" : true                                       
+      } 
+    }
+  },  
+  "3": { 
+  "page": 3,                  // current page id
+  "nextPage": 4,              // next page id
+  "nextLabel" : "Let's move",     // continue button label
+  "header" : "The last page",        
+  "type" : 1,               //  1 - inputs,   2 - yes no questions
+  "inputs": {
+    "0": {
+      "placeholder": "Input type 1",      
+      "format" :  {     
+        "characters" : "ABCDEFGHIJKLMNOPQRSTVUWXYZØÆÅ",         // norwegian caracters
+        "numbers" : "123456789",                               // numbers
+        "minlength": 2,
+        "maxlength" : 7,
+        "required" : true
+        }  
       }
-    },
-     "3": {
-      "label": "Sign number 1",
-      "placeholder": "Input Type 2",       
-      "format" :  {
-        "characters" : "ABCDEFGHIJKLMNOPQRSTVUWXYZØÆÅ",         // norwegian caracters
-        "numbers" : "123456789 ",                               // numbers        
-        "maxlength" : 7,
-        "required" : true                                       // true - check for the input format
-        }
-      },
-          "4": {
-      "label": "Sign number 1",
-      "placeholder": "Input Type 2",       
-      "format" :  {
-        "characters" : "ABCDEFGHIJKLMNOPQRSTVUWXYZØÆÅ",         // norwegian caracters
-        "numbers" : "123456789 ",                               // numbers        
-        "maxlength" : 7,
-        "required" : true                                       // true - check for the input format
-        }
-      },
-          "5": {
-      "label": "Sign number 1",
-      "placeholder": "Input Type 2",       
-      "format" :  {
-        "characters" : "ABCDEFGHIJKLMNOPQRSTVUWXYZØÆÅ",         // norwegian caracters
-        "numbers" : "123456789 ",                               // numbers        
-        "maxlength" : 7,
-        "required" : true                                       // true - check for the input format
-        }
-      }
+    }
+  },
+  "4": { 
+  "page": 4,                
+  "nextPage": 5,            
+  "nextLabel" : "Move further",    
+  "header" : "Sport cars",
+  "type" : 2,
+  "inputs": {
+    "0": {
+      "text": "Required field in this question is false",   // question field      
+        "required" : false                                       
+      } 
     }
   }
 }
 
-//  },
-//    "1": { 
-//   "page": 1,
-//   "header" : "Car info", 
-//   "type" : 1,       //  (1 = single input, 2 = multiple inputs, 3 = yes no questions)
-//   "inputs": {        
-//     "0": {
-//       "placeholder": "Some car information", 
-//       "value": "",
-//       "format" :  {     // always open to suggestions, if you can se a bether way to format this
-//         "characters" : "ABCDEFGHIJKLMNOPQRSTVUWXYZØÆÅ",         // norwegian caracters
-//         "numbers" : "123456789 ", 
-//         "minlength" : 1,
-//         "maxlength" : 10,
-//         "required" : true
-//       }
-//     },
-//     "1": {            
-//         "label": "Sign number",       
-//         "value" : "WW 12345",     
-//         "format" :  {     // always open to suggestions, if you can se a bether way to format this
-//         "characters" : "ABCDEFGHIJKLMNOPQRSTVUWXYZØÆÅ",         // norwegian caracters
-//         "numbers" : "123456789 ", 
-//         "minlength" : 2,
-//         "maxlength" : 7,
-//         "required" : true
-//       }      
-//     },     
-//     "2": {            
-//       "label": "Color",       
-//       "value" : "Blue",         
-//       "format" : {     // always open to suggestions, if you can se a bether way to format this
-//         "characters" : "ABCDEFGHIJKLMNOPQRSTVUWXYZØÆÅ",         // norwegian caracters
-//         "numbers" : "123456789 ", 
-//         "minlength" : 2,
-//         "maxlength" : 7,
-//         "required" : false
-//       }      
-//     }  
-//   //   "3": {            
-//   //     "label": "Parking",       
-//   //     "value" : "Structure 82, fild 1",         
-//   //     "format" :  "text",
-//   //     "require" : true  
-//   // },
-//   },
-//   "nextLabel" : "go ahead",     // continue button label
-//   "nextID" : 2,                 // scrren number to contunue to. 
-//   "nextActive" : false         // true false shal the continue button be active from start
-//  },
-//    "2": { 
-//   "page": 2,
-//   "header" : "page three", 
-//   "type" : 1,       //  (1 = single input, 2 = multiple inputs, 3 = yes no questions)
-//   "inputs": {        
-//     "0": {
-//       "placeholder": "Type in the cars signnumber",
-//       "value": "",      
-//       "format" :  {     // always open to suggestions, if you can se a bether way to format this
-//         "characters" : "ABCDEFGHIJKLMNOPQRSTVUWXYZØÆÅ",         // norwegian caracters
-//         "numbers" : "123456789 ", 
-//         "minlength" : 2,
-//         "maxlength" : 7,
-//         "required" : true
-//       }
-//     }  
-//   },
-//   "nextLabel" : "continue",     // continue button label
-//   "nextID" : 3,                 // scrren number to contunue to. 
-//   "nextActive" : false         // true false shal the continue button be active from start
-//  }
-// }
-// // "1": {
-// //   "page": 1,                    
-// //   "header" : "carinfo",            
-// //   "type" : 2,         
-// //   "inputs": {        
-// //     "0": {            
-// //       "label": "Car type",       
-// //       "value" : "Wolswagen",        
-// //         "format" :  {     // always open to suggestions, if you can se a bether way to format this
-// //         "characters" : "ABCDEFGHIJKLMNOPQRSTVUWXYZØÆÅ",         // norwegian caracters
-// //         "numbers" : "123456789 ", 
-// //         "minlength" : 2,
-// //         "maxlength" : 7,
-// //         "required" : true
-// //       }      
-// //     }  
-// //     },  
-// //     "1": {            
-// //       "label": "Sign number",       
-// //       "value" : "WW 12345",     
-// //         "format" :  {     // always open to suggestions, if you can se a bether way to format this
-// //         "characters" : "ABCDEFGHIJKLMNOPQRSTVUWXYZØÆÅ",         // norwegian caracters
-// //         "numbers" : "123456789 ", 
-// //         "minlength" : 2,
-// //         "maxlength" : 7,
-// //         "required" : true
-// //       }      
-// //     },     
-// //     "2": {            
-// //       "label": "Color",       
-// //       "value" : "Blue",         
-// //       "format" :  "text",
-// //       "require" : true 
-// //     },  
-// //     "3": {            
-// //       "label": "Parking",       
-// //       "value" : "Structure 82, fild 1",         
-// //       "format" :  "text",
-// //       "require" : true 
-// //       },
-  
-// //   "nextLabel" : "Verify this data",     
-// //   "nextID" : 2,                         
-// //   "nextActive" : true
-// // },
-// // "2": {
-// //   "page": 3,
-// //   "header" : "finished", 
-// //   "type" : 1,       
-// //   "inputs": {        
-// //     "0": {                
-// //       "value": "its uppdated",      
-// //       "edible" : false
-// //     }
-// //   },
-// //   "nextLabel" : "",     
-// //   "nextID" : false,                
-// //   "nextActive" : false         // true false shal the continue button be active from start
-// //  }
-// // }

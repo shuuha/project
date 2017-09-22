@@ -5,12 +5,9 @@ import InputFactory from '../factories/InputFactory';
 export default class InputStore{        // a single instance of an input    
     @observable value = '';             // input's value
     @observable _isValid;               // input validation
-    @observable isActive;               // 0 - no, 1 - yes, 2 - not sure (question buttons)    
-    
+    @observable isActive;               // 0 - no, 1 - yes, 2 - not sure (question buttons)        
     
     id = Math.round(Math.random() * 1000);
-    
-    // formatPredicates = [];
 
     constructor(input, type){           //obj, number
         this.type = type;
@@ -31,68 +28,65 @@ export default class InputStore{        // a single instance of an input
     }
 
     typeInput(input){
-        this.label = input.label;
-        this.placeholder = input.placeholder;        
-        this.required = input.format.required;        
-        this.data = input.format;
-        this.formatPredicates = [];
+        const { label, placeholder,
+                format: { characters, numbers, maxlength, minlength, required } } = input || {};
+
+        this.label = label;
+        this.placeholder = placeholder;
+        this.maxLength = maxlength;
+        this.minLength = minlength;
+        this.required =  required;
+        this.characters =  characters || '';
+        this.numbers = numbers || '';       
+
+       this.checkValue = (text) =>{
+            const symbols = (this.characters + ' '|| '') + (this.numbers || '');
+            return text.split('').every(s => symbols.includes(s.toUpperCase()));
+       }
+
+       this.checkFirstTwo = (text) => {
+           const inText = text.slice(0, 2).split('');
+           let areStrings = inText.every(t => this.characters.includes(t.toUpperCase()));
+           let areNumbers = inText.every(t => this.numbers.includes(t));
+           let isSpace = inText.some(t => t === ' ');
         
-        this.initPredicates();        
+
+           // if all return false, then the text equals to str + num, or num + str
+           this.isValid = !(areStrings + areNumbers + isSpace);           
+       }       
     }
+
 
     typeQuestion(input){
-        this.text = input.text;        
-    }
+        this.text = input.text;
+        this.required = input.required;
 
-    initPredicates(){
-            Object.keys(this.data).forEach( key => {
-                const fn = InputFactory.makePredicate(key, this.data[key]);
-                if(fn) this.formatPredicates.push(fn);
-        });
-    }
+    }    
 
-     handleYesNoPress(e){        
+    @action
+     handleYesNoPress(e){
         this.isActive = e;
         this.isValid = true;
     }
 
-    @computed
-    get isValid(){
-        if(this.type === 1 && this.required) {
-            return this._isValid }
 
-        else if(this.type === 2) {            
-            return this._isValid }
-        
-        else return true;
+    @computed
+    get isValid(){        
+        if(!this.required)
+            return true;
+
+        return this._isValid;        
     }
     
     set isValid(value){
         this._isValid = value;
-    }
+    }    
 
     @action
     handleChange(text){
-        this.value = text;        
-        
-        if(this.required) {
-            this.isValid = this.formatPredicates.every( fn => fn(this.value));
-            if(this.isValid){
-                return;
-            }
-
-            else if(!this.isValid && this.value.length !=0){
-                this.value = this.value.slice(0, -1);
-                this._isValid = true;                
-            }
-
-            else {
-                this.value = this.value.slice(0, -1);
-                this.isValid = false;                
-            }
-        }
-
-        else this.isValid = true;
+        this.checkValue(text) && (this.value = text);
+        if(this.value.length <= (this.minLength || 2 ))
+            this.checkFirstTwo(this.value);
     }
 }
 

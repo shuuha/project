@@ -9,7 +9,6 @@ import { AppStore } from './stores/AppStore';
 const store = new AppStore();
 
 export default class App extends Component{
-
     render(){        
         const { pages } = store;
         return(

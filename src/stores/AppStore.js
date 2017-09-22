@@ -28,7 +28,7 @@ export class AppStore{
     }
 
     goForward(history, nextPage){
-        console.log('moving forward: ', nextPage);
-        history.push(nextPage);
+        if(this.pages.length > nextPage.slice(-1)){            
+            history.push(nextPage)}
     }
 }

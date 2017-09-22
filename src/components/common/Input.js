@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TextInput, StyleSheet, Platform } from 'react-native';
+import { View, Text, TextInput, StyleSheet } from 'react-native';
 
 export const Input = (props) => {
         const { value, label, placeholder, autoCorrect, 
@@ -8,11 +8,10 @@ export const Input = (props) => {
                 secureTextEntry, style
                 } = props;
                 
-        const { containerStyle, labelStyle, inputStyle } = styles;
+        const { containerStyle, inputStyle } = styles;
 
     return(
-        <View style={containerStyle} >
-            {/*<Text style={labelStyle} >{label}</Text>*/}
+        <View style={containerStyle} >      
             <TextInput
                 style={[inputStyle, style]}
                 value={value}
@@ -23,6 +22,8 @@ export const Input = (props) => {
                 onChangeText={onChangeText}
                 placeholderTextColor={placeholderTextColor}
                 secureTextEntry={secureTextEntry}
+                multiline={true}
+                numberOfLines={3}
                 underlineColorAndroid='rgba(0,0,0,0)'
                 placeholderTextColor='rgb(194, 196, 198)'
                 />
@@ -32,19 +33,15 @@ export const Input = (props) => {
 
 const styles = StyleSheet.create({
     containerStyle: {
-        flexDirection: 'row',
+        flexDirection: 'row',                
         alignItems: 'center',
-        justifyContent: 'center',
-        margin: 30
-    },
-    labelStyle: {
-        flex: 1,
-        fontSize: 20,
-        fontWeight: '500'
+        justifyContent: 'center',        
+        marginHorizontal: 20,
+        marginTop: 5
     },
     inputStyle: {
-        flex: 2,
+        flex: 1,
         fontSize: 22,
-        textAlign: 'center' 
+        textAlign: 'center',
     }
 })

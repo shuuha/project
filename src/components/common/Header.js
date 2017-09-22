@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, TouchableWithoutFeedback, Platform } from 'react-native';
 
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 export const Header = (props) => {
     const { header, onForwarPress, onPress, disabled, style } = props;    
@@ -16,11 +16,9 @@ export const Header = (props) => {
                     >
                     <View>
                         <Icon 
-                            name='keyboard-backspace'
-                            size={40}                            
+                            style={[styles.buttonTextStyle, disabled && styles.buttonDisabled ]}
+                            name='ios-arrow-back-outline'                          
                         />
-                        {/*<Text style={[styles.buttonTextStyle, disabled && styles.buttonDisabled ]} 
-                            >{'< back'}</Text>*/}
                     </View>
                 </TouchableWithoutFeedback>
             </View>
@@ -35,11 +33,11 @@ export const Header = (props) => {
                     style={{ flex: 1}}
                     >
                     <View>
-                                            <Icon 
-                            name='keyboard-backspace'
+                            <Icon 
+                            style={styles.buttonDisabled}
+                            name='ios-arrow-forward'
                             size={40}                            
-                        />
-                        {/*<Text style={styles.buttonDisabled}>{'< back'}</Text>*/}
+                        />                        
                     </View>
                 </TouchableWithoutFeedback>
             </View>
@@ -67,7 +65,7 @@ const styles = StyleSheet.create({
     containerStyle: {
         flexDirection: 'row',   
         alignItems: 'center',
-        justifyContent: 'space-between',
+        justifyContent: 'space-around',
         backgroundColor: 'rgb(210, 221, 239)',
         height: 50,
         ...Platform.select({
@@ -86,10 +84,10 @@ const styles = StyleSheet.create({
         fontWeight: '900',        
     },    
     buttonTextStyle: {
-        fontSize: 25,
+        fontSize: 40,
         fontWeight: '500',
         marginHorizontal: 10,
-        color: 'rgb(85, 143, 237)'
+        color: 'rgb(48, 113, 219)'
     },
     buttonDisabled: {
         opacity: 0,
