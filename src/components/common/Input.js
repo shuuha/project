@@ -2,18 +2,23 @@ import React, { Component } from 'react';
 import { View, Text, TextInput, StyleSheet } from 'react-native';
 
 export const Input = (props) => {
-        const { value, label, placeholder, autoCorrect, 
-                editable, maxLength, onChangeText,
+        const { value, 
+                label, 
+                placeholder, 
+                autoCorrect, 
+                editable, 
+                maxLength, 
+                onChangeText,
                 placeholderTextColor,
-                secureTextEntry, style
-                } = props;
-                
-        const { containerStyle, inputStyle } = styles;
+                secureTextEntry, 
+                style
+            } = props;
+        
 
     return(
-        <View style={containerStyle} >      
+        <View style={styles.containerStyle} >      
             <TextInput
-                style={[inputStyle, style]}
+                style={[styles.inputStyle, style]}
                 value={value}
                 placeholder={placeholder}
                 autoCorrect={autoCorrect || true}

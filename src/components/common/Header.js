@@ -4,9 +4,14 @@ import { View, Text, StyleSheet, TouchableWithoutFeedback, Platform } from 'reac
 import Icon from 'react-native-vector-icons/Ionicons';
 
 export const Header = (props) => {
-    const { header, onForwarPress, onPress, disabled, style } = props;    
+    const { header, 
+            onForwarPress, 
+            onPress, 
+            disabled, 
+            style 
+        } = props;    
 
-    const renderBackBtn = () =>{           // empty space in the text for layout purposes
+    const renderBackBtn = () =>{           
         return(
             <View  >
                 <TouchableWithoutFeedback
@@ -67,7 +72,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-around',
         backgroundColor: 'rgb(210, 221, 239)',
-        height: 50,
+        height: 80,
+        padding: 10,
         ...Platform.select({
             ios: {
                 shadowColor: '#000',
@@ -80,14 +86,18 @@ const styles = StyleSheet.create({
         })        
     },    
     titleStyle: {        
-        fontSize: 30,
-        fontWeight: '900',        
+        fontSize: 40,
+        fontWeight: '400',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',        
+        color: 'rgb(52, 57, 61)'
     },    
     buttonTextStyle: {
         fontSize: 40,
         fontWeight: '500',
         marginHorizontal: 10,
-        color: 'rgb(48, 113, 219)'
+        color: 'rgb(48, 113, 219)',        
     },
     buttonDisabled: {
         opacity: 0,

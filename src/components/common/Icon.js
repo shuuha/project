@@ -4,13 +4,23 @@ import { View, Text, TouchableOpacity, StyleSheet, Platform } from 'react-native
 import IconFont from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export const Icon = (props) => {
-    const { iconName, text, onPress, isActive } = props;
 
-    const { containerStyle, iconFontStyle, 
-            yesActive, noActive, 
-            notSureActive, textStyle,
+    const { 
+            iconName, 
+            text, 
+            onPress, 
+            isActive 
+        } = props;
+
+    const { 
+            containerStyle, 
+            iconFontStyle, 
+            yesActive, 
+            noActive, 
+            notSureActive, 
+            textStyle,
             buttonStyle        
-                } = styles;    
+        } = styles;    
 
     const makeActiveStyle = () => {        
         if(isActive === 0 && text.toLowerCase() === 'no')
@@ -48,7 +58,7 @@ const styles = StyleSheet.create({
         width: 100,
     },
     iconFontStyle:{
-        fontSize: 50,
+        fontSize: 40,
         color: 'rgb(43, 45, 45)'
     },
     textStyle: {
@@ -61,15 +71,15 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     yesActive: {
-        backgroundColor: 'rgb(35, 196, 83)',
+        backgroundColor: 'rgb(131, 247, 164)',
         borderRadius: 25
     },
     noActive: {
-        backgroundColor: 'rgb(252, 15, 27)',
+        backgroundColor: 'rgb(214, 119, 119)',
         borderRadius: 25
     },
     notSureActive: {
-        backgroundColor: 'rgb(134, 232, 217)',
+        backgroundColor: 'rgb(149, 216, 212)',
         borderRadius: 25
     },
 })

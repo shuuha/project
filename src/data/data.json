@@ -3,7 +3,7 @@
   "page": 0,                  // current page id
   "nextPage": 1,              // next page id
   "nextLabel" : "continue",     // continue button label
-  "header" : "welcome",        
+  "header" : "Page 1",        
   "type" : 1,               //  1 - inputs,   2 - yes no questions
   "inputs": {
     "0": {
@@ -22,7 +22,7 @@
   "page": 1,                
   "nextPage": 2,            
   "nextLabel" : "Go on",    
-  "header" : "moto cars",
+  "header" : "Page 2",
   "type" : 1,       
   "inputs": {
     "0": {
@@ -63,7 +63,7 @@
   "page": 2,                
   "nextPage": 3,            
   "nextLabel" : "Move further",    
-  "header" : "Sport cars",
+  "header" : "Page 3",
   "type" : 2,
   "inputs": {
     "0": {
@@ -76,7 +76,7 @@
   "page": 3,                  // current page id
   "nextPage": 4,              // next page id
   "nextLabel" : "Let's move",     // continue button label
-  "header" : "The last page",        
+  "header" : "Page 4",        
   "type" : 1,               //  1 - inputs,   2 - yes no questions
   "inputs": {
     "0": {
@@ -95,7 +95,7 @@
   "page": 4,                
   "nextPage": 5,            
   "nextLabel" : "Move further",    
-  "header" : "Sport cars",
+  "header" : "Page 5",
   "type" : 2,
   "inputs": {
     "0": {

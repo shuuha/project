@@ -28,8 +28,15 @@ export default class InputStore{        // a single instance of an input
     }
 
     typeInput(input){
-        const { label, placeholder,
-                format: { characters, numbers, maxlength, minlength, required } } = input || {};
+        const { label, 
+                placeholder,
+                format: { 
+                    characters, 
+                    numbers, 
+                    maxlength, 
+                    minlength, 
+                    required 
+               }} = input || {};
 
         this.label = label;
         this.placeholder = placeholder;
@@ -44,23 +51,18 @@ export default class InputStore{        // a single instance of an input
             return text.split('').every(s => symbols.includes(s.toUpperCase()));
        }
 
-       this.checkFirstTwo = (text) => {
-           const inText = text.slice(0, 2).split('');
-           let areStrings = inText.every(t => this.characters.includes(t.toUpperCase()));
-           let areNumbers = inText.every(t => this.numbers.includes(t));
-           let isSpace = inText.some(t => t === ' ');
-        
-
-           // if all return false, then the text equals to str + num, or num + str
-           this.isValid = !(areStrings + areNumbers + isSpace);           
+       this.isDigitAndChar = (text) => {
+           text = text.slice(0, 2).split('');
+           const char = text.filter(q => this.characters.includes(q.toUpperCase())).length;
+           const digit = text.filter(q => this.numbers.includes(q)).length;
+           
+           this.isValid = (char == 1 && digit == 1);              
        }       
     }
-
 
     typeQuestion(input){
         this.text = input.text;
         this.required = input.required;
-
     }    
 
     @action
@@ -86,7 +88,6 @@ export default class InputStore{        // a single instance of an input
     handleChange(text){
         this.checkValue(text) && (this.value = text);
         if(this.value.length <= (this.minLength || 2 ))
-            this.checkFirstTwo(this.value);
+            this.isDigitAndChar(this.value);
     }
 }
-

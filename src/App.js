@@ -15,9 +15,9 @@ export default class App extends Component{
                 <Provider store={store} >
                     <Router>
                             <View>
-                       { pages.map(q => <Route exact path={q.page}  key={q.page} 
-                                                render={(props)=> <Page {...props} page={q} key={q.page} /> }  /> )}                                                
-                        
+                        { pages.map(q => 
+                           <Route exact path={q.page} key={q.page} render={(props)=> 
+                                <Page {...props} page={q} /> }  /> )}                        
                         </View>
                     </Router>
                 </Provider>

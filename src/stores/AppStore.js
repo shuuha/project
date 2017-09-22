@@ -6,6 +6,9 @@ export class AppStore{
 
     @observable pages = [];
 
+    @observable _lastPage = 0;
+    
+
     constructor(){
         this.loadData();
     }
@@ -16,19 +19,33 @@ export class AppStore{
         this.pages = Object.keys(temp).map(q => new PageStore(temp[q]));
     }
     
+    @computed
+    get lastPage(){
+        return this.pages.length > this._lastPage;
+    }
+
+    set lastPage(value){
+        this._lastPage = value;
+    }
+
     BackHandler(history){        
         if(history.location.pathname !== '/') { 
-            history.goBack();
+            this.goBack(history);            
             return true }
         return false;
     }
 
     goBack(history){        
         history.goBack();
+        this.lastPage -= 1;
     }
 
     goForward(history, nextPage){
-        if(this.pages.length > nextPage.slice(-1)){            
-            history.push(nextPage)}
+        this.lastPage = nextPage.slice(-1)        
+        if(this.lastPage){
+            history.push(nextPage)
+        }
+
+        
     }
 }

@@ -42,8 +42,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-around',        
         margin: 25,
-        borderColor: 'rgb(43, 45, 45)',
-        // borderWidth: 1,
+        borderColor: 'rgb(43, 45, 45)',        
         borderRadius: 5,        
         ...Platform.select({
             ios: {
@@ -60,8 +59,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',        
         backgroundColor: 'rgb(87, 178, 224)',
         borderRadius: 3,
-        padding: 5        
-
+        paddingHorizontal: 10,
+        paddingVertical: 20
     },
     textStyle:{
         flex: 1,
@@ -74,7 +73,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-around',
-        
+        padding: 15,
         ...Platform.select({
             ios: {
                 shadowColor: '#000',

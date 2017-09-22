@@ -5,9 +5,7 @@ import { observer, inject } from 'mobx-react/native';
 
 @inject('store')
 @observer
-class Page extends Component{
-
-    
+class Page extends Component{    
     componentWillMount(){        
         BackHandler.addEventListener('hardwareBackPress', 
             ()=> this.props.store.BackHandler(this.props.history));
@@ -18,31 +16,35 @@ class Page extends Component{
             ()=> this.props.store.BackHandler(this.props.history));
     }
 
+    render(){        
+        const { 
+                headerTitle, 
+                buttonLabel, 
+                inputs, 
+                type,
+                handleSubmit, 
+                navButtonEnabled, 
+                inputsAreValid, 
+                nextPage,                
+                isActive 
+            } = this.props.page;
 
-    render(){
-        console.log(this.props);
-        const { headerTitle, buttonLabel, inputs, type,
-                handleSubmit, navButtonEnabled, 
-                inputsAreValid, nextPage, isActive } = this.props.page;
         return(
             <ScrollView                 
                 stickyHeaderIndices={[0]}
-                    >
-            
+                    >            
                 <Header                    
                     header={headerTitle}                    
                     disabled={!navButtonEnabled}
                     onPress={()=>this.props.store.goBack(this.props.history)}
-                    /> 
-            
+                    />
             
                     <View 
                         style={{ 
                             flex: 1,                            
                             justifyContent: 'space-around',
                             alignItems: 'center'}}
-                         >
-                        
+                         >                        
                         { type === 1 && inputs.map(i => <Input                       
                                                 key={i.id}
                                                 placeholder={i.placeholder}
@@ -57,8 +59,12 @@ class Page extends Component{
                                                 onPress={(e)=> i.handleYesNoPress(e)}
                                                 isActive={i.isActive}
                                                 />)}
-                    </View>                
-                
+                    </View>
+                    
+                    { !this.props.store.lastPage && 
+                        <Text style={{color: 'red', fontSize: 25, alignSelf: 'center' }}> 
+                            This is the last page</Text>}
+
                     <Button
                         label={buttonLabel}
                         disabled={!inputsAreValid}
@@ -66,7 +72,6 @@ class Page extends Component{
                     />               
                 
             </ScrollView>
-          
         );
     }
 }

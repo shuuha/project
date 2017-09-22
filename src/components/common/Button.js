@@ -1,18 +1,22 @@
 import React, { Component } from 'react';
 import { View, Text, TouchableOpacity, Platform, StyleSheet } from 'react-native';
 
-export const Button = ({label, onPress, disabled, containerStyle, textStyle}) => {
-    
-    const { containerStyleMain, buttonStyle, textStyleMain, buttonDisabled } = styles;
+export const Button = (props) => {
+            const { label, 
+                    onPress, 
+                    disabled, 
+                    containerStyle, 
+                    textStyle
+                } = props;
 
     return(
-        <View style={[containerStyleMain, containerStyle]} >
+        <View style={[styles.containerStyleMain, containerStyle]} >
             <TouchableOpacity
                     disabled={disabled}
-                    style={[buttonStyle, disabled && buttonDisabled]}
+                    style={[styles.buttonStyle, disabled && styles.buttonDisabled]}
                     onPress={onPress}
                     >
-                <Text style={[textStyleMain, textStyle]}>{label} </Text>
+                <Text style={[styles.textStyleMain, textStyle]}>{label} </Text>
             </TouchableOpacity>
         </View>
     );
@@ -44,7 +48,8 @@ const styles = StyleSheet.create({
     },
     textStyleMain: {
         fontSize: 25,
-        fontWeight: '500'
+        fontWeight: '500',
+        color: 'rgb(228, 241, 254)'
     },
     buttonDisabled: {
         backgroundColor: 'rgb(164, 168, 173)',
