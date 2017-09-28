@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',   
         alignItems: 'center',
         justifyContent: 'space-around',
-        backgroundColor: 'rgb(210, 221, 239)',
+        backgroundColor: 'rgb(136, 178, 239)',
         height: 80,
         padding: 10,
         ...Platform.select({

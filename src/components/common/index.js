@@ -1,5 +1,5 @@
 export * from './Input';
 export * from './Button';
 export * from './Header';
-export * from './InputQuestion';
+export * from './InputQ';
 export * from './Icon';

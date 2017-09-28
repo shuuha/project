@@ -1,15 +1,16 @@
 import { observable, computed, action } from 'mobx';
 
-import InputFactory from '../factories/InputFactory';
+// import InputFactory from '../factories/InputFactory';
 
 export default class InputStore{        // a single instance of an input    
     @observable value = '';             // input's value
     @observable _isValid;               // input validation
-    @observable isActive;               // 0 - no, 1 - yes, 2 - not sure (question buttons)        
+    // @observable isActive;               // 0 - no, 1 - yes, 2 - not sure (question buttons)        
     
     id = Math.round(Math.random() * 1000);
 
-    constructor(input, type){           //obj, number
+    constructor(input, type, pageStore ){           //obj, numbers
+        this.pageStore = pageStore;
         this.type = type;
 
         this.initInput(input, type);
@@ -36,7 +37,7 @@ export default class InputStore{        // a single instance of an input
                     maxlength, 
                     minlength, 
                     required 
-               }} = input || {};
+                }} = input || {};
 
         this.label = label;
         this.placeholder = placeholder;
@@ -56,20 +57,20 @@ export default class InputStore{        // a single instance of an input
            const char = text.filter(q => this.characters.includes(q.toUpperCase())).length;
            const digit = text.filter(q => this.numbers.includes(q)).length;
            
-           this.isValid = (char == 1 && digit == 1);              
+           this.isValid = (char == 1 && digit == 1);
        }       
     }
 
-    typeQuestion(input){
+    typeQuestion = input => {
         this.text = input.text;
         this.required = input.required;
     }    
 
-    @action
-     handleYesNoPress(e){
-        this.isActive = e;
-        this.isValid = true;
-    }
+    // @action
+    //  handleYesNoPress(e){
+    //     this.isActive = e;
+    //     this.isValid = true;
+    // }
 
 
     @computed
@@ -85,9 +86,19 @@ export default class InputStore{        // a single instance of an input
     }    
 
     @action
-    handleChange(text){
+    handleYesNoPress(history, nextPage, e){
+        this.pageStore.isActive = e;
+        this.pageStore.goForward(history, nextPage)
+    }
+
+    @action
+    handleChange = text =>{
         this.checkValue(text) && (this.value = text);
         if(this.value.length <= (this.minLength || 2 ))
             this.isDigitAndChar(this.value);
+    }
+
+    onSubmitEditing = () => {                    
+        this.appStore.onSubmitEditing()
     }
 }

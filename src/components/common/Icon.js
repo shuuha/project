@@ -9,7 +9,8 @@ export const Icon = (props) => {
             iconName, 
             text, 
             onPress, 
-            isActive 
+            isActive, 
+            id
         } = props;
 
     const { 
@@ -23,12 +24,12 @@ export const Icon = (props) => {
         } = styles;    
 
     const makeActiveStyle = () => {        
-        if(isActive === 0 && text.toLowerCase() === 'no')
+        if(isActive == 0 && id == 0)
             return noActive;
-        else if(isActive === 1 && text.toLowerCase() === 'yes')
+        else if(isActive == 1 && id == 1)
             return yesActive;
-        else if(isActive === 2 && text.includes('sure'))
-            return notSureActive;
+        else if(isActive == 2 && id == 2)
+            return notSureActive;            
     };
 
     return(
@@ -38,7 +39,8 @@ export const Icon = (props) => {
                 onPress={onPress}
                 >
                 <View  >
-                    <IconFont 
+                    <IconFont
+                        id={id}
                         name={iconName} 
                         style={[iconFontStyle, makeActiveStyle()]}
                         />

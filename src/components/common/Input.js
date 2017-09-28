@@ -11,7 +11,8 @@ export const Input = (props) => {
                 onChangeText,
                 placeholderTextColor,
                 secureTextEntry, 
-                style
+                style,
+                onSubmitEditing
             } = props;
         
 
@@ -27,10 +28,11 @@ export const Input = (props) => {
                 onChangeText={onChangeText}
                 placeholderTextColor={placeholderTextColor}
                 secureTextEntry={secureTextEntry}
-                multiline={true}
+                // multiline={true}
                 numberOfLines={3}
                 underlineColorAndroid='rgba(0,0,0,0)'
                 placeholderTextColor='rgb(194, 196, 198)'
+                onSubmitEditing={onSubmitEditing}
                 />
         </View>
     );
@@ -41,8 +43,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',                
         alignItems: 'center',
         justifyContent: 'center',        
-        marginHorizontal: 20,
-        marginTop: 5
+        marginHorizontal: 50,        
+        marginBottom: -5,        
     },
     inputStyle: {
         flex: 1,

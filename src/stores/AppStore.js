@@ -5,7 +5,6 @@ import PageStore from './PageStore';
 export class AppStore{
 
     @observable pages = [];
-
     @observable _lastPage = 0;
     
 
@@ -16,7 +15,7 @@ export class AppStore{
     @action
     loadData(){
         let temp = require('../data/data.json');        
-        this.pages = Object.keys(temp).map(q => new PageStore(temp[q]));
+        this.pages = Object.keys(temp).map(q => new PageStore(temp[q], this));
     }
     
     @computed
@@ -35,17 +34,27 @@ export class AppStore{
         return false;
     }
 
-    goBack(history){        
-        history.goBack();
-        this.lastPage -= 1;
+    goBack(history){
+        if(history.pathname != '/'){
+            history.goBack();
+            this.lastPage -= 1 }
     }
 
-    goForward(history, nextPage){
-        this.lastPage = nextPage.slice(-1)        
-        if(this.lastPage){
-            history.push(nextPage)
-        }
+    goForward(history, nextPage){        
+        this.lastPage = nextPage.slice(-1);
 
-        
+        if(this.lastPage){
+            history.push(nextPage)          
+        }
+    }
+
+     goForwardWithDelay(text, max, history, nextPage, currentPage){         
+         if(text.length === max && this.pages[currentPage].inputsAreValid)
+            setTimeout(()=>{ this.goForward(history, nextPage) }, 2000);
+    }
+
+    onSubmitEditing(history, nextPage, currentPage){
+        if(this.pages[currentPage].inputsAreValid)
+            this.goForward(history, nextPage);
     }
 }

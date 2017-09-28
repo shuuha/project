@@ -1,9 +1,17 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Platform } from 'react-native';
+import {View, 
+        Text, 
+        TouchableOpacity, 
+        StyleSheet, 
+        Platform,
+        Dimensions 
+    } from 'react-native';
 
 import { Icon } from './Icon';
 
-export const InputQuestion = ({text, onPress, isActive}) => {
+const { width } = Dimensions.get('window');
+
+export const InputQ = ({text, onPress, isActive}) => {
 
     return(
         <View style={styles.containerStyleMain} > 
@@ -12,36 +20,39 @@ export const InputQuestion = ({text, onPress, isActive}) => {
             </View>
 
             <View style={styles.iconsContainerStyle} >
-                <Icon                    
+                <Icon    
+                    id={1}                
                     onPress={()=> onPress(1)}                       // 1 because 1 is used to mean true
                     iconName='checkbox-marked-circle-outline'
                     text='Yes'
                     isActive={isActive}
 
                 />
-                <Icon                    
+                <Icon
+                    id={0}         
                     onPress={()=> onPress(0)}                       // 0 used to mean false
                     iconName='close-circle-outline'
                     text='No'
                     isActive={isActive}
                     
                     />
-                <Icon                    
+{/*                <Icon                    
                     onPress={()=> onPress(2)}
                     iconName='help-circle-outline'
                     text='Not sure'
                     isActive={isActive}
-                    />
+                    />*/}
             </View>
         </View>
     );
 }
 
 const styles = StyleSheet.create({
-    containerStyleMain:{        
+    containerStyleMain:{
+        width: width - 20,
         alignItems: 'center',
         justifyContent: 'space-around',        
-        margin: 25,
+        margin: 25,        
         borderColor: 'rgb(43, 45, 45)',        
         borderRadius: 5,        
         ...Platform.select({
@@ -55,25 +66,27 @@ const styles = StyleSheet.create({
             }
         })
     },
-    textContainerStyle: { 
+    textContainerStyle: {        
         flexDirection: 'row',        
         backgroundColor: 'rgb(87, 178, 224)',
-        borderRadius: 3,
-        paddingHorizontal: 10,
-        paddingVertical: 20
+        borderRadius: 3,        
     },
-    textStyle:{
-        flex: 1,
+    textStyle:{        
+        marginVertical: 30,
+        marginHorizontal: 10,
         fontSize: 28,
         textAlign: 'center',
         color: 'rgb(230, 236, 239)',
+        
 
     },    
     iconsContainerStyle:{
+        width: width - 20,
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-around',
-        padding: 15,
+        justifyContent: 'space-around',        
+        marginVertical: 20,
+        paddingHorizontal: 10,     
         ...Platform.select({
             ios: {
                 shadowColor: '#000',

@@ -9,16 +9,17 @@ export default class PageStore{
     _page;
     _nextPage;
 
-    @observable isActive;
+    @observable isActive;    
 
-    constructor({ page, nextPage, header, type, inputs, nextLabel: button }){
+    constructor({ page, nextPage, header, type, inputs, nextLabel: button }, appStore){
+        this.appStore = appStore;
         this._headerTitle = header;
         this._buttonLabel = button;
         this._page = page;
         this._nextPage = nextPage;
         this.type = type;
 
-        this.inputs = Object.keys(inputs).map(q => new InputStore(inputs[q], type));    // array of inputs        
+        this.inputs = Object.keys(inputs).map(q => new InputStore(inputs[q], type, this));    // array of inputs        
     }
 
     get headerTitle(){
@@ -38,6 +39,9 @@ export default class PageStore{
         return this.inputs.every(i => i.isValid);
     }
 
+    get currentPage(){
+        return this._page;
+    }
 
     get page(){
         let retVal = '/';
@@ -47,8 +51,17 @@ export default class PageStore{
     }
 
     get nextPage(){     
-        return `/${this._nextPage}`;         
+        return `/${this._nextPage}`;
+   }
+    
+    goForward(history, nextPage){                       // from appStore
+        this.appStore.goForward(history, nextPage);
     }
+   
+    swipeRightOrLeft(history, nextPage, side){        
+        this.isActive = side;                           // isActive - 1 or 0        
+        this.goForward(history, nextPage);    
+   }
 }
 
 // {header, inputs:[{format: { chars, number, require}}],  nextLabel }
