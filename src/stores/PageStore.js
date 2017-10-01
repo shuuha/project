@@ -39,6 +39,13 @@ export default class PageStore{
         return this.inputs.every(i => i.isValid);
     }
 
+    @computed
+    get inputsValues(){
+        const valuesObj = {};
+            this.inputs.forEach(q =>valuesObj[q.label] = q.inputValue );
+        return valuesObj;
+    }
+
     get currentPage(){
         return this._page;
     }
@@ -54,13 +61,41 @@ export default class PageStore{
         return `/${this._nextPage}`;
    }
     
-    goForward(history, nextPage){                       // from appStore
-        this.appStore.goForward(history, nextPage);
+   get collectPageData(){
+       let questionLabel;
+            this.inputs.forEach(q => questionLabel = q.text );
+
+       const data = {
+           id: this.appStore.id,
+           [questionLabel]: !!this.isActive,
+           page: this._page,
+           ...this.inputsValues
+       }
+        return data;
+    }
+
+    goForwardWithDelay(){         
+         if(this.inputsAreValid)
+            setTimeout(()=>{ this.goForward() }, 2000);
+    }
+    
+    onSubmitEditing(){
+        if(this.inputsAreValid)
+            this.goForward();
+    }
+
+    postData(){        
+       this.appStore.postData(this.collectPageData);
+    }
+
+    goForward(){                       // from appStore
+        this.appStore.goForward();
+        this.postData();
     }
    
-    swipeRightOrLeft(history, nextPage, side){        
+    swipeRightOrLeft(side){
         this.isActive = side;                           // isActive - 1 or 0        
-        this.goForward(history, nextPage);    
+        this.goForward();    
    }
 }
 

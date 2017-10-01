@@ -19,12 +19,12 @@ export default class InputStore{        // a single instance of an input
     initInput(input, type){
         switch(type){
             case 1: 
-            this.typeInput(input);
-            break;
+                this.typeInput(input);
+                break;
 
             case 2:
-            this.typeQuestion(input);
-            break;           
+               this.typeQuestion(input);
+               break;           
         }
     }
 
@@ -85,20 +85,31 @@ export default class InputStore{        // a single instance of an input
         this._isValid = value;
     }    
 
-    @action
-    handleYesNoPress(history, nextPage, e){
-        this.pageStore.isActive = e;
-        this.pageStore.goForward(history, nextPage)
+    @computed
+    get inputValue(){
+        return this.value;
     }
 
     @action
-    handleChange = text =>{
-        this.checkValue(text) && (this.value = text);
+    handleYesNoPress(e){
+        this.pageStore.isActive = e;
+        this.pageStore.goForward()
+    }
+
+    @action
+    handleChange = (text) =>{
+        if(this.checkValue(text))
+            this.value = text;
+
         if(this.value.length <= (this.minLength || 2 ))
             this.isDigitAndChar(this.value);
+
+        if(text.length == this.maxLength){
+            console.log('handlechange');
+                this.pageStore.goForwardWithDelay()}
     }
 
-    onSubmitEditing = () => {                    
-        this.appStore.onSubmitEditing()
+    onSubmitEditing(){                    
+        this.pageStore.onSubmitEditing()
     }
 }

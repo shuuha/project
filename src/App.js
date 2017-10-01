@@ -10,18 +10,17 @@ import { AppStore } from './stores/AppStore';
 const store = new AppStore();
 
 export default class App extends Component{
-    render(){        
+    render(){
+        console.log(store);
         const { pages } = store;
         return(
             <Provider store={store} >
                 <Router>
                     <View>
                         { pages.map(q =>
-                           <Route exact path={q.page} key={q.page} render={(props)=>
-
-                  <Page {...props} page={q}  /> 
-                                    
-                        
+                           <Route exact path={q.page} key={q.page} render={(props)=>{ 
+                               store.history=props.history;                               
+                               return <Page {...props} page={q}  /> }                        
                             }  />)}
                     </View>
                     </Router>

@@ -7,6 +7,7 @@
   "type" : 1,               //  1 - inputs,   2 - yes no questions
   "inputs": {
     "0": {
+      "label": "Sign 1",
       "placeholder": "Input type 1",      
       "format" :  {     
         "characters" : "ABCDEFGHIJKLMNOPQRSTVUWXYZØÆÅ",         // norwegian caracters
@@ -37,7 +38,7 @@
       }
     },
     "1": {
-      "label": "Sign number 1",
+      "label": "Sign number 2",
       "placeholder": "Input Type 1",       
       "format" :  {
         "characters" : "ABCDEFGHIJKLMNOPQRSTVUWXYZØÆÅ",         // norwegian caracters
@@ -48,6 +49,7 @@
         }
       },
     "2": {
+      "label": "Sign number 3",
       "placeholder": "Type in some ",       
       "format" :  {     
         "characters" : "ABCDEFGHIJKLMNOPQRSTVUWXYZØÆÅ",         // norwegian caracters
@@ -58,6 +60,7 @@
         }
       },
           "3": {
+        "label": "Sign number 4",
       "placeholder": "Type in some ",       
       "format" :  {     
         "characters" : "ABCDEFGHIJKLMNOPQRSTVUWXYZØÆÅ",         // norwegian caracters
@@ -100,6 +103,7 @@
   "type" : 1,               //  1 - inputs,   2 - yes no questions
   "inputs": {
     "0": {
+      "label": "Page 3, sign number 1",
       "placeholder": "Input type 1",      
       "format" :  {     
         "characters" : "ABCDEFGHIJKLMNOPQRSTVUWXYZØÆÅ",         // norwegian caracters

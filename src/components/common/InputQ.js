@@ -12,7 +12,7 @@ import { Icon } from './Icon';
 const { width } = Dimensions.get('window');
 
 export const InputQ = ({text, onPress, isActive}) => {
-
+        
     return(
         <View style={styles.containerStyleMain} > 
             <View style={styles.textContainerStyle}  >

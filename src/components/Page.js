@@ -23,62 +23,52 @@ const { width, height } = Dimensions.get('window');
 class Page extends Component{
     componentWillMount(){        
         BackHandler.addEventListener('hardwareBackPress', 
-            ()=> this.props.store.BackHandler(this.props.history));
+            ()=> this.props.store.backHandler());
     }
 
     componentWillUnmount(){
         BackHandler.removeEventListener('hardwareBackPress', 
-            ()=> this.props.store.BackHandler(this.props.history));
+            ()=> this.props.store.backHandler());
     }
 
 
 
     renderInputQuestion(){
-                const { 
-                    history,
-                    page: { 
-                        nextPage, 
-                        inputs, 
-                        isActive 
-                    }} = this.props;
-                
-        
+                const { inputs, isActive } = this.props.page;        
         return(
                 <GestureRecognizer
-                    onSwipeLeft={ ()=> this.props.page.swipeRightOrLeft(history, nextPage, 1) } // 1 for true 
-                    onSwipeRight={()=> this.props.page.swipeRightOrLeft(history, nextPage, 0) }    // 0 for false
+                    onSwipeLeft={ ()=> this.props.page.swipeRightOrLeft(1) } // 1 for true 
+                    onSwipeRight={()=> this.props.page.swipeRightOrLeft(0) }    // 0 for false
                     style={{ height, flex: 1, alignItems: 'center', backgroundColor: 'rgb(255, 255, 255)' }}>            
                 
-                    { inputs.map(i => <InputQ  key={i.id}
+                    { inputs.map(i => <InputQ   key={i.id}
                                                 text={i.text}
-                                                onPress={(e)=> i.handleYesNoPress(history, nextPage, e)}
-                                                isActive={isActive}
+                                                onPress={(e)=> i.handleYesNoPress(e)}
+                                                isActive={isActive}                                                
                                         /> )}
                 </GestureRecognizer>           
         );
     }
 
     renderButton(){
-            const { buttonLabel, inputsAreValid, nextPage } = this.props.page;
+            const { buttonLabel, inputsAreValid } = this.props.page;
             
         return(
             <View>
-                { !this.props.store.lastPage && 
+                { /*!this.props.store.lastPage && 
                     <Text style={{color: 'red', fontSize: 25, alignSelf: 'center' }}> 
-                            This is the last page</Text>}
+                            This is the last page</Text>*/}
 
                 <Button
                     label={buttonLabel}
                     disabled={!inputsAreValid}
-                    onPress={()=>this.props.store.goForward(this.props.history, nextPage)}
+                    onPress={()=>this.props.page.goForward()}
                 />
             </View>
         )
     }   
 
     render(){
-
-
         const { 
             headerTitle, 
             navButtonEnabled, 
@@ -89,7 +79,9 @@ class Page extends Component{
             swipeLeft,
             swipeRight,
             currentPage
-        } = this.props.page;       
+        } = this.props.page;
+
+
 
         return(
             <ScrollView
@@ -105,16 +97,11 @@ class Page extends Component{
                 <Header
                     header={headerTitle}
                     disabled={!navButtonEnabled}
-                    onPress={()=>this.props.store.goBack(this.props.history)}
+                    onPress={()=>this.props.store.goBack()}
                     />
                         
-                        { type === 1 && <InputsText page={this.props.page} 
-                                                history={this.props.history} 
-                                                nextPage={nextPage} 
-                                                currentPage={currentPage}
-                                                />
-                                            }
-
+                        { type === 1 && <InputsText page={this.props.page}                                                
+                                                /> }
                         <KeyboardAvoidingView 
                                 behavior='padding' 
                            > 
