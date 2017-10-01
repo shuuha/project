@@ -7,6 +7,10 @@ import PageStore from './PageStore';
 export class AppStore{
 
     @observable pages = [];
+    @observable loading = false;
+    @observable modalVisible = false;
+    @observable connectionError = false;
+
     // @observable _lastPage = 0;
     currentPage = 1;
     id;
@@ -39,16 +43,35 @@ export class AppStore{
     get uniqueId(){
         return this.id;
     }
+    
+    showModal() {
+        this.modalVisible = true;
+    }
+
+    hideModal(){
+        this.modalVisible = false;
+    }
 
     postData(data){
-        axios.post('http://app.yayintel.com/', data )
-            // .then(res => console.log(res))
-            .catch(err => console.log(err));
+        this.loading = true;
+
+        return axios.post('http://app.yayintel.com/', data )
+            .then(() => {
+                        this.loading = false;
+                        console.log(this.loading);
+                        return this.loading;
+                    })
+            .then(() => this.goForward())
+            .catch(err => {
+                        console.log(err, 'unable to send data')
+                        this.loading = false;
+                        this.showModal();
+                    });
     }
 
     moveBack(){
         this.history.goBack();
-        this.currentPage--;
+        this.currentPage--;        
     }
 
     backHandler(){        
@@ -67,10 +90,10 @@ export class AppStore{
     }
 
     goForward(){
-        if(this.pages.length - 1 >= this.currentPage ){
+        if(this.pages.length - 1 >= this.currentPage){
             const pathname  = this.history.location.pathname.slice(0, 1);
             const path = pathname + this.currentPage++;
             this.history.push(path);            
-        }       
+        }
     }
 }

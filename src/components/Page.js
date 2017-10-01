@@ -12,7 +12,7 @@ import { View,
 import { observer, inject } from 'mobx-react/native';
 import GestureRecognizer, { swipeDirections } from 'react-native-swipe-gestures';
 
-import { Header, Button, InputQ } from './common';
+import { Header, Button, InputQ, Spinner, ModalView } from './common';
 import InputsText from './InputsText';
 
 const { width, height } = Dimensions.get('window');
@@ -59,6 +59,12 @@ class Page extends Component{
                     <Text style={{color: 'red', fontSize: 25, alignSelf: 'center' }}> 
                             This is the last page</Text>*/}
 
+                {
+                    /*!this.props.store.loaded && 
+                        <Text style={{ color: 'red', fontSize: 30, textAlign: 'center' }} 
+                            > Unable to send the data, check your internet connection </Text>*/
+                }
+
                 <Button
                     label={buttonLabel}
                     disabled={!inputsAreValid}
@@ -81,9 +87,11 @@ class Page extends Component{
             currentPage
         } = this.props.page;
 
-
-
+        const { loading, modalVisible } = this.props.store;
+        
         return(
+            loading ? <Spinner /> :
+
             <ScrollView
                 // style={{ height }}
                 contentContainerStyle={{
@@ -98,20 +106,21 @@ class Page extends Component{
                     header={headerTitle}
                     disabled={!navButtonEnabled}
                     onPress={()=>this.props.store.goBack()}
-                    />
+                    />                      
                         
-                        { type === 1 && <InputsText page={this.props.page}                                                
-                                                /> }
-                        <KeyboardAvoidingView 
-                                behavior='padding' 
-                           > 
-                                { type === 1 && this.renderButton() }
+                            { modalVisible && <ModalView /> }
 
-                        </KeyboardAvoidingView>
+                            { type === 1 && <InputsText page={this.props.page}                                                
+                                                    /> }
+                            <KeyboardAvoidingView 
+                                    behavior='padding' 
+                            > 
+                                    { type === 1 && this.renderButton() }
 
-                        { type === 2 && this.renderInputQuestion()}
+                            </KeyboardAvoidingView>
 
-            
+                            { type === 2 && this.renderInputQuestion()}
+                        
         </ScrollView>
         );
     }

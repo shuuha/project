@@ -84,13 +84,12 @@ export default class PageStore{
             this.goForward();
     }
 
-    postData(){        
-       this.appStore.postData(this.collectPageData);
-    }
+    // postData(){        
+    //   return this.appStore.postData(this.collectPageData);
+    // }
 
     goForward(){                       // from appStore
-        this.appStore.goForward();
-        this.postData();
+        this.appStore.postData(this.collectPageData);            
     }
    
     swipeRightOrLeft(side){
