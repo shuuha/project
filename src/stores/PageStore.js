@@ -41,7 +41,10 @@ export default class PageStore{
 
     @computed
     get inputsValues(){
-        const valuesObj = {};
+        // const values = [];
+        //     values = this.inputs.map(q => ({ label: q.label, value: q.value }) )
+
+            const valuesObj = {};
             this.inputs.forEach(q =>valuesObj[q.label] = q.inputValue );
         return valuesObj;
     }
@@ -67,8 +70,9 @@ export default class PageStore{
 
        const data = {
            id: this.appStore.id,
-           [questionLabel]: !!this.isActive,
            page: this._page,
+        //    inputs: [...this.inputValues],
+           [questionLabel]: !!this.isActive,
            ...this.inputsValues
        }
         return data;
