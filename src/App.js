@@ -3,6 +3,7 @@ import { View, Text } from 'react-native';
 import { NativeRouter as Router, Route } from 'react-router-native';
 import { observer, Provider } from 'mobx-react/native';
 
+import DragAndDrop from './components/DragAndDrop';
 
 import Page from './components/Page';
 import { AppStore } from './stores/AppStore';
@@ -17,7 +18,7 @@ export default class App extends Component{
             <Provider store={store} >
                 <Router>
                     <View>
-                        { pages.map(q =>
+                        { pages.map(q => 
                            <Route exact path={q.page} key={q.page} render={(props)=>{ 
                                store.history=props.history;                               
                                return <Page {...props} page={q}  /> }                        
