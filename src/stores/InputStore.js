@@ -4,17 +4,25 @@ import { observable, computed, action } from 'mobx';
 
 export default class InputStore{        // a single instance of an input    
     @observable value = '';             // input's value
-    @observable _isValid;               // input validation
-    // @observable isActive;               // 0 - no, 1 - yes, 2 - not sure (question buttons)        
+    @observable _isValid;               // input validation    
     
     id = Math.round(Math.random() * 1000);
 
-    constructor(input, type, pageStore ){           //obj, numbers
+    constructor(input, type, pageStore ){           //obj, numbers, store
         this.pageStore = pageStore;
         this.type = type;
+        // this.value = input.value;
+        
 
         this.initInput(input, type);
+
+        this.initInputAsValid();      // set isValid to true when refetching data
     };
+
+    initInputAsValid(){
+        if(this.value)
+            this.isValid = true;
+    }
 
     initInput(input, type){
         switch(type){
@@ -45,9 +53,10 @@ export default class InputStore{        // a single instance of an input
         this.minLength = minlength;
         this.required =  required;
         this.characters =  characters || '';
-        this.numbers = numbers || '';       
+        this.numbers = numbers || '';
+        this.value = input.value;
 
-       this.checkValue = (text) =>{
+        this.checkValue = (text) =>{
             const symbols = (this.characters + ' '|| '') + (this.numbers || '');
             return text.split('').every(s => symbols.includes(s.toUpperCase()));
        }
@@ -58,13 +67,19 @@ export default class InputStore{        // a single instance of an input
            const digit = text.filter(q => this.numbers.includes(q)).length;
            
            this.isValid = (char == 1 && digit == 1);
-       }       
+       }
     }
 
     typeQuestion = input => {
-        this.text = input.text;
+        this.label = input.label;
+        this.value = input.value;
         this.required = input.required;
-    }    
+
+    this.swipeRightOrLeft = (side) => {                 // side - true or false
+        this.value = side;              
+        this.pageStore.goForward();
+        }
+    }
 
     // @action
     //  handleYesNoPress(e){
@@ -92,7 +107,8 @@ export default class InputStore{        // a single instance of an input
 
     @action
     handleYesNoPress(e){
-        this.pageStore.isActive = e;
+        this.value = !!e;
+        // this.pageStore.isActive = e;
         this.pageStore.goForward()
     }
 

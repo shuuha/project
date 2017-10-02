@@ -10,26 +10,47 @@ export class AppStore{
     @observable loading = false;
     @observable modalVisible = false;
     @observable connectionError = false;
+    @observable dataLoaded = false;
+
+    URL = "http://app.yayintel.com/";
 
     // @observable _lastPage = 0;
     currentPage = 1;
     id;
     history;
 
-    constructor(){
-        uniqueId((err, id)=>{
-            this.id = id
-        });
-
+    constructor(){        
         this.loadData();
     }
-
-    @action
+    
     loadData(){
-        let temp = require('../data/data.json');        
-        this.pages = Object.keys(temp).map(q => new PageStore(temp[q], this));
-    }   
+        uniqueId()
+            .then(id => this.id = id)
+            .then(() => axios.get(this.URL + this.id)
+            // .then((res)=> console.log(res))
+            .then((res) => this.pages = Object.keys(res.data).map(q => new PageStore(res.data[q], this)))
+            .then(()=> this.dataLoaded = true)
+            .catch(err => console.log(err))
+            )}   
+    
+    postData(data){
+        this.loading = true;
 
+        return axios.post(this.URL, data )
+            .then(() => this.loading = false)
+            .then(() => this.goForward())
+            .catch(err => {
+                        console.log(err, 'unable to send data')
+                        this.loading = false;
+                        this.showModal();
+                    });
+    }
+
+    // @action
+    // loadData(){
+    //     let temp = require('../data/data.json');        
+    //     this.pages = Object.keys(temp).map(q => new PageStore(temp[q], this));
+    // }   
 
     @computed
     get lastPage(){
@@ -52,22 +73,6 @@ export class AppStore{
         this.modalVisible = false;
     }
 
-    postData(data){
-        this.loading = true;
-
-        return axios.post('http://app.yayintel.com/', data )
-            .then(() => {
-                        this.loading = false;
-                        console.log(this.loading);
-                        return this.loading;
-                    })
-            .then(() => this.goForward())
-            .catch(err => {
-                        console.log(err, 'unable to send data')
-                        this.loading = false;
-                        this.showModal();
-                    });
-    }
 
     moveBack(){
         this.history.goBack();

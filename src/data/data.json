@@ -8,6 +8,7 @@
   "inputs": {
     "0": {
       "label": "Sign 1",
+      "value": "H1 1234",
       "placeholder": "Input type 1",      
       "format" :  {     
         "characters" : "ABCDEFGHIJKLMNOPQRSTVUWXYZØÆÅ",         // norwegian caracters
@@ -28,6 +29,7 @@
   "inputs": {
     "0": {
       "label": "Sign number 1",
+      "value": "h1 2222",
       "placeholder": "Input type 1",       
       "format" :  {
         "characters" : "ABCDEFGHIJKLMNOPQRSTVUWXYZØÆÅ",         // norwegian caracters
@@ -39,6 +41,7 @@
     },
     "1": {
       "label": "Sign number 2",
+      "value": "",
       "placeholder": "Input Type 1",       
       "format" :  {
         "characters" : "ABCDEFGHIJKLMNOPQRSTVUWXYZØÆÅ",         // norwegian caracters
@@ -50,6 +53,7 @@
       },
     "2": {
       "label": "Sign number 3",
+      "value": "",
       "placeholder": "Type in some ",       
       "format" :  {     
         "characters" : "ABCDEFGHIJKLMNOPQRSTVUWXYZØÆÅ",         // norwegian caracters
@@ -59,27 +63,18 @@
         "required" : false                                   
         }
       },
-          "3": {
+      "3": {
         "label": "Sign number 4",
-      "placeholder": "Type in some ",       
-      "format" :  {     
-        "characters" : "ABCDEFGHIJKLMNOPQRSTVUWXYZØÆÅ",         // norwegian caracters
-        "numbers" : "123456789",                               // numbers        
-        "minlength": 2,
-        "maxlength" : 7,
-        "required" : false                                   
-        }
-      }
-    //     "4": {
-    //   "placeholder": "Type in some interesting stuff",       
-    //   "format" :  {     
-    //     "characters" : "ABCDEFGHIJKLMNOPQRSTVUWXYZØÆÅ",         // norwegian caracters
-    //     "numbers" : "123456789",                               // numbers        
-    //     "minlength": 2,
-    //     "maxlength" : 7,
-    //     "required" : false                                   
-    //     }
-    //   } 
+        "value": "",
+        "placeholder": "Type in some ",       
+        "format" :  {     
+          "characters" : "ABCDEFGHIJKLMNOPQRSTVUWXYZØÆÅ",         // norwegian caracters
+          "numbers" : "123456789",                               // numbers        
+          "minlength": 2,
+          "maxlength" : 7,
+          "required" : false                                   
+          }
+        }    
     }
   },
   "2": { 
@@ -90,7 +85,8 @@
   "type" : 2,
   "inputs": {
     "0": {
-      "text": "Required for this question is true",   // question field      
+      "label": "Required for this question is true",   // question field
+      "value": "",
         "required" : true                                       
       } 
     }
@@ -104,6 +100,7 @@
   "inputs": {
     "0": {
       "label": "Page 3, sign number 1",
+      "value": "",
       "placeholder": "Input type 1",      
       "format" :  {     
         "characters" : "ABCDEFGHIJKLMNOPQRSTVUWXYZØÆÅ",         // norwegian caracters
@@ -123,9 +120,10 @@
   "type" : 2,
   "inputs": {
     "0": {
-      "text": "Required field in this question is false",   // question field      
+      "label": "Required field in this question is false",   // question field
+      "value": "",
         "required" : false                                       
-      } 
+      }
     }
   }
 }

@@ -11,12 +11,12 @@ import { Icon } from './Icon';
 
 const { width } = Dimensions.get('window');
 
-export const InputQ = ({text, onPress, isActive}) => {
+export const InputQ = ({label, onPress, value, onTextPress, inputRef}) => {
         
     return(
-        <View style={styles.containerStyleMain} > 
-            <View style={styles.textContainerStyle}  >
-                <Text style={styles.textStyle} >{text}</Text>
+        <View style={styles.containerStyleMain} ref={inputRef}  > 
+            <View style={styles.textContainerStyle} >
+                <Text style={styles.textStyle} onPress={onTextPress} >{label}</Text>
             </View>
 
             <View style={styles.iconsContainerStyle} >
@@ -25,7 +25,7 @@ export const InputQ = ({text, onPress, isActive}) => {
                     onPress={()=> onPress(1)}                       // 1 because 1 is used to mean true
                     iconName='checkbox-marked-circle-outline'
                     text='Yes'
-                    isActive={isActive}
+                    isActive={value}
 
                 />
                 <Icon
@@ -33,7 +33,7 @@ export const InputQ = ({text, onPress, isActive}) => {
                     onPress={()=> onPress(0)}                       // 0 used to mean false
                     iconName='close-circle-outline'
                     text='No'
-                    isActive={isActive}
+                    isActive={value}
                     
                     />
 {/*                <Icon                    

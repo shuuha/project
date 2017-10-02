@@ -8,9 +8,7 @@ export default class PageStore{
     _buttonLabel;
     _page;
     _nextPage;
-
-    @observable isActive;    
-
+    
     constructor({ page, nextPage, header, type, inputs, nextLabel: button }, appStore){
         this.appStore = appStore;
         this._headerTitle = header;
@@ -41,12 +39,14 @@ export default class PageStore{
 
     @computed
     get inputsValues(){
-        // const values = [];
-        //     values = this.inputs.map(q => ({ label: q.label, value: q.value }) )
+        let values = [];
+            values = this.inputs.map(q => ({label: q.label, value: q.value}) );
+            console.log(values);
+            return values;
 
-            const valuesObj = {};
-            this.inputs.forEach(q =>valuesObj[q.label] = q.inputValue );
-        return valuesObj;
+            // const valuesObj = {};
+            // this.inputs.forEach(q =>valuesObj[q.label] = q.inputValue );
+        // return valuesObj;
     }
 
     get currentPage(){
@@ -64,17 +64,13 @@ export default class PageStore{
         return `/${this._nextPage}`;
    }
     
-   get collectPageData(){
-       let questionLabel;
-            this.inputs.forEach(q => questionLabel = q.text );
-
-       const data = {
-           id: this.appStore.id,
-           page: this._page,
-        //    inputs: [...this.inputValues],
-           [questionLabel]: !!this.isActive,
-           ...this.inputsValues
+   get collectPageData(){                                    // important, need to preserve this format to 
+        const data = {                                       // maintain correct link with the server
+           id: this.appStore.id,                             // number
+           page: this._page,                                 // number
+           inputs: this.inputsValues                         // arr of objs    [{label: value}, {label: value} ]
        }
+       console.log(data);
         return data;
     }
 
@@ -95,11 +91,6 @@ export default class PageStore{
     goForward(){                       // from appStore
         this.appStore.postData(this.collectPageData);            
     }
-   
-    swipeRightOrLeft(side){
-        this.isActive = side;                           // isActive - 1 or 0        
-        this.goForward();    
-   }
 }
 
 // {header, inputs:[{format: { chars, number, require}}],  nextLabel }

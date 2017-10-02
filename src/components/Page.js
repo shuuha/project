@@ -34,19 +34,23 @@ class Page extends Component{
 
 
     renderInputQuestion(){
-                const { inputs, isActive } = this.props.page;        
+                const { inputs, isActive } = this.props.page;
+
         return(
+            inputs.map(i =>
                 <GestureRecognizer
-                    onSwipeLeft={ ()=> this.props.page.swipeRightOrLeft(1) } // 1 for true 
-                    onSwipeRight={()=> this.props.page.swipeRightOrLeft(0) }    // 0 for false
-                    style={{ height, flex: 1, alignItems: 'center', backgroundColor: 'rgb(255, 255, 255)' }}>            
+                    key={i.id}
+                    onSwipeLeft={  ()=> i.swipeRightOrLeft(true) } 
+                    onSwipeRight={ ()=> i.swipeRightOrLeft(false) }
+                    style={{ height, flex: 1, alignItems: 'center', backgroundColor: 'rgb(255, 255, 255)' }}>
                 
-                    { inputs.map(i => <InputQ   key={i.id}
-                                                text={i.text}
-                                                onPress={(e)=> i.handleYesNoPress(e)}
-                                                isActive={isActive}                                                
-                                        /> )}
-                </GestureRecognizer>           
+                     <InputQ   label={i.label}
+                               onPress={(e)=> i.handleYesNoPress(e)}                                                
+                               value={i.value}
+                               inputRef={(el) => this.input = el }
+                               /> 
+                </GestureRecognizer>
+            )
         );
     }
 

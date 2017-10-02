@@ -24,12 +24,12 @@ export const Icon = (props) => {
         } = styles;    
 
     const makeActiveStyle = () => {        
-        if(isActive == 0 && id == 0)
+        if(isActive === false && id == 0)
             return noActive;
-        else if(isActive == 1 && id == 1)
+        else if(isActive === true && id == 1)
             return yesActive;
-        else if(isActive == 2 && id == 2)
-            return notSureActive;            
+        // else if(isActive == 2 && id == 2)
+        //     return notSureActive;            
     };
 
     return(
