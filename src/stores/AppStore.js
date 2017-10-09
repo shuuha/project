@@ -10,7 +10,8 @@ export class AppStore{
     @observable loading = false;
     @observable modalVisible = false;
     @observable connectionError = false;
-    @observable dataLoaded = false;
+    // @observable dataLoaded = false;
+    dataLoaded = true;
 
     URL = "http://app.yayintel.com/";
 
@@ -23,15 +24,15 @@ export class AppStore{
         this.loadData();
     }
     
-    loadData(){
-        uniqueId()
-            .then(id => this.id = id)
-            .then(() => axios.get(this.URL + this.id)
-            // .then((res)=> console.log(res))
-            .then((res) => this.pages = Object.keys(res.data).map(q => new PageStore(res.data[q], this)))
-            .then(()=> this.dataLoaded = true)
-            .catch(err => console.log(err))
-            )}   
+    // loadData(){
+    //     uniqueId()
+    //         .then(id => this.id = id)
+    //         .then(() => axios.get(this.URL + this.id)
+    //         // .then((res)=> console.log(res))
+    //         .then((res) => this.pages = Object.keys(res.data).map(q => new PageStore(res.data[q], this)))
+    //         .then(()=> this.dataLoaded = true)
+    //         .catch(err => console.log(err))
+    //         )}   
     
     postData(data){
         this.loading = true;
@@ -46,11 +47,11 @@ export class AppStore{
                     });
     }
 
-    // @action
-    // loadData(){
-    //     let temp = require('../data/data.json');        
-    //     this.pages = Object.keys(temp).map(q => new PageStore(temp[q], this));
-    // }   
+    @action
+    loadData(){
+        let temp = require('../data/data.json');        
+        this.pages = Object.keys(temp).map(q => new PageStore(temp[q], this));
+    }   
 
     @computed
     get lastPage(){

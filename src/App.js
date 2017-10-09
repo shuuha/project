@@ -3,7 +3,10 @@ import { View, Text, Dimensions } from 'react-native';
 import { NativeRouter as Router, Route } from 'react-router-native';
 import { observer, Provider } from 'mobx-react/native';
 
-import DragAndDrop from './components/DragAndDrop';
+import Drawer from './components/Drawer';
+import { DrawItem } from './components/common';
+import ItemList  from './components/common/drawOnMap/ItemList';
+
 
 import Page from './components/Page';
 import { AppStore } from './stores/AppStore';
@@ -13,10 +16,14 @@ const store = new AppStore();
 @observer
 export default class App extends Component{
 
-    render(){        
-        const { pages, dataLoaded } = store;
-        return(
-            dataLoaded ? 
+    render(){
+        // const { pages, dataLoaded } = store;
+        return(    
+                <Drawer />
+        );
+    
+
+            {/*dataLoaded ? 
                 <Provider store={store} >
                     <Router>
                         <View>
@@ -31,7 +38,7 @@ export default class App extends Component{
 
             <View style={{ height: Dimensions.get('window').height, flex: 1,  justifyContent: 'center', alignItems: 'center'  }}>
                 <Text style={{ fontSize: 25, }}> Loading data... </Text>
-            </View>
-        );
+            </View>*/}
+        // );
     }
 }

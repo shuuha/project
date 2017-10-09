@@ -5,3 +5,6 @@ export * from './InputQ';
 export * from './Icon';
 export * from './Spinner';
 export * from './ModalView';
+export * from './drawOnMap/DrawItem';
+export * from './drawOnMap/MapImage';
+export * from './drawOnMap/ItemList';

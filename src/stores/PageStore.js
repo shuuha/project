@@ -40,13 +40,8 @@ export default class PageStore{
     @computed
     get inputsValues(){
         let values = [];
-            values = this.inputs.map(q => ({label: q.label, value: q.value}) );
-            console.log(values);
-            return values;
-
-            // const valuesObj = {};
-            // this.inputs.forEach(q =>valuesObj[q.label] = q.inputValue );
-        // return valuesObj;
+            values = this.inputs.map(q => ({label: q.label, value: q.value}) );            
+            return values;            
     }
 
     get currentPage(){
@@ -66,11 +61,11 @@ export default class PageStore{
     
    get collectPageData(){                                    // important, need to preserve this format to 
         const data = {                                       // maintain correct link with the server
-           id: this.appStore.id,                             // number
-           page: this._page,                                 // number
-           inputs: this.inputsValues                         // arr of objs    [{label: value}, {label: value} ]
+           id: this.appStore.id,                             // -> number
+           page: this._page,                                 // -> number
+           inputs: this.inputsValues                         // -> arr of objs    [{label: value}, {label: value} ]
        }
-       console.log(data);
+    //    console.log(data);
         return data;
     }
 
@@ -82,11 +77,7 @@ export default class PageStore{
     onSubmitEditing(){
         if(this.inputsAreValid)
             this.goForward();
-    }
-
-    // postData(){        
-    //   return this.appStore.postData(this.collectPageData);
-    // }
+    }    
 
     goForward(){                       // from appStore
         this.appStore.postData(this.collectPageData);            
