@@ -1,5 +1,13 @@
 import React, { Component } from 'react';
-import { View, Text, Dimensions, StyleSheet } from 'react-native';
+import { 
+    View, 
+    Text, 
+    Dimensions, 
+    StyleSheet, 
+    BackHandler, 
+    Image,
+    TouchableOpacity 
+} from 'react-native';
 import { observer } from 'mobx-react';
 
 import {
@@ -15,6 +23,17 @@ export default class Drawer extends Component{
     state = {
         itemListHeight: null
     }    
+
+
+    componentWillMount(){        
+        BackHandler.addEventListener('hardwareBackPress', 
+            ()=> drawStore.backHandler());
+    }
+
+    componentWillUnmount(){
+        BackHandler.removeEventListener('hardwareBackPress', 
+            ()=>drawStore.backHandler());
+    }
 
     getItemListHeight(e){
         console.log(e.nativeEvent);
@@ -32,40 +51,65 @@ export default class Drawer extends Component{
     }
 }
 
-    render(){        
+    render(){
+        console.log(drawStore.mapUri);
+        console.log(this.state.itemListHeight)
         return(
+             
+            <Image
+                style={{
+                backgroundColor: '#ccc',
+                flex: 1,
+                resizeMode:'cover',
+                position: 'absolute',
+                width: '100%',
+                height: '100%',
+                justifyContent: 'center',
+                zIndex: -10
+                }}
+
+                source={{ uri: drawStore.mapUri }}
+            >
         <View style={{ height: Dimensions.get('window').height }} >
-            <View>
+
+            
+            <View style={{ justifyContent: 'center', alignItems: 'center' }} >
                 <ItemList
-                    //  onLayout={this.getItemListHeight.bind(this)} 
-                    //  style={{ height: this.state.itemListHeight }}
+                    //  onLayout={this.getItemListHeight.bind(tshis)} 
+                     style={{ height: this.state.itemListHeight }}
                 />
              </View>
-             
-            <TapGestureHandler
-                onHandlerStateChange={this._onSingleTap}
-            >
-                <View style = {{ flex: 1 }} >
-                { drawStore.dynamicItems.map((q, i)=> 
-                    <DrawItem
-                        key={i}
-                        name={q.name}
-                        isSelected={q.isSelected}
-                        isSelectedOnBoard={q.isSelectedOnBoard}
-                        onBoardSelect={drawStore.onBoardSelect}
-                        x = {q.x}
-                        y = {q.y}
-                        isCreated = {q.isCreated}
-                        changeCreated={q.changeCreated}
+             {/*<View style={{ height: 30 }} >
+                <TouchableOpacity
+                    onPress={()=> drawStore.showScroll = !drawStore.showScroll}                    
+                >
+                    <Text style={{ fontSize: 30, color: 'white', margin: 15 }} >{ !drawStore.showScroll ? 'show icons' : 'hide icons' }</Text>
+                </TouchableOpacity>
+             </View>*/}
+                <TapGestureHandler
+                    onHandlerStateChange={this._onSingleTap}
+                >
+                    <View                      
+                        style={{ flex: 1 }}
+                    >
+                    { drawStore.dynamicItems.map((q, i)=> 
+                        <DrawItem
+                            key={i}
+                            name={q.name}
+                            isSelected={q.isSelected}
+                            isSelectedOnBoard={q.isSelectedOnBoard}
+                            onBoardSelect={drawStore.onBoardSelect}
+                            x = {q.x}
+                            y = {q.y}
+                            isCreated = {q.isCreated}
+                            changeCreated={q.changeCreated}
 
-                    />
-                )}
-                </View>
-            </TapGestureHandler>
-                <View style={styles.deleteStyle} >
-                    <Text> Delete </Text>
-                </View>
+                        />
+                    )}
+                    </View>
+                </TapGestureHandler>
         </View>
+            </Image>
         );
     }
 }

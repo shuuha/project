@@ -35,14 +35,83 @@ class DrawStore{
     @observable data = [];
     @observable onBoardItems = [];
 
+    @observable showScroll = true;
+
+    //map
+    @observable mapUri;
+    @observable mapType = 'standard';
+    @observable regionLoaded;
+    @observable imageLoaded;
+    @observable region;    
+    
+
+    currentPage = 1;
+    id;
+    history;
+
+
+    
     constructor(data){
         this.data = data.map(q => new Item(q))
     }
+
+    moveBack(){
+        this.history.goBack();
+        this.currentPage--;        
+    }
+
+    backHandler(){        
+        if(this.history.location.pathname != '/'){
+            this.moveBack();
+
+            return true;
+        }
+
+        return false;
+    }
+
+    goBack(){
+        if(this.history.location.pathname != '/')
+            this.moveBack()
+    }
+
+    goForward = () =>{
+        if(this.pages.length - 1 >= this.currentPage){
+            const pathname  = this.history.location.pathname.slice(0, 1);
+            const path = pathname + this.currentPage++;
+            this.history.push(path);            
+        }
+    }
+
+
 
     @computed
     get selectedItemName(){
         return this.data.find(q => q.isSelected).name;
     }
+
+    //map
+    @action
+    takeSnapshot = (map) => {        
+        this.imageLoaded = false;
+        map.takeSnapshot({
+            // width,      // optional, when omitted the view-width is used
+            // height,     // optional, when omitted the view-height is used        
+            // format: 'png',   // image formats: 'png', 'jpg' (default: 'png')
+            // quality: 0.8,    // image quality: 0..1 (only relevant for jpg, default: 1)
+            // result: 'file'   // result types: 'file', 'base64' (default: 'file')
+        })
+            .then((uri) => this.mapUri = uri)
+            .then(() => this.ImageLoaded = true)
+            .then(()=> this.history.push('/1') )
+    }
+
+    //map
+    @action
+    changeMapType(val){        
+        this.mapType = val;
+    }
+    
 
     @action
     boardSelectClear(){

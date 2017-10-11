@@ -159,7 +159,8 @@ export class DrawItem extends React.Component {
     const temp =  { transform: [{ translateX:  this._translateX },
                                 { translateY:   this._translateY },
                                 { perspective: 200 },
-                                { rotate: this._rotateStr }]};
+                                { rotate: this._rotateStr }
+                                ]};
     return temp;  
   }
 
@@ -180,30 +181,21 @@ export class DrawItem extends React.Component {
                 onGestureEvent={this._onDragGestureEvent}
                 onHandlerStateChange={this._onDragHandlerStateChange}
                 >               
-
-                <RotationGestureHandler
-                  // enabled={ enabled }
+                  <RotationGestureHandler
                   onGestureEvent={ this._onRotateGestureEvent  }
                   onHandlerStateChange={ this._onRotateHandlerStateChange }
-                  hitSlop={enabled ? 30 : 0}
-            >
-
-
-
-                  <Animated.View
-                      
+                  hitSlop={20}
+                  
+                >
+                  <Animated.View                      
                       onLayout={this.getItemSize.bind(this)}                      
-                      style={[styles.box, this.animatedTransform(), 
-                        // this.state.showItem ? {opacity: 1} : {opacity: 0}
+                      style={[styles.box, this.animatedTransform(),                         
                         enabled && {zIndex: 300 }, 
-                         ]}
-                         collapsable={false}
+                        ]}
                   >
                     <Item
-                      // styles={styles.box}
                       refView={ el => this.item = el}                      
-                      name={this.props.name}
-                      // isSelected={this.props.isSelected}
+                      name={this.props.name}                      
                       style={ 
                               [{ padding: 20,                                 
                                 borderRadius: 100, 
@@ -215,8 +207,7 @@ export class DrawItem extends React.Component {
                                 alignItems: 'center',
                                 justifyContent: 'center'
                                }, enabled && {borderWidth: 2 }
-                               ]}
-                               
+                               ]}                               
                     />
                   </Animated.View>
                 </RotationGestureHandler>
@@ -226,10 +217,7 @@ export class DrawItem extends React.Component {
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    // flex: 1    
-  },
+const styles = StyleSheet.create({  
   box: {
     justifyContent: 'center',
     alignItems: 'center',
