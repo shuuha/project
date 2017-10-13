@@ -6,7 +6,7 @@ import { observer, inject } from 'mobx-react';
 
 @inject('store')
 @observer
-class InputsText extends Component{
+export class InputsText extends Component{
     // constructor(props){
     //     super(props);
 
@@ -34,5 +34,3 @@ class InputsText extends Component{
         );
     }
 }
-
-export default InputsText;

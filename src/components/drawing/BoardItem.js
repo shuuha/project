@@ -21,18 +21,9 @@ import { USE_NATIVE_DRIVER } from './config';
 import { Item } from './Item';
 
 @observer
-export class DrawItem extends React.Component {
+export class BoardItem extends React.Component {
   constructor(props) {
-    super(props);
-
-    this.state = {
-      showItem: false,
-      top: 0,
-      right: 0,
-      bottom: 0,
-      left: 0,      
-      size: {}
-    }    
+    super(props);  
 
     /* Rotation */
     this._rotate = new Animated.Value(0);
@@ -61,13 +52,18 @@ export class DrawItem extends React.Component {
       ],
       { useNativeDriver: USE_NATIVE_DRIVER }
     );
+
+    //background style
+    this._backgroundStyle = new Animated.Value(0);
+    this.backStyle = this._backgroundStyle.interpolate({
+      inputRange: [0, 100],
+      outputRange: [2, 2],
+    })    
   }
 
-  componentDidMount(){
-    if(!this.props.isCreated){
-      console.log(this.props)
+  componentWillMount(){    
       let { x, y } = this.props;
-      x = x - 140 /2;      
+      x = x - 140 /2;
       y = y - 140 /2;
       this._translateX.setOffset(x);
       this._translateX.setValue(0);
@@ -75,49 +71,26 @@ export class DrawItem extends React.Component {
       this._translateY.setValue(0);
       this._lastOffset.x = x;
       this._lastOffset.y = y;
-      // this.props.changeCreated();
-    }
   }
 
-  _onDragHandlerStateChange = event => {      
-      const { x, y } = event.nativeEvent;      
-      // console.log(x, y);
-      const middleX = this.size.width/2;
-      const xSideLength = middleX/2;
-      const middleY = this.size.height/2;
-      const ySideLength = middleY/2;
-
-      this.setState({
-        top: middleY - ySideLength,
-        bottom: middleY + ySideLength,
-        left: middleX - xSideLength,
-        right: middleX + xSideLength,
-      })
-      const { top, bottom, left, right } = this.state;
-
-      let isOuter = false;
-          isOuter = top > y || bottom < y || left > x || right < x;
-
-          let another = 35 > y || 105 < y || 35 > x || 105 < x; 
-
-      // if(another){
-      // // this._translateX.setOffset(this._lastOffset.x);
-      // this._translateX.setValue(0);
-      // // this._translateY.setOffset(this._lastOffset.y);
-      // this._translateY.setValue(0);
-      // }
-
-      // else 
+  _onDragHandlerStateChange = event => {
+      
+      this.props.store.selectOnBoard(this.props.x);
       if (event.nativeEvent.oldState === State.ACTIVE) {
-      // console.log('inner')
       this._lastOffset.x += event.nativeEvent.translationX;
       this._lastOffset.y += event.nativeEvent.translationY;      
+      this._backgroundStyle.setOffset(this._lastOffset.x);
       this._translateX.setOffset(this._lastOffset.x);
       this._translateX.setValue(0);
       this._translateY.setOffset(this._lastOffset.y);
       this._translateY.setValue(0);
-    }
 
+      const { absoluteX : x, absoluteY : y } = event.nativeEvent;
+      const { pageX : dropX,  pageY  : dropY} = this.props.store.deleteIconPos;
+      if( dropX < x && dropY < y){             
+        this.props.hideItem();
+        }
+    }      
   };
 
   _onRotateHandlerStateChange = event => {    
@@ -128,30 +101,9 @@ export class DrawItem extends React.Component {
     }
   };
 
-    _onSingleTap = event => {
-      // console.log('inner tap');
+    _onSingleTap = event => {            
     if (event.nativeEvent.state === State.ACTIVE) {
-      // this.props.eventId = event.target;      
-      // let { x, y } = event.nativeEvent;      
-      //   this.setState({ showItem: true})
-      //   x = x - this.size.width /2;
-      //   y = y - this.size.height /2;
-      //   this._translateX.setOffset(x);
-      //   this._translateX.setValue(0);
-      //   this._translateY.setOffset(y);
-      //   this._translateY.setValue(0);
-      //   this._lastOffset.x = x;
-      //   this._lastOffset.y = y;
-
-      this.props.onBoardSelect(this.props.x);
-
-
-      // this.item.getNode().measure((x, y, width, height, px, py) => {
-      //               this.itemX = px + width/2;
-      //               this.itemY = py + height/2;
-      //               this.posX = width; this.posY = height;
-      //               console.log(this.itemX, this.itemY);
-      //               console.log(x, y, width, height, px, py)});
+      this.props.store.selectOnBoard(this.props.x);      
     }
   }
 
@@ -166,22 +118,21 @@ export class DrawItem extends React.Component {
 
   getItemSize = (e) => {
     this.size = e.nativeEvent.layout;
-  }
-    
+  }    
 
-  render() {
-    const { isSelectedOnBoard : enabled } = this.props;
+  render() {        
+    const { isSelectedOnBoard : enabled } = this.props;        
         return (
                 <TapGestureHandler
                   onHandlerStateChange={this._onSingleTap}
                 >
 
               <PanGestureHandler                
-                enabled={ enabled }
+                // enabled={ enabled }
                 onGestureEvent={this._onDragGestureEvent}
                 onHandlerStateChange={this._onDragHandlerStateChange}
                 >               
-                  <RotationGestureHandler
+                 <RotationGestureHandler
                   onGestureEvent={ this._onRotateGestureEvent  }
                   onHandlerStateChange={ this._onRotateHandlerStateChange }
                   hitSlop={20}
@@ -189,25 +140,27 @@ export class DrawItem extends React.Component {
                 >
                   <Animated.View                      
                       onLayout={this.getItemSize.bind(this)}                      
-                      style={[styles.box, this.animatedTransform(),                         
-                        enabled && {zIndex: 300 }, 
-                        ]}
-                  >
-                    <Item
-                      refView={ el => this.item = el}                      
-                      name={this.props.name}                      
-                      style={ 
-                              [{ padding: 20,                                 
-                                borderRadius: 100, 
+                      style={[styles.box, this.animatedTransform(), 
+                              { borderRadius: 100, 
                                 borderStyle: 'dashed', 
                                 borderColor: 'blue',
-                                backgroundColor:'transparent',
                                 height: 140,
                                 width: 140,
                                 alignItems: 'center',
                                 justifyContent: 'center'
-                               }, enabled && {borderWidth: 2 }
-                               ]}                               
+                              },
+                        enabled && { 
+                          zIndex: 300,                                 
+                          borderWidth: this.backStyle
+                        },
+                        this.props.isHidden && {display: 'none'} 
+                        ]}
+                  >
+                    <Item
+                      refView={ el => this.item = el}                      
+                      name={this.props.name}
+                      images={this.props.images}
+                      style={{ backgroundColor:'transparent'}}
                     />
                   </Animated.View>
                 </RotationGestureHandler>
@@ -221,10 +174,6 @@ const styles = StyleSheet.create({
   box: {
     justifyContent: 'center',
     alignItems: 'center',
-    position: 'absolute',
-    // width: 80,
-    // height: 110,    
-    // backgroundColor: 'gray',
-    // zIndex: -1,
+    position: 'absolute'    
   }
 });

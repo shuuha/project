@@ -1,130 +1,100 @@
 import React, { Component } from 'react';
-import { 
-    View, 
-    Text, 
-    Dimensions, 
-    StyleSheet, 
-    BackHandler, 
-    Image,
-    TouchableOpacity 
-} from 'react-native';
+import { View, BackHandler } from 'react-native';
+
 import { observer } from 'mobx-react';
+import { TapGestureHandler, State} from 'react-native-gesture-handler';
 
-import {
-  TapGestureHandler,
-  State,
-} from 'react-native-gesture-handler';
+import { ItemList, BoardItem, Icon, ButtonIcon, images } from './drawing';
+import { Img } from './map';
 
-import { DrawItem, MapImage, ItemList, drawStore } from './common/drawOnMap';
+import { drawingStore as store } from '../stores/DrawingStore';
+import { mapStore } from '../stores/MapStore';
 
 @observer
-export default class Drawer extends Component{
-    
-    state = {
-        itemListHeight: null
-    }    
-
-
+export class Drawer extends Component{
     componentWillMount(){        
         BackHandler.addEventListener('hardwareBackPress', 
-            ()=> drawStore.backHandler());
+            ()=> store.backHandler());
     }
 
     componentWillUnmount(){
         BackHandler.removeEventListener('hardwareBackPress', 
-            ()=>drawStore.backHandler());
-    }
-
-    getItemListHeight(e){
-        console.log(e.nativeEvent);
-            this.setState({ itemListHeight: e.nativeEvent.layout.height})
-    }
+            ()=>store.backHandler());
+    }    
 
     _onSingleTap = event => {
-        if (event.nativeEvent.state === State.ACTIVE) {
-            if(drawStore.canDeploy){
+        if (event.nativeEvent.state === State.ACTIVE) {            
+            if(store.canDeploy){
                 let { x, y } = event.nativeEvent;
-                drawStore.addNewItemsOnBoard(x, y);
+                store.addNewItemsOnBoard(x, y);
             }
             else 
-                drawStore.boardSelectClear();
+                store.boardSelectClear();
     }
-}
+}    
 
-    render(){
-        console.log(drawStore.mapUri);
-        console.log(this.state.itemListHeight)
-        return(
-             
-            <Image
-                style={{
-                backgroundColor: '#ccc',
-                flex: 1,
-                resizeMode:'cover',
-                position: 'absolute',
-                width: '100%',
-                height: '100%',
-                justifyContent: 'center',
-                zIndex: -10
-                }}
-
-                source={{ uri: drawStore.mapUri }}
+    render(){        
+        return(        
+        <View style={{ flex: 1 }} >            
+            <TapGestureHandler                    
+                onHandlerStateChange={this._onSingleTap}                    
             >
-        <View style={{ height: Dimensions.get('window').height }} >
+                <View
+                    style={{ flex: 1 }}
+                >
 
-            
-            <View style={{ justifyContent: 'center', alignItems: 'center' }} >
-                <ItemList
-                    //  onLayout={this.getItemListHeight.bind(tshis)} 
-                     style={{ height: this.state.itemListHeight }}
-                />
-             </View>
-             {/*<View style={{ height: 30 }} >
-                <TouchableOpacity
-                    onPress={()=> drawStore.showScroll = !drawStore.showScroll}                    
-                >
-                    <Text style={{ fontSize: 30, color: 'white', margin: 15 }} >{ !drawStore.showScroll ? 'show icons' : 'hide icons' }</Text>
-                </TouchableOpacity>
-             </View>*/}
-                <TapGestureHandler
-                    onHandlerStateChange={this._onSingleTap}
-                >
-                    <View                      
-                        style={{ flex: 1 }}
-                    >
-                    { drawStore.dynamicItems.map((q, i)=> 
-                        <DrawItem
+                <Img source={{ uri: mapStore.mapUri}} />
+
+                    { store.dynamicItems.map((q, i)=> 
+                        <BoardItem
                             key={i}
                             name={q.name}
+                            images={images}
                             isSelected={q.isSelected}
-                            isSelectedOnBoard={q.isSelectedOnBoard}
-                            onBoardSelect={drawStore.onBoardSelect}
+                            isSelectedOnBoard={q.isSelectedOnBoard}                            
+                            changeCreated={q.changeCreated}
+                            hideItem={q.hideItem}
+                            isHidden={q.isHidden}
                             x = {q.x}
                             y = {q.y}
-                            isCreated = {q.isCreated}
-                            changeCreated={q.changeCreated}
-
+                            store={store}                            
                         />
                     )}
-                    </View>
+                </View>
+
                 </TapGestureHandler>
-        </View>
-            </Image>
+               
+                <Icon
+                    refIcon={(el) => this.icon = el}
+                    onLayout={(e)=>store.getDeleteIconPos(this.icon)}
+                    name='delete-forever'
+                    style={{ zIndex: 1}}
+                    iconStyle={{ color: 'rgb(234, 242, 240)' }}
+                />
+
+                { store.showList &&
+                    <View style={{ position: 'absolute', zIndex: 4 }} >
+                        <ItemList 
+                            store={store}
+                            images={images}
+                            onPressIn={store.hideItemsList}
+                        />
+                    </View>
+                }
+                { store.showAddButton &&                     
+                        <ButtonIcon                         
+                            style={{ 
+                                position: 'absolute', 
+                                right: 0, 
+                                zIndex: 1                            
+                            }}
+                            iconStyle={{ color: 'rgb(234, 242, 240)' }}
+                            name='plus-circle'                            
+                            onPressIn={store.showItemsList}
+                        />                    
+                }                
+            </View>            
         );
     }
-}
+}                
 
-const styles = StyleSheet.create({
-    deleteStyle: {
-        position: 'absolute',
-        backgroundColor: 'black',
-        bottom: 0,
-        right: 0,
-        width: 100,
-        height: 100
-    },
-    deleteTextStyle: {
-        color: 'white',
-        fontSize: 25
-    }
-})

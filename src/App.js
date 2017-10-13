@@ -3,14 +3,10 @@ import { View, Text, Dimensions } from 'react-native';
 import { NativeRouter as Router, Route, Switch } from 'react-router-native';
 import { observer, Provider } from 'mobx-react/native';
 
-import Drawer from './components/Drawer';
-import { DrawItem } from './components/common';
-import ItemList  from './components/common/drawOnMap/ItemList';
-import { MapImage } from './components/common';
-import { drawStore } from './components/common/drawOnMap';
-
-import Page from './components/Page';
 import { AppStore } from './stores/AppStore';
+import { mapStore } from './stores/MapStore';
+
+import { Page, Map, Drawer} from './components';
 
 const store = new AppStore();
 
@@ -20,17 +16,20 @@ export default class App extends Component{
     render(){
         // const { pages, dataLoaded } = store;
         return(    
+
              <Router>
                 <Switch>
                     <Route exact path='/' render={(props)=> {
-                                        drawStore.history = props.history;
-                                        return <MapImage {...props} /> }} />
-                    <Route exact path='/1' render={(props)=> {
+                                        mapStore.history = props.history;
+                                        return <Map {...props} /> }} />
+                    <Route exact path='/drawing' render={(props)=> {
                                         // drawStore.history = props.history;
                                         return <Drawer {...props}/> }} />
                 </Switch>
             </Router>
+            
         );
+
     
 
             {/*dataLoaded ? 

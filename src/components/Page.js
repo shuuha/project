@@ -20,7 +20,7 @@ const { width, height } = Dimensions.get('window');
 
 @inject('store')
 @observer
-class Page extends Component{
+export class Page extends Component{
     componentWillMount(){        
         BackHandler.addEventListener('hardwareBackPress', 
             ()=> this.props.store.backHandler());
@@ -129,5 +129,3 @@ class Page extends Component{
         );
     }
 }
-
-export default Page;
