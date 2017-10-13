@@ -16,8 +16,9 @@ export default class App extends Component{
     render(){
         // const { pages, dataLoaded } = store;
         return(    
-
-             <Router>
+                <Drawer />
+        );
+{/*             <Router>
                 <Switch>
                     <Route exact path='/' render={(props)=> {
                                         mapStore.history = props.history;
@@ -26,9 +27,8 @@ export default class App extends Component{
                                         // drawStore.history = props.history;
                                         return <Drawer {...props}/> }} />
                 </Switch>
-            </Router>
+            </Router>*/}
             
-        );
 
     
 

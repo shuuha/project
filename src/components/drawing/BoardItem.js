@@ -6,13 +6,14 @@ import {
   View, 
   Text, 
   Dimensions, 
-  TouchableOpacity  
+  TouchableOpacity
 } from 'react-native';
 
 import {
   PanGestureHandler,  
   RotationGestureHandler,
-  TapGestureHandler,
+  TapGestureHandler, 
+  PinchGestureHandler,
   State,
 } from 'react-native-gesture-handler';
 
@@ -24,6 +25,16 @@ import { Item } from './Item';
 export class BoardItem extends React.Component {
   constructor(props) {
     super(props);  
+
+    /* Pinching */
+    this._baseScale = new Animated.Value(1);
+    this._pinchScale = new Animated.Value(1);
+    this._scale = Animated.multiply(this._baseScale, this._pinchScale);
+    this._lastScale = 1;
+    this._onPinchGestureEvent = Animated.event(
+      [{ nativeEvent: { scale: this._pinchScale } }],
+      { useNativeDriver: USE_NATIVE_DRIVER }
+    );
 
     /* Rotation */
     this._rotate = new Animated.Value(0);
@@ -74,9 +85,10 @@ export class BoardItem extends React.Component {
   }
 
   _onDragHandlerStateChange = event => {
-      
+      console.log('draggin the item');
       this.props.store.selectOnBoard(this.props.x);
       if (event.nativeEvent.oldState === State.ACTIVE) {
+        console.log('draggin the item');
       this._lastOffset.x += event.nativeEvent.translationX;
       this._lastOffset.y += event.nativeEvent.translationY;      
       this._backgroundStyle.setOffset(this._lastOffset.x);
@@ -101,6 +113,16 @@ export class BoardItem extends React.Component {
     }
   };
 
+  _onPinchHandlerStateChange = event => {
+    console.log('pinchhandler');
+    if (event.nativeEvent.oldState === State.ACTIVE) {
+      console.log('pinchhandler triggered');
+      this._lastScale *= event.nativeEvent.scale;
+      this._baseScale.setValue(this._lastScale);
+      this._pinchScale.setValue(1);
+    }
+  };
+
     _onSingleTap = event => {            
     if (event.nativeEvent.state === State.ACTIVE) {
       this.props.store.selectOnBoard(this.props.x);      
@@ -110,6 +132,7 @@ export class BoardItem extends React.Component {
   animatedTransform(){    
     const temp =  { transform: [{ translateX:  this._translateX },
                                 { translateY:   this._translateY },
+                                { scale: this._scale },
                                 { perspective: 200 },
                                 { rotate: this._rotateStr }
                                 ]};
@@ -120,8 +143,9 @@ export class BoardItem extends React.Component {
     this.size = e.nativeEvent.layout;
   }    
 
-  render() {        
-    const { isSelectedOnBoard : enabled } = this.props;        
+  render() {    
+    const { isSelectedOnBoard : enabled, panId, rotateId, pinchId } = this.props;
+    console.log(rotateId, pinchId);
         return (
                 <TapGestureHandler
                   onHandlerStateChange={this._onSingleTap}
@@ -129,15 +153,26 @@ export class BoardItem extends React.Component {
 
               <PanGestureHandler                
                 // enabled={ enabled }
+                id={panId}
                 onGestureEvent={this._onDragGestureEvent}
                 onHandlerStateChange={this._onDragHandlerStateChange}
                 >               
                  <RotationGestureHandler
+                  id={rotateId}
+                  simultaneousHandlers={pinchId}
                   onGestureEvent={ this._onRotateGestureEvent  }
                   onHandlerStateChange={ this._onRotateHandlerStateChange }
                   hitSlop={20}
                   
                 >
+                  <PinchGestureHandler
+                    id={pinchId}
+                    simultaneousHandlers={rotateId}
+                    onGestureEvent={this._onPinchGestureEvent}
+                    onHandlerStateChange={this._onPinchHandlerStateChange}
+                    hitSlop={20}
+                    >
+
                   <Animated.View                      
                       onLayout={this.getItemSize.bind(this)}                      
                       style={[styles.box, this.animatedTransform(), 
@@ -163,6 +198,7 @@ export class BoardItem extends React.Component {
                       style={{ backgroundColor:'transparent'}}
                     />
                   </Animated.View>
+                  </PinchGestureHandler>
                 </RotationGestureHandler>
               </PanGestureHandler>          
             </TapGestureHandler>

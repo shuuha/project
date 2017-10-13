@@ -39,15 +39,15 @@ export class ItemList extends Component{
                                             />
                                         </View>
 
-            { this.props.store.staticItems.map(q => 
+            { this.props.store.staticItems.map(q=> 
                                 <View 
                                     style={{ height: 150, width: 100}}
                                     key={q.id} 
                                 >
 
-                                    <Item 
-                                        key={q.id} 
-                                        style={[{ 
+                                    <Item
+                                        key={q.id}                                        
+                                        style={{ 
                                                 flex: 1,
                                                 justifyContent: 'center',
                                                 alignItems: 'center',
@@ -56,13 +56,9 @@ export class ItemList extends Component{
                                                 borderRadius: 5,
                                                 borderColor: 'blue',
                                                 backgroundColor: 'transparent'
-                                         },
-                                            q.isSelected && {
-                                                borderWidth: 2,
-                                                marginHorizontal: 5
-                                                
-                                        }]}
-                                        onPressIn={(e)=> this.props.store.changeSelected(q.id, e) } 
+                                         }}
+                                         
+                                        onPressIn={()=> this.props.store.changeSelected(q.id) } 
                                         name={q.name}                                        
                                         refView={this.props.refView}
                                         images={this.props.images}

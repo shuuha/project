@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { Animated, StyleSheet, View, Dimensions } from 'react-native';
+import { Animated, StyleSheet, View, Dimensions, Image } from 'react-native';
 
 import {
   PanGestureHandler,
   PinchGestureHandler,
   RotationGestureHandler,
+  TapGestureHandler,
   State,
 } from 'react-native-gesture-handler';
 
@@ -36,15 +37,19 @@ export class Img extends React.Component {
       { useNativeDriver: USE_NATIVE_DRIVER }
     );
 
-    /* Tilt */
-    this._tilt = new Animated.Value(0);
-    this._tiltStr = this._tilt.interpolate({
-      inputRange: [-501, -500, 0, 1],
-      outputRange: ['1rad', '1rad', '0rad', '0rad'],
-    });
-    this._lastTilt = 0;
-    this._onTiltGestureEvent = Animated.event(
-      [{ nativeEvent: { translationY: this._tilt } }],
+    /*draggable*/    
+    this._translateX = new Animated.Value(0);
+    this._translateY = new Animated.Value(0);
+    this._lastOffset = { x: 0, y: 0 };
+    this._onDragGestureEvent = Animated.event(
+      [
+        {
+          nativeEvent: {
+            translationX: this._translateX,
+            translationY: this._translateY            
+          },          
+        },        
+      ],
       { useNativeDriver: USE_NATIVE_DRIVER }
     );
   }
@@ -62,35 +67,63 @@ export class Img extends React.Component {
       this._pinchScale.setValue(1);
     }
   };
-  _onTiltGestureStateChange = event => {
+  _onDragHandlerStateChange = event => {
     if (event.nativeEvent.oldState === State.ACTIVE) {
-      this._lastTilt += event.nativeEvent.translationY;
-      this._tilt.setOffset(this._lastTilt);
-      this._tilt.setValue(0);
+      console.log('dragging');
+      this._lastOffset.x += event.nativeEvent.translationX;
+      this._lastOffset.y += event.nativeEvent.translationY;
+      this._translateX.setOffset(this._lastOffset.x);
+      this._translateX.setValue(0);
+      this._translateY.setOffset(this._lastOffset.y);
+      this._translateY.setValue(0);
     }
   };
-  render() {    
+
+    _onSingleTap = event => {      
+        const { store } = this.props;
+        if (event.nativeEvent.state === State.ACTIVE) {          
+            if(store.canDeploy){
+                let { x, y } = event.nativeEvent;
+                store.addNewItemsOnBoard(x, y);
+            }
+            else 
+                store.boardSelectClear();
+    }
+  }    
+
+  render() {
+    const { panIds, rotateIds, pinchIds } = this.props;
     return (
+      <TapGestureHandler
+        onHandlerStateChange={this._onSingleTap}
+      >
       <PanGestureHandler
         id="image_tilt"
-        onGestureEvent={this._onTiltGestureEvent}
-        onHandlerStateChange={this._onTiltGestureStateChange}
+        onGestureEvent={this._onDragGestureEvent}
+        onHandlerStateChange={this._onDragHandlerStateChange}
+        // waitFor={'image_rotation'}
+        // minPointers={2}
+        // maxPointers={2}
         minDist={10}
-        minPointers={2}
-        maxPointers={2}
-        avgTouches>
+        waitFor={panIds}
+        
+        >
         <RotationGestureHandler
           id="image_rotation"
           simultaneousHandlers="image_pinch"
           onGestureEvent={this._onRotateGestureEvent}
-          onHandlerStateChange={this._onRotateHandlerStateChange}>
+          onHandlerStateChange={this._onRotateHandlerStateChange}
+          waitFor={rotateIds}
+          >
           <PinchGestureHandler
             id="image_pinch"
             simultaneousHandlers="image_rotation"
             onGestureEvent={this._onPinchGestureEvent}
-            onHandlerStateChange={this._onPinchHandlerStateChange}>
+            onHandlerStateChange={this._onPinchHandlerStateChange}
+            waitFor={pinchIds}
+            >
 
-              <Animated.Image
+              <Animated.View
                 style={[
                   styles.imageStyle,
                   {
@@ -98,26 +131,35 @@ export class Img extends React.Component {
                       { perspective: 200 },
                       { scale: this._scale },
                       { rotate: this._rotateStr },
-                      { rotateX: this._tiltStr },
+                      { translateX:  this._translateX },
+                      { translateY:   this._translateY }
                     ],
                   },
                 ]}
-                source={this.props.source}
-              >              
-                {this.props.children}                
-              </Animated.Image>            
+              >
+                  <Image 
+                    style={{ flex: 1, height: null, width: null/*position: 'absolute', height: Dimensions.get('window').height*/ }}
+                    source={this.props.source}              
+                  >                  
+                    {this.props.children}                  
+                  </Image>
+              </Animated.View>            
           </PinchGestureHandler>
         </RotationGestureHandler>
       </PanGestureHandler>
+      </TapGestureHandler>
     );
   }
 }
 
 const styles = StyleSheet.create({  
     imageStyle: {
-        position: 'absolute',
-        height: Dimensions.get('window').height,
-        width: Dimensions.get('window').width,
+        flex: 1,
+        position: 'relative',
+        // height: Dimensions.get('window').height,
+        // width: Dimensions.get('window').width,
         zIndex: -100
+        // width: null,
+        // height: null
   }
 });

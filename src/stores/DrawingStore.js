@@ -6,8 +6,11 @@ class Item{
     @observable isSelectedOnBoard = false;             // selected on the board
     @observable isHidden = false;
     x;
-    y;    
-    id = Math.round(Math.random() * 1000);
+    y;
+    panId;
+    rotateId;
+    pinchId;
+    id = Math.round(Math.random() * 10000);
 
     constructor(name, x, y){
         this.name = name
@@ -37,9 +40,7 @@ class DrawingStore{
     //navigation
     currentPage = 1;
     id;
-    history;
-
-    
+    history;   
 
     @action
     getDeleteIconPos = (newPosition) => {
@@ -63,9 +64,21 @@ class DrawingStore{
         this.showList = false;
         this.showAddButton = true;
     }
+    
+    get panIds(){
+        return this.onBoardItems.map(q => q.panId);                // array of ids for panhandler
+    }
+
+    get rotateIds(){                                                     // array of ids for rotatehandler
+        return this.onBoardItems.map(q => q.rotate);
+    }
+
+    get pinchIds(){ 
+        return this.onBoardItems.map(q => q.pinchId);
+    }
 
     @computed
-    get selectedItemName(){
+    get selectedItemName(){        
         return this.data.find(q => q.isSelected).name;
     }    
 
@@ -75,39 +88,39 @@ class DrawingStore{
             this.onBoardItems.forEach(q => q.isSelectedOnBoard = false);
     }
 
-    @action
-    addNewItemsOnBoard = (x, y) => {
+    random(){
+        return Math.round(Math.random() * 10000);
+    }
 
+    @action
+    addNewItemsOnBoard = (x, y) => {                                //deploy a selected item on the board
         const newItem = new Item(this.selectedItemName, x, y);
+        newItem.panId = this.random() + '';
+        newItem.rotateId = this.random() + '';
+        newItem.pinchId = this.random() + '';
         newItem.isSelectedOnBoard = true;
         this.onBoardItems.push(newItem);        
         this.data.map(q => q.isSelected = false);
     }
 
     @action
-    changeSelected = (id, e) =>{                                     // select only one item in the scroll        
-        console.log(e);
+    changeSelected = (id) =>{                                     // select an item in overlay to deploy on the board        
         this.onBoardItems.forEach(q => q.isSelectedOnBoard = false)
-        this.data = this.data.map(q => {
-            if(q.id === id)
-                q.isSelected = !q.isSelected;                                
-            else 
-                q.isSelected = false;
-            
-            return q;
+        this.data.forEach(q => { if(q.id === id)
+                                    q.isSelected = true;
         });
-        this.hideItemsList();        
+        this.hideItemsList();
     }
 
     @computed
-    get staticItems(){                                      // items in the scroll        
+    get staticItems(){                                      // items in the overlay      
         return this.data;
     }
 
     @computed
-    get dynamicItems(){                                     // items on the board        
-        return this.onBoardItems;                                        // array of obj deployed on the board               
-    }   
+    get dynamicItems(){                                     // items on the board                
+        return this.onBoardItems;                                    // array of obj deployed on the board               
+    }
 
     @computed
     get canDeploy(){        

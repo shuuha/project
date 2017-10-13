@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import { View, BackHandler } from 'react-native';
+import { View, Text, BackHandler } from 'react-native';
 
 import { observer } from 'mobx-react';
-import { TapGestureHandler, State} from 'react-native-gesture-handler';
 
 import { ItemList, BoardItem, Icon, ButtonIcon, images } from './drawing';
 import { Img } from './map';
@@ -22,8 +21,8 @@ export class Drawer extends Component{
             ()=>store.backHandler());
     }    
 
-    _onSingleTap = event => {
-        if (event.nativeEvent.state === State.ACTIVE) {            
+    _onSingleTap = event => {            
+        if (event.nativeEvent.state === State.ACTIVE) {
             if(store.canDeploy){
                 let { x, y } = event.nativeEvent;
                 store.addNewItemsOnBoard(x, y);
@@ -35,34 +34,32 @@ export class Drawer extends Component{
 
     render(){        
         return(        
-        <View style={{ flex: 1 }} >            
-            <TapGestureHandler                    
-                onHandlerStateChange={this._onSingleTap}                    
-            >
-                <View
-                    style={{ flex: 1 }}
-                >
-
-                <Img source={{ uri: mapStore.mapUri}} />
+        <View style={{ flex: 1 }} >
+                <Img 
+                    source={images['node']} 
+                    panIds={store.panIds}
+                    rotateIds={store.rotateIds}
+                    pinchIds={store.pinchIds}
+                    store={store}
+                >               
 
                     { store.dynamicItems.map((q, i)=> 
                         <BoardItem
-                            key={i}
+                            key={i}                            
                             name={q.name}
-                            images={images}
-                            isSelected={q.isSelected}
-                            isSelectedOnBoard={q.isSelectedOnBoard}                            
-                            changeCreated={q.changeCreated}
+                            isSelectedOnBoard={q.isSelectedOnBoard}
                             hideItem={q.hideItem}
                             isHidden={q.isHidden}
+                            panId={q.panId}
+                            rotateId={q.rotateId}
+                            pinchId={q.pinchId}
                             x = {q.x}
                             y = {q.y}
-                            store={store}                            
+                            images={images}                            
+                            store={store}
                         />
                     )}
-                </View>
-
-                </TapGestureHandler>
+                </Img>
                
                 <Icon
                     refIcon={(el) => this.icon = el}
