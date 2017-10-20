@@ -1,10 +1,15 @@
 import { observable, action, computed } from 'mobx';
 import { imageNames } from '../data/imageNames';
+import { Animated } from 'react-native';
 
 class Item{
     @observable isSelected = false;                    // selected in scroll view
     @observable isSelectedOnBoard = false;             // selected on the board
     @observable isHidden = false;
+    translateX;
+    translateY;
+    
+    
     x;
     y;
     panId;
@@ -31,16 +36,17 @@ class DrawingStore{
     @observable deleteIconPos;
     @observable deleteIconStyle;
     @observable showAddButton = true;
-    @observable showList = false;    
+    @observable showList = false;
+    @observable imageScale = 1;    
 
     constructor(data){
         this.data = data.map(q => new Item(q))
     }
-
+ 
     //navigation
     currentPage = 1;
     id;
-    history;   
+    history;
 
     @action
     getDeleteIconPos = (newPosition) => {

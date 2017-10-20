@@ -21,26 +21,33 @@ export class Drawer extends Component{
             ()=>store.backHandler());
     }    
 
-    _onSingleTap = event => {            
+    _onSingleTap = event => {
         if (event.nativeEvent.state === State.ACTIVE) {
             if(store.canDeploy){
                 let { x, y } = event.nativeEvent;
                 store.addNewItemsOnBoard(x, y);
             }
             else 
-                store.boardSelectClear();
+                store.boardSelectClear();                
     }
 }    
-
+ 
     render(){        
         return(        
-        <View style={{ flex: 1 }} >
-                <Img 
-                    source={images['node']} 
-                    panIds={store.panIds}
-                    rotateIds={store.rotateIds}
-                    pinchIds={store.pinchIds}
-                    store={store}
+        <View 
+            removeClippedSubviews={true}
+            style={{ 
+                flex: 1, 
+                height: null, 
+                width: null,
+                backgroundColor: 'rgb(46, 50, 56)'
+
+            }} 
+        
+        >
+                <Img
+                    source={images['node']}
+                    store={store}                    
                 >               
 
                     { store.dynamicItems.map((q, i)=> 
@@ -54,9 +61,11 @@ export class Drawer extends Component{
                             rotateId={q.rotateId}
                             pinchId={q.pinchId}
                             x = {q.x}
-                            y = {q.y}
+                            y = {q.y}                            
                             images={images}                            
                             store={store}
+                            // translateX={translateX}
+                            // translateY={translateY}
                         />
                     )}
                 </Img>

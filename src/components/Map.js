@@ -70,7 +70,7 @@ export class Map extends Component{
                         region={store.region}
                         showsUserLocation={true}
                         mapType={store.selectedMapType}
-                    >
+                    >                    
                     </MapView>
                 </View>                
         );

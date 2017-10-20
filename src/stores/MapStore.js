@@ -8,7 +8,7 @@ class MapStore{
     @observable latitude;
     @observable longitude;
     @observable selectedMapType = 'standard';
-    @observable buttonLabel = 'Switch to hybrid';
+    @observable buttonLabel = 'Switch to hybrid';    
     watchId;
 
     mapUri;
