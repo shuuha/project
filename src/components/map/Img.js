@@ -58,23 +58,28 @@ export class Img extends React.Component {
 
 
   componentWillMount(){
-    console.log('component will mount');    
+    // console.log('component will mount');    
   }
 
-  componentWillUpdate(){
-    console.log('component will update');    
-    this.offsetY = this._lastOffset.y;            // saving the last offset on every update
-    this.offsetX = this._lastOffset.x;
+  componentWillUpdate(){    
+    // console.log('component will update');    
+    this.offsetY = this._lastOffset.y;            // saving the last offset on every update, need an independent variable with that value
+    this.offsetX = this._lastOffset.x;    
   }
 
   componentWillUnmount(){
     this._translateX.removeAllListeners();
-    this._translateY.removeAllListeners();
+    this._translateY.removeAllListeners(); 
     this._onDragGestureEvent.removeListener();
   }
 
 
-  onPinch = () => {                               // activity for zooming in and out till release
+  onPinch = () => {                               // activity for zooming in and out till release 
+    if(!this.props.store.gestureEnabledOnlyInOverlay){
+      this._pinchScale.setValue(0);
+      this._baseScale.setValue(0);      
+    }
+
     const scaleLimit = this._lastScale * this._pinchScale._value;      // pinch_scale_value - how much been zoomed during the gesture
                                                                       //last_scale = the scale used the last time
     if(scaleLimit > 2.5){                         // the max limit for zooming in
@@ -104,7 +109,7 @@ export class Img extends React.Component {
 
   onDrag = () => {                                      // all activity during dragging till release of the panresponder
     const { height, width } = this.item;
-    const dragValueY = this._translateY._value;           //current value on dragging till the release
+    const dragValueY = this._translateY._value;           //current accumulated value on dragging till the release
     const dragValueX = this._translateX._value;
     const scaledHeight = (height * this._lastScale) - height;     // calculating overall size (for instance when zooming out)
     const scaledWidth = (width * this._lastScale) - width;
@@ -112,10 +117,7 @@ export class Img extends React.Component {
     const bottom = -(scaledHeight + this.offsetY) / 2 / this._lastScale;  // to keep track of the zoomed size
     const right = (scaledWidth - this.offsetX) / 2 / this._lastScale;
     const left = -(scaledWidth + this.offsetX) / 2 / this._lastScale;
-
-
-
-
+    
     if(dragValueY + this._lastOffset.y >= top){   // stop moving in a given direction if the end of the object is reached
         this._lastOffset.y = top;                       // refreshing the last coords
         this._translateY.setOffset(this._lastOffset.y);  // refreshing location of the object with new coords
@@ -138,7 +140,7 @@ export class Img extends React.Component {
         this._lastOffset.x = left;
         this._translateX.setOffset(this._lastOffset.x);
         this._translateX.setValue(0);
-    }    
+    }
   }
 
   _onRotateHandlerStateChange = event => {
@@ -154,6 +156,8 @@ export class Img extends React.Component {
       this._baseScale.setValue(this._lastScale);        // setting the value, saving the new zoomed position of the element
       this._pinchScale.setValue(1);                     // reseting the scale value, for future usage 
 
+      this.props.store.translateX = this._lastOffset.x;
+      this.props.store.translateY = this._lastOffset.y;
       this.props.store.imageScale = this._lastScale;    // saving the current value of scale to the store and using it in BoardItem component to make the components move correctly according to zoomed value
       this.forceUpdate();                               // updating after every release on zoom, to track the position of the object (see this.onDrag listener)
     }
@@ -162,12 +166,15 @@ export class Img extends React.Component {
   _onDragHandlerStateChange = event => {                 // activity on drag release
     if (event.nativeEvent.oldState === State.ACTIVE) {  
         this._lastOffset.x += this._translateX._value;   // keeping the value of moved distance
-        this._lastOffset.y += this._translateY._value;     
+        this._lastOffset.y += this._translateY._value;   
+
+        this.props.store.translateX = this._lastOffset.x;
+        this.props.store.translateY = this._lastOffset.y;
+
         this._translateX.setOffset(this._lastOffset.x);  //setting new position for the object with the last coords
         this._translateX.setValue(0);                    //clearing the coords accumulated by values
         this._translateY.setOffset(this._lastOffset.y);
         this._translateY.setValue(0);      
-      
       }
   };
 
@@ -177,20 +184,19 @@ export class Img extends React.Component {
   }
 
     _onSingleTap = event => {      
+      const { x, y } = event.nativeEvent;
+      this.props.store.x = x;
+      this.props.store.y = y;
+
         const { store } = this.props;
-        if (event.nativeEvent.state === State.ACTIVE) {
-            if(store.canDeploy){
-                let { x, y } = event.nativeEvent;
-                store.addNewItemsOnBoard(x, y);
-            }
-            else 
+        if (event.nativeEvent.state === State.ACTIVE) {            
                 store.boardSelectClear();
+                this.props.store.hideDeleteButtonWithDelay();
     }
   }
 
-  render() {
-    console.log(this.props.store.resetImgPosition);
-    const { panIds, rotateIds, pinchIds } = this.props.store;
+  render() {    
+    const { panIds, rotateIds, pinchIds, gestureEnabledOnlyInOverlay } = this.props.store;    
     return (
       <TapGestureHandler
         onHandlerStateChange={this._onSingleTap}
@@ -204,6 +210,7 @@ export class Img extends React.Component {
         // maxPointers={2}
         minDist={10}
         waitFor={[...panIds, ...pinchIds]}
+        enabled={gestureEnabledOnlyInOverlay}
         
         >
 {/*        <RotationGestureHandler
@@ -215,10 +222,9 @@ export class Img extends React.Component {
           >*/}
           <PinchGestureHandler
             id="image_pinch"
-            simultaneousHandlers="image_rotation"
+            // simultaneousHandlers="image_rotation"
             onGestureEvent={this._onPinchGestureEvent}
-            onHandlerStateChange={this._onPinchHandlerStateChange}
-            waitFor={pinchIds}            
+            onHandlerStateChange={this._onPinchHandlerStateChange}            
             >
 
               <Animated.View                
@@ -237,9 +243,10 @@ export class Img extends React.Component {
                   },
                 ]}
               >
-                  <Image 
+                  <Image                    
                     style={{ flex: 1, height: null, width: null, position: 'relative'}}
-                    source={this.props.source}              
+                    source={this.props.source}
+                    // resizeMode='cover'
                   >                  
                     {this.props.children}
                   </Image>
@@ -254,10 +261,7 @@ export class Img extends React.Component {
 
 const styles = StyleSheet.create({  
     imageStyle: {
-        flex: 1,
-        // position: 'absolute',
-        // height: Dimensions.get('window').height,
-        // width: Dimensions.get('window').width,
+        flex: 1,        
         zIndex: -100
       }
 });

@@ -3,27 +3,20 @@ import {
     View, 
     Image,
     Animated,
-    TouchableWithoutFeedback,
-    Dimensions
+    TouchableWithoutFeedback
     } from 'react-native'; 
 
 import { PanGestureHandler, State } from 'react-native-gesture-handler';
 import { USE_NATIVE_DRIVER } from './config';
 
 const BUTTON_PRESS_DELAY = 500;
-const { height, width } = Dimensions.get('window');
 
 export class  Item extends Component{   
     constructor(props){
         super(props);
 
-    
-
-    this.ITEM_HEIGHT = width / 3.5;
-    this.ITEM_WIDTH = width / 3.5;
-
     this.pan = new Animated.ValueXY();
-    this.lastOffset = { x: 0, y: 0}    
+    this.lastOffset = { x: 0, y: 0}
 
     /*draggable*/
     this._onDragGestureEvent = Animated.event(
@@ -49,13 +42,7 @@ export class  Item extends Component{
         if(!this.props.dragActive){
             this.pan.x.setValue(0);
             this.pan.y.setValue(0);
-        }
-
-        const { imageScale: scale } = this.props.store;    
-        const valueX = this.pan.x._value / scale;
-        const valueY = this.pan.y._value / scale;
-        this.pan.x.setValue(valueX);
-        this.pan.y.setValue(valueY);
+        }            
     }
 
     handleLongPress = (e) => {        
@@ -68,20 +55,23 @@ export class  Item extends Component{
             const { absoluteX : x, absoluteY : y } = event.nativeEvent;
             const { pageX : dropX,  pageY  : dropY} = this.props.store.deleteIconPos;
         if( dropX < x && dropY < y){
-            this.props.store.hideAll();            
+            this.props.store.hideAll();
+            this.props.store.setOverlayInitialState();
+            this.props.store.hideOverlay();
         }
         else {
-            const { x, y } = this.props.store;
             this.pan.x.setOffset(this.pan.x._value);
-            const deployX = this.pan.x._value + x;
             this.pan.x.setValue(0);
             this.pan.y.setOffset(this.pan.y._value);
-            const deployY = this.pan.y._value + y;
-            this.pan.y.setValue(0);            
-            this.props.store.addNewItemOnBoard(this.props.name, deployX, deployY);
-        }        
-        this.props.store.setOverlayInitialState();
-        this.props.store.hideOverlay();
+            this.pan.y.setValue(0);
+            console.log(event.nativeEvent);
+            this.item._component.measure((x, y, w, h, px, py)=> {
+                console.log('item', w, h, px, py);
+            this.props.store.addNewItemOnBoard(this.props.name, px, py);
+            this.props.store.setOverlayInitialState();
+            this.props.store.hideOverlay();
+            })
+        }
         this.props.store.hideDeleteButtonWithDelay();
     }
   };
@@ -93,8 +83,8 @@ export class  Item extends Component{
     return temp;
   } 
 
+
     render(){
-        const { imageScale : scale } = this.props.store;
      const {
          onPress,  
          name, 
@@ -106,44 +96,34 @@ export class  Item extends Component{
          imageStyle
          } = this.props;
 
+     
+
         return(
             <PanGestureHandler
                 onGestureEvent={this._onDragGestureEvent}
                 onHandlerStateChange={this._onDragHandlerStateChange}
-            >               
+            >
                 <Animated.View
+                    pointerEvents = 'box-none'
                     ref={ el => this.item = el }
-                    style={[{
-                            backgroundColor: 'transparent',
-                            height: this.ITEM_HEIGHT / scale,
-                            width: this.ITEM_WIDTH / scale,
-                            justifyContent: 'center',
-                            alignItems: 'center',                            
-                            borderStyle: 'dashed',
-                            borderRadius: 100,
-                            borderColor: 'blue',
-                            padding: 2 * scale,
-                            margin: 2 * scale,
-                        }, this.animatedTransform(), 
+                    style={[{ backgroundColor: 'rgb(255, 255, 255)'}, this.animatedTransform(), 
                         this.props.isSelected && { borderWidth: this.backStyle
                             },
                         style]}
                     >
                     <TouchableWithoutFeedback                        
                         onLongPress={this.handleLongPress}
-                        delayLongPress={BUTTON_PRESS_DELAY}
-                    >                    
+                        delayLongPress={BUTTON_PRESS_DELAY}                        
+                    >
                         <Image
+                            // ref={el => this.item = el }
+                            style={[/*{ margin: 10 },*/ imageStyle]}
                             source={images[name]}
-                            style={{
-                                    height: (this.ITEM_HEIGHT - 20) / scale,
-                                    width: (this.ITEM_WIDTH - 20) / scale
-                            }}
-                            resizeMode='contain'
-                        />                    
+                            // resizeMode='center'
+                        />
                     </TouchableWithoutFeedback>
-                </Animated.View>                
-            </PanGestureHandler>        
+                </Animated.View>
+            </PanGestureHandler>
         );
     }
 }

@@ -8,7 +8,8 @@ class MapStore{
     @observable latitude;
     @observable longitude;
     @observable selectedMapType = 'standard';
-    @observable buttonLabel = 'Switch to hybrid';    
+    @observable buttonLabel = 'Switch to hybrid';
+    regionLoaded = false;
     watchId;
 
     mapUri;
@@ -22,20 +23,31 @@ class MapStore{
         return false;
     }
 
+    regionChangeComplete = (e) => {
+        if(e){
+            console.log(e);
+            this.regionLoaded = true;
+        }
+    }
+
     @action
-    takeSnapshot = (map) => {        
-        this.isImageLoading = true;
-        map.takeSnapshot({
-            // width,      // optional, when omitted the view-width is used
-            // height,     // optional, when omitted the view-height is used        
-            format: 'jpg',   // image formats: 'png', 'jpg' (default: 'png')
-            quality: 1,    // image quality: 0..1 (only relevant for jpg, default: 1)
-            // result: 'file'   // result types: 'file', 'base64' (default: 'file')
-        })
-            .then((uri) => this.mapUri = uri)
-            .then(() => this.isImageLoading = false)            
-            .then(()=> this.history.push('/drawing'))
-            .catch((e)=> console.log(e));
+    takeSnapshot = (map) => {
+        if(this.regionLoaded){
+            map.takeSnapshot({
+                // width,      // optional, when omitted the view-width is used
+                // height,     // optional, when omitted the view-height is used        
+                format: 'jpg',   // image formats: 'png', 'jpg' (default: 'png')
+                quality: 1,    // image quality: 0..1 (only relevant for jpg, default: 1)
+                // result: 'file'   // result types: 'file', 'base64' (default: 'file')
+            })
+                .then((uri) => this.mapUri = uri)
+                .then(()=> this.isImageLoading = false)            
+                .then(()=> this.history.push('/drawing'))
+                .catch((e)=> console.log(e));
+        // setTimeout(()=> {
+        // // this.isImageLoading = true;
+        //     }, 1000)
+        }
     }
     
     @action

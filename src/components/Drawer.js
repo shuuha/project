@@ -18,36 +18,23 @@ export class Drawer extends Component{
 
     componentWillUnmount(){
         BackHandler.removeEventListener('hardwareBackPress', 
-            ()=>store.backHandler());
+            ()=>store.backHandler());   
+
     }    
 
-    _onSingleTap = event => {
-        if (event.nativeEvent.state === State.ACTIVE) {
-            if(store.canDeploy){
-                let { x, y } = event.nativeEvent;
-                store.addNewItemsOnBoard(x, y);
-            }
-            else 
-                store.boardSelectClear();                
-    }
-}    
- 
     render(){        
-        return(        
+        return (
         <View 
-            removeClippedSubviews={true}
             style={{ 
                 flex: 1, 
                 height: null, 
                 width: null,
                 backgroundColor: 'rgb(46, 50, 56)'
-
-            }} 
-        
+            }}
         >
                 <Img
                     source={images['node']}
-                    store={store}                    
+                    store={store}
                 >               
 
                     { store.dynamicItems.map((q, i)=> 
@@ -64,29 +51,26 @@ export class Drawer extends Component{
                             y = {q.y}                            
                             images={images}                            
                             store={store}
-                            // translateX={translateX}
-                            // translateY={translateY}
                         />
                     )}
-                </Img>
-               
+                { store.showList &&
+                        <ItemList 
+                            store={store}
+                            images={images}
+                            onPressIn={store.hideOverlay}
+                        />
+                }
+                </Img>                
                 <Icon
                     refIcon={(el) => this.icon = el}
                     onLayout={(e)=>store.getDeleteIconPos(this.icon)}
                     name='delete-forever'
-                    style={{ zIndex: 1}}
+                    style={[{ zIndex: 1},
+                        store.deleteButtonVisible ? { opacity: 1 } : { opacity: 0}
+                        ]}
                     iconStyle={{ color: 'rgb(234, 242, 240)' }}
                 />
 
-                { store.showList &&
-                    <View style={{ position: 'absolute', zIndex: 4 }} >
-                        <ItemList 
-                            store={store}
-                            images={images}
-                            onPressIn={store.hideItemsList}
-                        />
-                    </View>
-                }
                 { store.showAddButton &&                     
                         <ButtonIcon                         
                             style={{ 
@@ -96,8 +80,8 @@ export class Drawer extends Component{
                             }}
                             iconStyle={{ color: 'rgb(234, 242, 240)' }}
                             name='plus-circle'                            
-                            onPressIn={store.showItemsList}
-                        />                    
+                            onPressIn={store.showOverlay}
+                        />
                 }                
             </View>            
         );

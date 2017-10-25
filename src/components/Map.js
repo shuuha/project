@@ -60,7 +60,7 @@ export class Map extends Component{
                         />
                         <Button 
                             label='Make a snapshot'
-                            onPress={()=>store.takeSnapshot(this.map)}                           
+                            onPress={()=>store.takeSnapshot(this.map)}
                         />
                     </View>
                     }
@@ -70,6 +70,7 @@ export class Map extends Component{
                         region={store.region}
                         showsUserLocation={true}
                         mapType={store.selectedMapType}
+                        onRegionChangeComplete={store.regionChangeComplete}
                     >                    
                     </MapView>
                 </View>                

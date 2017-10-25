@@ -8,10 +8,12 @@ export const ButtonIcon = ({
                 name,
                 onPress,
                 iconStyle,
-                onPressIn
+                onPressIn,
+                onLayout
                 }) => {
     return(
            <TouchableOpacity
+                    onLayout={onLayout}
                     style={style}
                     onPress={onPress}
                     onPressIn={onPressIn}

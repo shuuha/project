@@ -1,14 +1,12 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-const UIManager = require('NativeModules').UIManager;
 import { 
   Animated, 
   StyleSheet, 
   View, 
   Text, 
   Dimensions, 
-  TouchableOpacity,
-  findNodeHandle
+  Image  
 } from 'react-native';
 
 import {
@@ -21,7 +19,7 @@ import {
 
 import { USE_NATIVE_DRIVER } from './config';
 
-import { Item } from './Item';
+const { height, width } = Dimensions.get('window');
 
 @observer
 export class BoardItem extends React.Component {
@@ -33,15 +31,18 @@ export class BoardItem extends React.Component {
       lastOffset: { x: 0, y: 0}
     }
 
+    this.ITEM_HEIGHT = width / 3.5;
+    this.ITEM_WIDTH = width / 3.5;
+
     /* Pinching */
-    this._baseScale = new Animated.Value(1);
-    this._pinchScale = new Animated.Value(1);
-    this._scale = Animated.multiply(this._baseScale, this._pinchScale);
-    this._lastScale = 1;
-    this._onPinchGestureEvent = Animated.event(
-      [ { nativeEvent: { scale: this._pinchScale }}],      
-      { useNativeDriver: USE_NATIVE_DRIVER }
-    );
+    // this._baseScale = new Animated.Value(1);
+    // this._pinchScale = new Animated.Value(1);
+    // this._scale = Animated.multiply(this._baseScale, this._pinchScale);
+    // this._lastScale = 1;
+    // this._onPinchGestureEvent = Animated.event(
+    //   [ { nativeEvent: { scale: this._pinchScale }}],      
+    //   { useNativeDriver: USE_NATIVE_DRIVER }
+    // );
 
     /* Rotation */
     this._rotate = new Animated.Value(0);
@@ -66,18 +67,13 @@ export class BoardItem extends React.Component {
         },        
       ],      
       { useNativeDriver: USE_NATIVE_DRIVER,
-        listener: this.handleDrag }
-    );
+        listener: this.handleDrag }    );
 
-    this.translateX = this.state.pan.x.interpolate({
-      inputRange: [0, 100],
-      outputRange: [0, 100]
-    })
 
     //background style
     this._backgroundStyle = new Animated.Value(0);
     this.backStyle = this._backgroundStyle.interpolate({
-      inputRange: [0, 100],
+      inputRange: [0, 1],
       outputRange: [2, 2],
     })
   }
@@ -85,40 +81,45 @@ export class BoardItem extends React.Component {
   handleDrag= (event) => {    
     const { imageScale: scale } = this.props.store;    
     const valueX = this.state.pan.x._value / scale;
-    const valueY = this.state.pan.y._value / scale;    
+    const valueY = this.state.pan.y._value / scale;
     this.state.pan.x.setValue(valueX);
     this.state.pan.y.setValue(valueY);
+
+    if(!this.props.store.deleteButtonVisible)
+      this.props.store.showDeleteButton();    
   }
 
   componentWillMount(){
-      
+      const { imageScale: scale } = this.props.store;
+      this.ITEM_HEIGHT /= scale;
+      this.ITEM_WIDTH /= scale;
       let { x, y } = this.props;
-      x = x - 140 /2;
-      y = y - 140 /2;
+      x -= this.ITEM_HEIGHT / 2;
+      y -= this.ITEM_WIDTH / 2;
       this.state.pan.x.setOffset(x);
       this.state.pan.x.setValue(0);
       this.state.pan.y.setOffset(y);
-      this.state.pan.y.setValue(0);
+      this.state.pan.y.setValue(0);      
       this.state.lastOffset.x = x;
       this.state.lastOffset.y = y;      
   } 
 
+  componentWillUpdate(){    
+  }
+      
+
   componentWillUnmount(){
-    this.state.pan.removeAllListeners();
-    this._onDragGestureEvent.removeListener();    
+    this.state.pan.removeAllListeners();    
   }
 
-  _onDragHandlerStateChange = event => {
-      this.props.store.selectOnBoard(this.props.x);      
+  _onDragHandlerStateChange = event => {      
+      this.props.store.selectOnBoard(this.props.x);
+      
 
-      if (event.nativeEvent.oldState === State.ACTIVE) {
-        
+      if (event.nativeEvent.oldState === State.ACTIVE) {        
       this.state.lastOffset.x += this.state.pan.x._value;
       this.state.lastOffset.y += this.state.pan.y._value;
 
-      // this.state.lastOffset.x += event.nativeEvent.translationX;
-      // this.state.lastOffset.y += event.nativeEvent.translationY;
-          
       this._backgroundStyle.setOffset(this.state.lastOffset.x);
 
       this.state.pan.x.setOffset(this.state.lastOffset.x);
@@ -128,9 +129,10 @@ export class BoardItem extends React.Component {
 
       const { absoluteX : x, absoluteY : y } = event.nativeEvent;
       const { pageX : dropX,  pageY  : dropY} = this.props.store.deleteIconPos;
-      if( dropX < x && dropY < y){             
+      if( dropX < x && dropY < y){
         this.props.hideItem();
-        }
+      }
+      this.props.store.hideDeleteButtonWithDelay();
     }    
   };
 
@@ -157,11 +159,10 @@ export class BoardItem extends React.Component {
     }
   }
 
-  animatedTransform(){
-      
+  animatedTransform(){      
     const temp =  { transform: [{ translateX: this.state.pan.x },
                                 { translateY: this.state.pan.y },
-                                { scale:      this._scale },
+                                // { scale:      this._scale },
                                 { perspective: 200 },
                                 { rotate:     this._rotateStr }
                                 ]};
@@ -169,73 +170,79 @@ export class BoardItem extends React.Component {
   }  
 
 
-  render() {   
+  render() {
+    const { imageScale : scale, gestureEnabledOnlyInOverlay } = this.props.store;
+    const { 
+          isSelectedOnBoard : enabled, 
+          panId, 
+          rotateId, 
+          pinchId, 
+          images,
+          name
+        } = this.props;    
 
-    const { isSelectedOnBoard : enabled, panId, rotateId, pinchId } = this.props;    
         return (
-                <TapGestureHandler
-                  onHandlerStateChange={this._onSingleTap}
-                  
-                >
-                   
-              <PanGestureHandler                
-                // enabled={ enabled }
+              <PanGestureHandler
                 id={panId}
                 onGestureEvent={this._onDragGestureEvent}
                 onHandlerStateChange={this._onDragHandlerStateChange}
+                enabled={gestureEnabledOnlyInOverlay}
                 >               
+                
+                <TapGestureHandler
+                  onHandlerStateChange={this._onSingleTap}                  
+                >
+                   
                  <RotationGestureHandler
                   id={rotateId}
                   simultaneousHandlers={pinchId}
                   onGestureEvent={ this._onRotateGestureEvent  }
                   onHandlerStateChange={ this._onRotateHandlerStateChange }
-                  hitSlop={20}
+                  hitSlop={ enabled ? 20 : 0 }
                   
                 >
-                  <PinchGestureHandler
+{/*                  <PinchGestureHandler
                     id={pinchId}
                     simultaneousHandlers={rotateId}
                     onGestureEvent={this._onPinchGestureEvent}
                     onHandlerStateChange={this._onPinchHandlerStateChange}
                     hitSlop={20}
-                    >
+                  >*/}
 
-                  <Animated.View
-                      style={[styles.box, this.animatedTransform(), 
-                              { borderRadius: 100, 
-                                borderStyle: 'dashed', 
-                                borderColor: 'blue',
-                                height: 140,
-                                width: 140,
-                                alignItems: 'center',
-                                justifyContent: 'center'
-                              },
-                        enabled && { 
-                          zIndex: 300,                                 
+
+                <Animated.View                  
+                  style={[this.animatedTransform(), 
+                            {
+                            position: 'absolute',
+                            backgroundColor: 'transparent',
+                            height: this.ITEM_HEIGHT,
+                            width: this.ITEM_WIDTH,
+                            justifyContent: 'center',
+                            alignItems: 'center',                            
+                            borderStyle: 'dashed',
+                            borderRadius: 100,
+                            borderColor: 'blue',
+                            padding: 5,
+                        },
+                        enabled && {                           
                           borderWidth: this.backStyle
                         },
                         this.props.isHidden && {display: 'none'} 
                         ]}
-                  >                  
-                    <Item
-                      // refView={e => this.item = e}
-                      name={this.props.name}
-                      images={this.props.images}
-                      style={{ backgroundColor:'transparent'}}
-                    />
-                  </Animated.View>
-                  </PinchGestureHandler>
+                    >
+
+                    <Image
+                            source={images[name]}
+                            style={{
+                              flex: 1                                    
+                            }}
+                            resizeMode='contain'
+                        />
+                </Animated.View>
+                  {/*</PinchGestureHandler>*/}
                 </RotationGestureHandler>
-              </PanGestureHandler>          
-            </TapGestureHandler>
+              </TapGestureHandler>
+            </PanGestureHandler>
     );    
   }
 }
-
-const styles = StyleSheet.create({  
-  box: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'absolute'    
-  }
-});

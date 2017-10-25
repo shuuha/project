@@ -6,12 +6,9 @@ class Item{
     @observable isSelected = false;                    // selected in scroll view
     @observable isSelectedOnBoard = false;             // selected on the board
     @observable isHidden = false;
-    translateX;
-    translateY;
-    
-    
-    x;
-    y;
+    @observable dragActive = false;      
+    x = 0;
+    y = 0;
     panId;
     rotateId;
     pinchId;
@@ -31,13 +28,21 @@ class Item{
 }
 
 class DrawingStore{
-    @observable data = [];
-    @observable onBoardItems = [];
+    @observable data = [];                              // objects on the overlay
+    @observable onBoardItems = [];                      // objects on the board
     @observable deleteIconPos;
     @observable deleteIconStyle;
     @observable showAddButton = true;
     @observable showList = false;
-    @observable imageScale = 1;    
+    @observable imageScale = 1;
+    @observable canDrag = false;
+    @observable hideCloseButton = false;
+    @observable deleteButtonVisible = false;
+    @observable gestureEnabledOnlyInOverlay = true;    
+    translateX = 0;
+    translateY = 0;
+    timerId;
+    
 
     constructor(data){
         this.data = data.map(q => new Item(q))
@@ -60,17 +65,31 @@ class DrawingStore{
     }
 
     @action
-    showItemsList = () => {
+    showOverlay = () => {
         this.showList = true;
         this.showAddButton = false;
+        this.gestureEnabledOnlyInOverlay = false;
     }
 
     @action
-    hideItemsList = () => {
+    hideOverlay = () => {        
         this.showList = false;
         this.showAddButton = true;
+        this.gestureEnabledOnlyInOverlay = true;
     }
     
+    @action
+    showDeleteButton = () => {                
+        this.deleteButtonVisible = true;        
+    }
+
+    @action
+    hideDeleteButtonWithDelay = () => {
+        this.timerId = setTimeout(()=> {
+            this.deleteButtonVisible = false;
+        }, 2000)        
+    }
+
     get panIds(){
         return this.onBoardItems.map(q => q.panId);                // array of ids for panhandler
     }
@@ -82,11 +101,7 @@ class DrawingStore{
     get pinchIds(){ 
         return this.onBoardItems.map(q => q.pinchId);
     }
-
-    @computed
-    get selectedItemName(){        
-        return this.data.find(q => q.isSelected).name;
-    }    
+ 
 
     @action
     boardSelectClear = () =>{
@@ -99,39 +114,74 @@ class DrawingStore{
     }
 
     @action
-    addNewItemsOnBoard = (x, y) => {                                //deploy a selected item on the board
-        const newItem = new Item(this.selectedItemName, x, y);
+    addNewItemOnBoard = (name, x, y) => {                                //deploy a selected item on the board        
+        const newItem = new Item(name, x, y);
         newItem.panId = this.random() + '';
         newItem.rotateId = this.random() + '';
         newItem.pinchId = this.random() + '';
         newItem.isSelectedOnBoard = true;
-        this.onBoardItems.push(newItem);        
-        this.data.map(q => q.isSelected = false);
+        this.onBoardItems.push(newItem);
+    }
+
+    disselectAllOnBoard = () => {
+        this.onBoardItems.forEach(q => q.isSelectedOnBoard = false);
     }
 
     @action
     changeSelected = (id) =>{                                     // select an item in overlay to deploy on the board        
-        this.onBoardItems.forEach(q => q.isSelectedOnBoard = false)
+        this.disselectAllOnBoard();
         this.data.forEach(q => { if(q.id === id)
                                     q.isSelected = true;
-        });
-        this.hideItemsList();
+        });        
     }
 
     @computed
-    get staticItems(){                                      // items in the overlay      
+    get anySelected(){
+        return this.data.some(q => q.isHidden)
+    }
+
+    @action
+    selectOne = (id) => {                                  // leave only one selected item on the overlay
+        this.disselectAllOnBoard();
+        this.data.forEach(q => { if(q.id !== id)
+                                    q.isHidden = true;
+                                 else {
+                                    q.dragActive = true;     // and make the element draggable
+                                    q.isSelected = true;
+                                }
+        });
+        this.hideCloseButton = true;
+    }
+
+    @action
+    hideAll = () => {
+        this.data.forEach(q => q.isHidden = true);
+    }
+
+    @action
+    showAll = () => {
+        this.data.forEach(q => q.isHidden = false);
+    }
+
+    @action
+    setOverlayInitialState = () => {
+        this.showAll();
+        this.data.forEach(q => {
+            q.dragActive = false;
+            q.isSelected = false;
+        })
+        this.hideCloseButton = false;
+    }
+
+    @computed
+    get staticItems(){                                      // items in the overlay
         return this.data;
     }
 
     @computed
     get dynamicItems(){                                     // items on the board                
         return this.onBoardItems;                                    // array of obj deployed on the board               
-    }
-
-    @computed
-    get canDeploy(){        
-        return this.data.some(q => q.isSelected);
-    }
+    }    
 
     @action
     selectOnBoard = (id) => {        

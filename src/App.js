@@ -15,10 +15,11 @@ export default class App extends Component{
 
     render(){
         // const { pages, dataLoaded } = store;
-        return(
+        return(          
             <Drawer />
         );
-{/*            <Router>
+
+            {/*<Router>
                 <Switch>
                     <Route exact path='/' render={(props)=> {
                                         mapStore.history = props.history;
