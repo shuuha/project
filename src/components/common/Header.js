@@ -2,13 +2,18 @@ import React, { Component } from 'react';
 import { View, Text, StyleSheet, TouchableWithoutFeedback, Platform } from 'react-native';
 
 import Icon from 'react-native-vector-icons/Ionicons';
+import IconM from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export const Header = (props) => {
     const { header, 
             onForwarPress, 
             onPress, 
             disabled, 
-            style 
+            style,
+            nameLeft,
+            nameRight,
+            sizeRight,
+            onRightIconPress,
         } = props;    
 
     const renderBackBtn = () =>{           
@@ -19,10 +24,10 @@ export const Header = (props) => {
                     style={[style, {flex: 1}]}
                     onPress={onPress}
                     >
-                    <View>
+                    <View>                        
                         <Icon 
                             style={[styles.buttonTextStyle, disabled && styles.buttonDisabled ]}
-                            name='ios-arrow-back-outline'                          
+                            name={nameLeft || 'ios-arrow-back-outline'}
                         />
                     </View>
                 </TouchableWithoutFeedback>
@@ -34,15 +39,25 @@ export const Header = (props) => {
         return(
             <View  >
                 <TouchableWithoutFeedback
-                    disabled={true}
+                    disabled={ !nameRight ? true : false }
                     style={{ flex: 1}}
+                    onPress={onRightIconPress}
                     >
                     <View>
+                        { nameRight === 'delete-forever'
+                            ?                            
+                        <IconM 
+                            style={!nameRight && styles.buttonDisabled}
+                            name={nameRight}
+                            size={sizeRight || 40} 
+                        />
+                            :
                             <Icon 
-                            style={styles.buttonDisabled}
-                            name='ios-arrow-forward'
-                            size={40}                            
-                        />                        
+                            style={!nameRight && styles.buttonDisabled}
+                            name={nameRight || 'ios-arrow-forward'}
+                            size={sizeRight || 40} 
+                        />
+                        }
                     </View>
                 </TouchableWithoutFeedback>
             </View>

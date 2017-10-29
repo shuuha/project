@@ -6,7 +6,7 @@ import { observer, Provider } from 'mobx-react/native';
 import { AppStore } from './stores/AppStore';
 import { mapStore } from './stores/MapStore';
 
-import { Page, Map, Drawer} from './components';
+import { Page, /*Map, Drawer*/ MapAndDraw, Camera } from './components';
 
 const store = new AppStore();
 
@@ -14,24 +14,10 @@ const store = new AppStore();
 export default class App extends Component{
 
     render(){
-        // const { pages, dataLoaded } = store;
-        return(          
-            <Drawer />
-        );
-
-            {/*<Router>
-                <Switch>
-                    <Route exact path='/' render={(props)=> {
-                                        mapStore.history = props.history;
-                                        return <Map {...props} /> }} />
-                    <Route exact path='/drawing' render={(props)=> {
-                                        // drawStore.history = props.history;
-                                        return <Drawer {...props}/> }} />
-                </Switch>
-            </Router>*/}
-            
-
-    
+        // const { pages, dataLoaded } = store;        
+        return(                      
+            <MapAndDraw />
+        );    
 
             {/*dataLoaded ? 
                 <Provider store={store} >

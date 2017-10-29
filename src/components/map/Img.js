@@ -32,11 +32,11 @@ export class Img extends React.Component {
       inputRange: [-100, 100],
       outputRange: ['-100rad', '100rad'],
     });
-    this._lastRotate = 0;
-    this._onRotateGestureEvent = Animated.event(
-      [{ nativeEvent: { rotation: this._rotate } }],
-      { useNativeDriver: USE_NATIVE_DRIVER }
-    );
+    // this._lastRotate = 0;
+    // this._onRotateGestureEvent = Animated.event(
+    //   [{ nativeEvent: { rotation: this._rotate } }],
+    //   { useNativeDriver: USE_NATIVE_DRIVER }
+    // );
 
     /*draggable*/    
     this._translateX = new Animated.Value(0);
@@ -63,8 +63,8 @@ export class Img extends React.Component {
 
   componentWillUpdate(){    
     // console.log('component will update');    
-    this.offsetY = this._lastOffset.y;            // saving the last offset on every update, need an independent variable with that value
-    this.offsetX = this._lastOffset.x;    
+    this.offsetY = this._lastOffset.y / this._lastScale;            // saving the last offset on every update, need an independent variable with that value
+    this.offsetX = this._lastOffset.x / this._lastScale;    
   }
 
   componentWillUnmount(){
@@ -75,18 +75,16 @@ export class Img extends React.Component {
 
 
   onPinch = () => {                               // activity for zooming in and out till release 
-    if(!this.props.store.gestureEnabledOnlyInOverlay){
-      this._pinchScale.setValue(0);
-      this._baseScale.setValue(0);      
-    }
-
+    if(this.props.store.gestureEnabledOnlyInOverlay){   // disabling zooming when overlay is active
+      this._pinchScale.setValue(1);      
+    }    
     const scaleLimit = this._lastScale * this._pinchScale._value;      // pinch_scale_value - how much been zoomed during the gesture
                                                                       //last_scale = the scale used the last time
-    if(scaleLimit > 2.5){                         // the max limit for zooming in
+    if(scaleLimit >= 2.5){                         // the max limit for zooming in; special note: need to pay attention to the order of the code; 
       this._pinchScale.setValue(0);               // setting pinch to 0, stopping from zooming in
       this._baseScale.setValue(0);                // same, as the transform variable is derived from these two (this.scale = Animated.multiply(pinch, baseScale))
-      this.pinchValue = 2.5;                      // variable for setting values from the pincher, need the value in the release phase
-      this._lastScale = 1;                        // variable for tracking the value in the release phase
+      this.pinchValue = 1;                      // variable for setting values from the pincher, need the value in the release phase
+      this._lastScale = 2.5;                        // variable for tracking the value in the release phase
     }
 
     else if(scaleLimit < 1){                      // if zoomed out more than normal size, fit the obj to the window
@@ -104,13 +102,14 @@ export class Img extends React.Component {
 
     else {                                        // if zooming not more than scaleLimit (the first if statement)
       this.pinchValue = this._pinchScale._value;  // accumulation of the pinch values, used in the release phase 
-    }    
+    }
+    
   }
 
   onDrag = () => {                                      // all activity during dragging till release of the panresponder
     const { height, width } = this.item;
-    const dragValueY = this._translateY._value;           //current accumulated value on dragging till the release
-    const dragValueX = this._translateX._value;
+    let dragValueY = this._translateY._value;           //current accumulated value on dragging till the release
+    let dragValueX = this._translateX._value;
     const scaledHeight = (height * this._lastScale) - height;     // calculating overall size (for instance when zooming out)
     const scaledWidth = (width * this._lastScale) - width;
     const top = (scaledHeight - this.offsetY) / 2 / this._lastScale;      // calculating the distance of the sides
@@ -121,49 +120,49 @@ export class Img extends React.Component {
     if(dragValueY + this._lastOffset.y >= top){   // stop moving in a given direction if the end of the object is reached
         this._lastOffset.y = top;                       // refreshing the last coords
         this._translateY.setOffset(this._lastOffset.y);  // refreshing location of the object with new coords
-        this._translateY.setValue(0);                    // turning off dragging
+        this._translateY.setValue(0);                    // turning off dragging    
     }
 
     if(dragValueY + this._lastOffset.y <= bottom){
         this._lastOffset.y = bottom;
         this._translateY.setOffset(this._lastOffset.y);
-        this._translateY.setValue(0);
+        this._translateY.setValue(0);        
     }
 
     if(dragValueX + this._lastOffset.x >= right){
         this._lastOffset.x = right;
         this._translateX.setOffset(this._lastOffset.x);
-        this._translateX.setValue(0);
+        this._translateX.setValue(0);        
     }
 
     if(dragValueX + this._lastOffset.x <= left){
         this._lastOffset.x = left;
         this._translateX.setOffset(this._lastOffset.x);
-        this._translateX.setValue(0);
-    }
+        this._translateX.setValue(0);        
+    }    
   }
 
-  _onRotateHandlerStateChange = event => {
-    if (event.nativeEvent.oldState === State.ACTIVE) {      
-      this._lastRotate += event.nativeEvent.rotation;
-      this._rotate.setOffset(this._lastRotate);
-      this._rotate.setValue(0);      
-    }
-  };
+  // _onRotateHandlerStateChange = event => {
+  //   if (event.nativeEvent.oldState === State.ACTIVE) {      
+  //     this._lastRotate += event.nativeEvent.rotation;
+  //     this._rotate.setOffset(this._lastRotate);
+  //     this._rotate.setValue(0);      
+  //   }
+  // };
   _onPinchHandlerStateChange = event => {               // release phase for pincher
-    if (event.nativeEvent.oldState === State.ACTIVE){     
+    if (event.nativeEvent.oldState === State.ACTIVE && !this.props.store.gestureEnabledOnlyInOverlay){     
       this._lastScale *= this.pinchValue;               // every time after release saving the value of the last scale
       this._baseScale.setValue(this._lastScale);        // setting the value, saving the new zoomed position of the element
       this._pinchScale.setValue(1);                     // reseting the scale value, for future usage 
 
-      this.props.store.translateX = this._lastOffset.x;
+      this.props.store.translateX = this._lastOffset.x; // tracking the lastoffset to use it for Overlay component, to make it always fit the view (screen)
       this.props.store.translateY = this._lastOffset.y;
       this.props.store.imageScale = this._lastScale;    // saving the current value of scale to the store and using it in BoardItem component to make the components move correctly according to zoomed value
       this.forceUpdate();                               // updating after every release on zoom, to track the position of the object (see this.onDrag listener)
     }
   };
 
-  _onDragHandlerStateChange = event => {                 // activity on drag release
+  _onDragHandlerStateChange = event => {                 // activity on drag release      
     if (event.nativeEvent.oldState === State.ACTIVE) {  
         this._lastOffset.x += this._translateX._value;   // keeping the value of moved distance
         this._lastOffset.y += this._translateY._value;   
@@ -195,7 +194,8 @@ export class Img extends React.Component {
     }
   }
 
-  render() {    
+  render() {
+    console.log(this.props.source);
     const { panIds, rotateIds, pinchIds, gestureEnabledOnlyInOverlay } = this.props.store;    
     return (
       <TapGestureHandler
@@ -210,7 +210,7 @@ export class Img extends React.Component {
         // maxPointers={2}
         minDist={10}
         waitFor={[...panIds, ...pinchIds]}
-        enabled={gestureEnabledOnlyInOverlay}
+        enabled={!gestureEnabledOnlyInOverlay}
         
         >
 {/*        <RotationGestureHandler
@@ -236,7 +236,7 @@ export class Img extends React.Component {
                     transform: [
                       { perspective: 1000 },
                       { scale: this._scale },
-                      { rotate: this._rotateStr },
+                      // { rotate: this._rotateStr },
                       { translateX:  this._translateX },
                       { translateY:   this._translateY }
                     ],

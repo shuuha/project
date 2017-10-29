@@ -23,6 +23,7 @@ export class InputsText extends Component{
             <View >
                 {
                     page.inputs.map(i => <Input  key={i.id}
+                        autoCapitalize='characters'
                         placeholder={i.placeholder}
                         value={i.value}
                         label={i.label}

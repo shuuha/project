@@ -53,7 +53,8 @@ export class BoardItem extends React.Component {
     this._lastRotate = 0;
     this._onRotateGestureEvent = Animated.event(
       [{ nativeEvent: { rotation: this._rotate } }],
-      { useNativeDriver: USE_NATIVE_DRIVER }
+      { useNativeDriver: USE_NATIVE_DRIVER,
+        listener: this.handleRotate }
     );
 
     /*draggable*/
@@ -74,20 +75,10 @@ export class BoardItem extends React.Component {
     this._backgroundStyle = new Animated.Value(0);
     this.backStyle = this._backgroundStyle.interpolate({
       inputRange: [0, 1],
-      outputRange: [2, 2],
+      outputRange: [1, 1],
     })
   }
 
-  handleDrag= (event) => {    
-    const { imageScale: scale } = this.props.store;    
-    const valueX = this.state.pan.x._value / scale;
-    const valueY = this.state.pan.y._value / scale;
-    this.state.pan.x.setValue(valueX);
-    this.state.pan.y.setValue(valueY);
-
-    if(!this.props.store.deleteButtonVisible)
-      this.props.store.showDeleteButton();    
-  }
 
   componentWillMount(){
       const { imageScale: scale } = this.props.store;
@@ -104,41 +95,59 @@ export class BoardItem extends React.Component {
       this.state.lastOffset.y = y;      
   } 
 
-  componentWillUpdate(){    
-  }
-      
-
   componentWillUnmount(){
-    this.state.pan.removeAllListeners();    
+    this.state.pan.removeAllListeners();
+    this._rotate.removerAllListeners();
   }
 
-  _onDragHandlerStateChange = event => {      
-      this.props.store.selectOnBoard(this.props.x);
-      
+  handleDrag= (event) => {    
+    const { imageScale: scale } = this.props.store;    
+    const valueX = this.state.pan.x._value / scale;
+    const valueY = this.state.pan.y._value / scale;
+    this.state.pan.x.setValue(valueX);
+    this.state.pan.y.setValue(valueY);
 
-      if (event.nativeEvent.oldState === State.ACTIVE) {        
-      this.state.lastOffset.x += this.state.pan.x._value;
-      this.state.lastOffset.y += this.state.pan.y._value;
+    // if(!this.props.store.deleteButtonVisible){
+    //   this.props.store.showDeleteButton();  
+    // }  
+  }
 
-      this._backgroundStyle.setOffset(this.state.lastOffset.x);
-
-      this.state.pan.x.setOffset(this.state.lastOffset.x);
-      this.state.pan.x.setValue(0);
-      this.state.pan.y.setOffset(this.state.lastOffset.y);
-      this.state.pan.y.setValue(0);
-
-      const { absoluteX : x, absoluteY : y } = event.nativeEvent;
-      const { pageX : dropX,  pageY  : dropY} = this.props.store.deleteIconPos;
-      if( dropX < x && dropY < y){
-        this.props.hideItem();
-      }
-      this.props.store.hideDeleteButtonWithDelay();
+  handleRotate = () => {
+    if(this.props.store.gestureEnabledOnlyInOverlay){
+      this._rotate.setValue(0);
     }    
-  };
+  }
 
-  _onRotateHandlerStateChange = event => {    
+  _onDragHandlerStateChange = event => {
+     this.props.store.showDeleteButton()
+
+    if(!this.props.store.gestureEnabledOnlyInOverlay){
+      this.props.store.selectOnBoard(this.props.x);
+    }
+
+    if (event.nativeEvent.oldState === State.ACTIVE) {        
+    this.state.lastOffset.x += this.state.pan.x._value;
+    this.state.lastOffset.y += this.state.pan.y._value;
+
+    this._backgroundStyle.setOffset(this.state.lastOffset.x);
+
+    this.state.pan.x.setOffset(this.state.lastOffset.x);
+    this.state.pan.x.setValue(0);
+    this.state.pan.y.setOffset(this.state.lastOffset.y);
+    this.state.pan.y.setValue(0);
+
+    const { absoluteX : x, absoluteY : y } = event.nativeEvent;
+    const { pageX : dropX,  pageY  : dropY} = this.props.store.deleteIconPos;
+    if( dropX < x && dropY < y){
+      this.props.hideItem();
+    }
+    this.props.store.hideDeleteButtonWithDelay();
+  }    
+};
+
+  _onRotateHandlerStateChange = event => {
     if (event.nativeEvent.oldState === State.ACTIVE) {
-      this._lastRotate += event.nativeEvent.rotation;      
+      this._lastRotate +=this._rotate._value;      
       this._rotate.setOffset(this._lastRotate);
       this._rotate.setValue(0);
     }
@@ -186,11 +195,12 @@ export class BoardItem extends React.Component {
                 id={panId}
                 onGestureEvent={this._onDragGestureEvent}
                 onHandlerStateChange={this._onDragHandlerStateChange}
-                enabled={gestureEnabledOnlyInOverlay}
+                enabled={!gestureEnabledOnlyInOverlay}
                 >               
                 
                 <TapGestureHandler
-                  onHandlerStateChange={this._onSingleTap}                  
+                  onHandlerStateChange={this._onSingleTap}
+                  enabled={!gestureEnabledOnlyInOverlay}
                 >
                    
                  <RotationGestureHandler

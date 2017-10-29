@@ -1,27 +1,29 @@
 import React, { Component } from 'react';
 import { View, Text, BackHandler } from 'react-native';
 
-import { observer } from 'mobx-react';
+import { observer, inject } from 'mobx-react';
 
-import { ItemList, BoardItem, Icon, ButtonIcon, images } from './drawing';
-import { Img } from './map';
+import { ItemList, BoardItem, Icon, ButtonIcon, images } from '../drawing';
+import { Img } from '../map';
 
-import { drawingStore as store } from '../stores/DrawingStore';
-import { mapStore } from '../stores/MapStore';
-
+@inject( stores => ({
+  'drawingStore': stores.drawingStore,
+  'mapStore': stores.mapStore
+}))
 @observer
-export class Drawer extends Component{
+export class DrawerMain extends Component{
     componentWillMount(){        
         BackHandler.addEventListener('hardwareBackPress', 
-            ()=> store.backHandler());        
+            ()=> this.props.drawingStore.backHandler());        
     }
 
     componentWillUnmount(){
         BackHandler.removeEventListener('hardwareBackPress', 
-            ()=>store.backHandler());
+            ()=>this.props.drawingStore.backHandler());
     }
 
-    render(){        
+    render(){
+        const { drawingStore : store, mapStore } = this.props;        
         return (
         <View 
             style={{ 
@@ -32,7 +34,7 @@ export class Drawer extends Component{
             }}
         >
                 <Img
-                    source={{uri: mapStore.uri}}
+                    source={{uri: mapStore.mapUri}}                    
                     store={store}
                 >               
 

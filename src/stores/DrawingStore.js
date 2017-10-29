@@ -38,7 +38,7 @@ class DrawingStore{
     @observable canDrag = false;
     @observable hideCloseButton = false;
     @observable deleteButtonVisible = false;
-    @observable gestureEnabledOnlyInOverlay = true;    
+    @observable gestureEnabledOnlyInOverlay = false;    
     translateX = 0;
     translateY = 0;
     timerId;
@@ -68,26 +68,27 @@ class DrawingStore{
     showOverlay = () => {
         this.showList = true;
         this.showAddButton = false;
-        this.gestureEnabledOnlyInOverlay = false;
+        this.gestureEnabledOnlyInOverlay = true;
     }
 
     @action
     hideOverlay = () => {        
         this.showList = false;
         this.showAddButton = true;
-        this.gestureEnabledOnlyInOverlay = true;
-    }
-    
-    @action
-    showDeleteButton = () => {                
-        this.deleteButtonVisible = true;        
-    }
+        this.gestureEnabledOnlyInOverlay = false;
+    }    
 
     @action
     hideDeleteButtonWithDelay = () => {
-        this.timerId = setTimeout(()=> {
-            this.deleteButtonVisible = false;
-        }, 2000)        
+        this.timerId = setTimeout(()=> {            
+            this.deleteButtonVisible = false;            
+        }, 2000)
+    }
+
+    @action
+    showDeleteButton = () => {        
+        clearTimeout(this.timerId);
+        this.deleteButtonVisible = true;        
     }
 
     get panIds(){

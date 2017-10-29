@@ -25,14 +25,13 @@ export class ItemList extends Component{
 
     render(){
         const { height, width } = Dimensions.get('window');
-        const { imageScale : scale } = this.props.store;
-        const scaledHeight = height / scale + 20;
+        const { imageScale : scale, translateY, translateX } = this.props.store;
+        const scaledHeight = height / scale + 20;                   // scaled size with some buffer (20)
         const scaledWidth = width / scale + 20;        
-        const heightDiff = (height * scale - height ) / 2 / scale;
+        const heightDiff = (height * scale - height ) / 2 / scale;  //calculate position offsets for overlay to always fit the screen
         const widthDiff = (width * scale - width) / 2 / scale;
-        const bottom = this.props.store.translateY + heightDiff - 10;
-        const right = this.props.store.translateX + widthDiff - 10;
-        console.log(this.state.buttonSize, scaledHeight);
+        const bottom = translateY + heightDiff - 10;
+        const right = translateX + widthDiff - 10;        
         
         return(
             <ScrollView
@@ -47,7 +46,7 @@ export class ItemList extends Component{
                                         height: scaledHeight,
                                         width: scaledWidth,
                                         flexDirection: 'row',
-                                        flexWrap: 'wrap',                                        
+                                        flexWrap: 'wrap',
                                         justifyContent: 'space-around',
                                         alignContent: 'flex-start',
                                         position: 'absolute',
@@ -57,12 +56,14 @@ export class ItemList extends Component{
                                     ]}            
             >
                                         <View 
-                                            onLayout={this.getButtonSize}
+                                            // onLayout={this.getButtonSize}
                                         style={[{ 
-                                                width,                                                 
-                                                position: 'absolute',
-                                                top: 30,
-                                                left: 10
+                                            marginTop: 25,
+                                            marginLeft: 15,
+                                                width: scaledWidth                                           
+                                                // position: 'absolute',
+                                                // top: 30,
+                                                // left: 10
                                             },
                                                 this.props.store.hideCloseButton && 
                                                 { opacity: 0 }]
@@ -72,21 +73,12 @@ export class ItemList extends Component{
                                                 style={{ width: scaledWidth / 3.5 }}
                                                 iconStyle={{ 
                                                     color: 'rgb(247, 247, 247)',
-                                                    fontSize: scaledHeight / 6
+                                                    fontSize: scaledHeight / 6.2
                                                 }}
                                                 onPressIn={this.props.onPressIn}
                                             />                                            
                                         </View>
-
-                                        <View
-                                            style={{ 
-                                                height: this.state.buttonSize.height, 
-                                                width,
-                                                marginBottom: 5 * scale
-                                             }}
-                                        >
-                                        </View>
-
+                                        
             { this.props.store.staticItems.map(q=> 
                                     <Item
                                         store={this.props.store}

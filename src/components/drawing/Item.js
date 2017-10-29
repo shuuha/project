@@ -17,7 +17,11 @@ export class  Item extends Component{
     constructor(props){
         super(props);
 
-    
+    this.state = {
+        iconSize: {},
+        diffX: 0,
+        diffY: 0
+    }   
 
     this.ITEM_HEIGHT = width / 3.5;
     this.ITEM_WIDTH = width / 3.5;
@@ -37,7 +41,7 @@ export class  Item extends Component{
     this._backgroundStyle = new Animated.Value(0);
     this.backStyle = this._backgroundStyle.interpolate({
       inputRange: [0, 100],
-      outputRange: [2, 2],
+      outputRange: [1, 1],
         })
     }
 
@@ -46,42 +50,56 @@ export class  Item extends Component{
     }
 
     handleDrag = () => {        
-        if(!this.props.dragActive){
+        if(!this.props.dragActive){                     // disabling dragging
             this.pan.x.setValue(0);
             this.pan.y.setValue(0);
         }
 
-        const { imageScale: scale } = this.props.store;    
-        const valueX = this.pan.x._value / scale;
+        const { imageScale: scale } = this.props.store;    // scaling the translation values to move plain on any zoomed view
+        const valueX = this.pan.x._value / scale;       // calculating the scaled values
         const valueY = this.pan.y._value / scale;
-        this.pan.x.setValue(valueX);
+        this.pan.x.setValue(valueX);                    // applying the scaled values to be dragged correctly according to the zoom
         this.pan.y.setValue(valueY);
     }
 
-    handleLongPress = (e) => {        
+
+    getIconSize = e => {
+        this.setState({ iconSize : e.nativeEvent.layout});
+    }
+
+    handleLongPress = (e) => {      // calculating the distance needed to substract to get accurate deployment
+        const { locationX, locationY } = e.nativeEvent;             // getting touch coords of the element
+        const iconHalfHeight = this.state.iconSize.height / 2;     
+        const iconHalfWidth = this.state.iconSize.width / 2;
+        this.setState({ 
+            diffY: locationY - iconHalfHeight,              // the difference in offset values
+            diffX: locationX - iconHalfWidth                
+            })        
         this.props.store.selectOne(this.props.id);
     }
 
     _onDragHandlerStateChange = event => {
-        this.props.store.showDeleteButton();
-    if (event.nativeEvent.oldState === State.ACTIVE && this.props.dragActive) {
-            const { absoluteX : x, absoluteY : y } = event.nativeEvent;
+        this.props.store.showDeleteButton();                // while drag is active, show recycle bin icon
+    if (event.nativeEvent.oldState === State.ACTIVE && this.props.dragActive) {    // on release of the drag gesture
+            const { absoluteX : x, absoluteY : y } = event.nativeEvent;         // get the coords by the screen coords, no matter the zoom, coords are taken according to the current view
             const { pageX : dropX,  pageY  : dropY} = this.props.store.deleteIconPos;
-        if( dropX < x && dropY < y){
-            this.props.store.hideAll();            
+        if( dropX < x && dropY < y){                        // if and element is inside the zone
+            this.props.store.hideAll();                 
         }
         else {
-            const { x, y } = this.props.store;
-            this.pan.x.setOffset(this.pan.x._value);
-            const deployX = this.pan.x._value + x;
-            this.pan.x.setValue(0);
+            const { x, y } = this.props.store;              // taking the coords saved by the Tap handler in the Img component (to get the current location of the element in the image)
+            const deployX = this.pan.x._value + x - this.state.diffX;  // calculating the coords of the deployment 
+            const deployY = this.pan.y._value + y - this.state.diffY;  // coords are made of: 1) value that the element have passed since the Tap, 2) the Img's Tap coords; 3) see  this.state.diffY
+
+            this.pan.x.setOffset(this.pan.x._value);            // saving the position of the dragged element
+            this.pan.x.setValue(0);                             // reseting the values
             this.pan.y.setOffset(this.pan.y._value);
-            const deployY = this.pan.y._value + y;
-            this.pan.y.setValue(0);            
-            this.props.store.addNewItemOnBoard(this.props.name, deployX, deployY);
+            this.pan.y.setValue(0);
+
+            this.props.store.addNewItemOnBoard(this.props.name, deployX, deployY); // adding new item on board
         }        
-        this.props.store.setOverlayInitialState();
-        this.props.store.hideOverlay();
+        this.props.store.setOverlayInitialState();                  
+        this.props.store.hideOverlay();                             
         this.props.store.hideDeleteButtonWithDelay();
     }
   };
@@ -129,7 +147,8 @@ export class  Item extends Component{
                             },
                         style]}
                     >
-                    <TouchableWithoutFeedback                        
+                    <TouchableWithoutFeedback
+                        onLayout={this.getIconSize}
                         onLongPress={this.handleLongPress}
                         delayLongPress={BUTTON_PRESS_DELAY}
                     >                    

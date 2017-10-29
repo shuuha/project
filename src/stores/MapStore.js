@@ -24,8 +24,7 @@ class MapStore{
     }
 
     regionChangeComplete = (e) => {
-        if(e){
-            console.log(e);
+        if(e){            
             this.regionLoaded = true;
         }
     }
@@ -40,13 +39,11 @@ class MapStore{
                 quality: 1,    // image quality: 0..1 (only relevant for jpg, default: 1)
                 // result: 'file'   // result types: 'file', 'base64' (default: 'file')
             })
-                .then((uri) => this.mapUri = uri)
-                .then(()=> this.isImageLoading = false)            
-                .then(()=> this.history.push('/drawing'))
+                .then((uri) => this.mapUri = uri)                
+                .then(()=> {this.history.push('/drawing');
+                            console.log('done, pushed to /drawing');
+                            })
                 .catch((e)=> console.log(e));
-        // setTimeout(()=> {
-        // // this.isImageLoading = true;
-        //     }, 1000)
         }
     }
     

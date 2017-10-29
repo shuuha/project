@@ -12,7 +12,8 @@ export const Input = (props) => {
                 placeholderTextColor,
                 secureTextEntry, 
                 style,
-                onSubmitEditing
+                onSubmitEditing,
+                autoCapitalize
             } = props;
         
 
@@ -33,6 +34,7 @@ export const Input = (props) => {
                 underlineColorAndroid='rgba(0,0,0,0)'
                 placeholderTextColor='rgb(194, 196, 198)'
                 onSubmitEditing={onSubmitEditing}
+                autoCapitalize={autoCapitalize}
                 />
         </View>
     );
