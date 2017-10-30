@@ -39,7 +39,7 @@ export class SinglePicture extends Component{
                     header={picStore.cameraStore.title}
                     nameRight='delete-forever'
                     sizeRight={60}
-                    onPress={picStore.cameraStore.goBack}
+                    onPress={()=> this.props.store.goBack()}
                     onRightIconPress={()=> picStore.cameraStore.removeSinglePicture(picStore.id)}
                 />
 

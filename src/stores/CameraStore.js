@@ -34,7 +34,7 @@ class Picture{
             this.changeChecked();
         }
         else {
-            this.cameraStore.history.push(`/camera/${this.id}`)
+            this.cameraStore.history.push(`/camera/${this.id}`) 
         }
     }
 
