@@ -5,6 +5,7 @@ class IntroStore{
     @observable smsCode;
     @observable userInfo = {};
     @observable showSmsInput = false;
+    @observable driverLicense = '';
     moveToNext = false;
     
 
@@ -27,7 +28,7 @@ class IntroStore{
 
     @action
     onSubmitEditingSms = () => {
-        
+
     }
 
 }
