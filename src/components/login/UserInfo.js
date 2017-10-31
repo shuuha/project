@@ -25,7 +25,6 @@ export class UserInfo extends Component{
         </View>
     }
 
-
     render(){
         return(
             <View>

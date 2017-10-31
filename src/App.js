@@ -7,7 +7,7 @@ import { AppStore } from './stores/AppStore';
 import { mapStore } from './stores/MapStore';
 
 import { Page, /*Map, Drawer*/ MapAndDraw, Camera } from './components';
-import { IntroPage } from './components/intro';
+import { Login } from './components/login';
 
 const store = new AppStore();
 
@@ -17,7 +17,7 @@ export default class App extends Component{
     render(){
         // const { pages, dataLoaded } = store;        
         return(                      
-            <IntroPage />
+            <Login />
         );    
 
             {/*dataLoaded ? 

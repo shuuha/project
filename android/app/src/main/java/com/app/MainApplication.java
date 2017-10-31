@@ -14,6 +14,9 @@ import com.facebook.soloader.SoLoader;
 import java.util.Arrays;
 import java.util.List;
 
+import com.magus.fblogin.FacebookLoginPackage; // <--- import
+
+
 public class MainApplication extends Application implements ReactApplication {
 
   private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
@@ -28,7 +31,8 @@ public class MainApplication extends Application implements ReactApplication {
           new MainReactPackage(),
             new RCTCameraPackage(),
             new RNGestureHandlerPackage(),
-            new MapsPackage()
+            new MapsPackage(),
+            new FacebookLoginPackage() // <------ add the package
       );
     }
   };

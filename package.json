@@ -12,6 +12,7 @@
 		"react": "16.0.0-alpha.12",
 		"react-native": "0.48.3",
 		"react-native-camera": "^0.10.0",
+		"react-native-facebook-login": "^1.6.0",
 		"react-native-gesture-handler": "^1.0.0-alpha.25",
 		"react-native-gesture-recognizers": "^0.3.0",
 		"react-native-maps": "^0.16.4",
