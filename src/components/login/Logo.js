@@ -1,22 +1,25 @@
 import React, { Component } from 'react';
-import { Animated, Image, Dimensions, StyleSheet } from 'react-native';
+import { Animated, Image, Dimensions, StyleSheet, View } from 'react-native';
+import { inject } from 'mobx-react';
 
 import { loginStore as store } from '../../stores/LoginStore';
 
 import { images } from './assets';
 
+@inject('store')
 export class Logo extends Component{
 
+    logoAnimation = new Animated.Value(200);    
 
-    logoAnimation = new Animated.Value(0);    
-
-    componentDidMount(){        
-        setTimeout(()=>{
-                    Animated.timing(this.logoAnimation, {
-                    toValue: -200,
-                    duration: 1300
-            }).start()
-        }, 1500)
+    componentDidMount(){
+        if(this.props.store.showLogoAnimation){
+            setTimeout(()=>{
+                        Animated.timing(this.logoAnimation, {
+                        toValue: 0,
+                        duration: 1300
+                }).start(()=> this.props.store.showLogoAnimation = false)
+            }, 1500)
+        }
     }
 
 
@@ -28,9 +31,10 @@ export class Logo extends Component{
 
     render(){
         return(
+
                 <Animated.View
-                    style={[styles.logoView, this.logoTransform() ]}
-                >
+                    style={[styles.logoView, this.props.store.showLogoAnimation && this.logoTransform()  ]}
+                >                
                     <Image
                         style={styles.logo} 
                         source={images['logo']}
@@ -53,12 +57,14 @@ const percentW = (num) => {
 
 const styles = StyleSheet.create({
     logoView:{
-        position: 'absolute',
-        top: '38%',
-        alignSelf: 'center'
+        // position: 'absolute',
+        // top: '38%',
+        // left: '11%'
+        marginTop: percentH(7),
+        marginLeft: percentW(11)        
     },
     logo: {
         height: percentH(22),
-        width: percentW(65)        
+        width: percentW(71)
     },
 });

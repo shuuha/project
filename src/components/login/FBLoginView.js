@@ -6,7 +6,7 @@ export class FBLoginView extends Component {
     render(){
         return (          
             <Icon.Button 
-              onPress={()=> console.log('hi')}
+              onPress={this.props.onPress}
             // onPress={() => {
             //     if(!this.context.isLoggedIn){
             //       this.context.login()

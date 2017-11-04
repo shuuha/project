@@ -6,63 +6,112 @@ import {
     Animated,
     TextInput,
     Dimensions,
-    TouchableOpacity
+    TouchableOpacity,
+    Keyboard,
+    Image
     } from 'react-native';
 
-import Icon from 'react-native-vector-icons/FontAwesome';
-import {FBLogin, FBLoginManager} from 'react-native-facebook-login';
+import { FBLogin, FBLoginManager } from 'react-native-facebook-login';
 import { observer, inject } from 'mobx-react';
-
 import { FBLoginView } from '../login';
+import { images } from './assets';
 
-
+@inject('store')
 @observer
 export class LoginView extends Component{
+    state = {
+        top : percentH(20)
+    }
 
     animatedLogin = new Animated.Value(0);
 
+
     componentDidMount = () => {
+        let ms;
+        if(this.props.store.loginView.isLoginViewInitialRender){
+            ms = 2500;
+        }
+        else {
+            ms = 200;
+        }
         setTimeout(()=>{
             Animated.timing(this.animatedLogin, {
                 toValue: 1,
-                duration: 1000
-            }).start();
-        }, 2200)
+                duration: 500
+            }).start(()=> this.props.store.loginView.isLoginViewInitialRender = false);
+        }, ms)
     }
 
+  componentWillMount () {
+    this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
+    this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
+  }
+
+  componentWillUnmount () {
+    this.keyboardDidShowListener.remove();
+    this.keyboardDidHideListener.remove();
+  }
+
+  _keyboardDidShow = (e) => {
+    // pushing the view up, the overall distance is calculated from : 
+    // currentMarginTop - keyboardHeight + percent of (user field + pass field + login button)
+    this.setState({ top: this.state.top - e.endCoordinates.height + percentH(24)})
+  }
+
+  _keyboardDidHide = () => {
+    this.setState({ top: percentH(20)})
+  }
+
+  login = () => {
+      FBLoginManager.loginWithPermissions(['email', 'user_friends'], (data, error)=>{
+        console.log(data, 'error: ', error)
+    });
+  }
     render(){
+        const { loginView : store } = this.props.store;
         return(
-            <Animated.View style={[styles.container, { opacity: this.animatedLogin }]}>
-                <View style={styles.user} >
-                    <Icon 
-                        name='user'
-                        size={percentH(7-2)}
-                        style={{ color: 'rgb(255, 255, 255)', marginRight: 5 }}
+            <Animated.View             
+                style={[
+                    styles.container, { marginTop: this.state.top },
+                    {opacity: this.animatedLogin } 
+                ]}
+            >            
+
+                <View style={[styles.user]} >
+                    <Image 
+                        style={{ height: percentH(5), width: percentH(5), marginRight: 5}}
+                        source={images['mail']}
+                        resizeMode='contain'
                     />
                     <TextInput 
+                        value={store.email}
+                        onChangeText={store.onChangeEmail}
                         placeholder='email@email.com'
+                        keyboardType='email-address'
                         underlineColorAndroid='transparent'
-                        style={styles.userText}
-                        placeholderTextColor='rgb(201, 202, 204)' 
+                        style={[styles.userText, store.email && { fontWeight: '500' }]}
+                        placeholderTextColor='rgb(206, 206, 206)'
                     />
                 </View>
             
                 <View style={styles.pass} >
-                    <Icon 
-                        name='lock'
-                        size={percentH(7-2)}
-                        style={{ color: 'rgb(255, 255, 255)', marginRight: 5 }}
+                    <Image 
+                        style={{ height: percentH(5), width: percentH(5), marginRight: 5}}
+                        source={images['lock']}
+                        resizeMode='contain'
                     />
                     <TextInput 
-                        placeholder='password'
+                        value={store.pass}
+                        onChangeText={store.onChangePass}
+                        placeholder='Password'
                         secureTextEntry
                         underlineColorAndroid='transparent'
                         style={styles.userText}
-                        placeholderTextColor='rgb(201, 202, 204)' 
+                        placeholderTextColor='rgb(206, 206, 206)' 
                     />
                 </View>
-                
-                
+            
+            
                 <View style={styles.loginButton} >
                     <TouchableOpacity
                         style={{ flex: 1, alignItems: 'center', justifyContent: 'center', }}                        
@@ -73,7 +122,6 @@ export class LoginView extends Component{
                         >Log in</Text>
                     </TouchableOpacity>
                 </View>
-                    
                 <View
                     style={{ 
                         borderTopWidth: 1, 
@@ -87,24 +135,31 @@ export class LoginView extends Component{
 
                 <View
                     style={styles.fbButton}
-                >
+                >                
                     <FBLogin
-                        buttonView={<FBLoginView />}
+                        buttonView={
+                            <FBLoginView 
+                                onPress={this.login}
+                            />
+                        }
                         ref={(fbLogin) => { this.fbLogin = fbLogin }}
                         loginBehavior={FBLoginManager.LoginBehaviors.Native}
                         permissions={["email","user_friends"]}
-                        onLogin={function(e){console.log(e)}}
-                        onLoginFound={function(e){console.log(e)}}
-                        onLoginNotFound={function(e){console.log(e)}}
-                        onLogout={function(e){console.log(e)}}
-                        onCancel={function(e){console.log(e)}}
-                        onPermissionsMissing={function(e){console.log(e)}}
+                        onLogin={function(data){
+                            console.log("Logged in!");
+                            console.log(data);                            
+                        }}
+                        onLoginFound={function(e){console.log('login found', e)}}
+                        onLoginNotFound={function(e){console.log('not found', e)}}
+                        onLogout={function(e){console.log('logout', e)}}
+                        onCancel={function(e){console.log('cancel', e)}}
+                        onPermissionsMissing={function(e){console.log('permission missing', e)}}
                     />
                 </View>
-        
+
                 <View style={styles.forgetPass} >
                     <TouchableOpacity
-                        // onPress={}
+                        onPress={store.onForgotPassPress}
                     >
                         <Text
                             style={styles.forgetPassText}
@@ -112,13 +167,14 @@ export class LoginView extends Component{
                     </TouchableOpacity>
 
                     <TouchableOpacity
-                        // onPress={}
+                        onPress={store.onSignUpPress}
                     >
                         <Text
                             style={styles.forgetPassText}
                         >Sign up</Text>
                     </TouchableOpacity>
                 </View>
+                
             </Animated.View>
         );
     }
@@ -134,22 +190,17 @@ const percentW = (num) => {
     return (width / 100) * num;
 }
 
-const border = {
-        
-}
-
 const styles = StyleSheet.create({
-    container: {
-        position: 'absolute',
-        bottom: 0,
+    container: {        
         height: percentH(45),
-        alignSelf: 'center',        
-        width: '64%',
-        marginBottom: percentH(3)            
+        width: percentW(64),        
+        alignSelf: 'center',
+        marginTop: percentH(20),        
     },
     user : {
         height: percentH(7),
         flexDirection: 'row', 
+        justifyContent: 'flex-start',
         alignItems: 'center',
         borderTopWidth: 1,
         borderColor: 'rgb(89, 113, 144)',
@@ -170,7 +221,7 @@ const styles = StyleSheet.create({
         color: 'rgb(255, 255, 255)', 
         fontFamily: 'Arial', 
         fontSize: 18, 
-        fontWeight: '500'
+        /*fontWeight: '500'*/
     },
     loginButton: {        
         height: percentH(5.5),
@@ -178,23 +229,20 @@ const styles = StyleSheet.create({
         flex: 1,
         borderRadius: 5,
         marginBottom: percentH(1.5),
-        backgroundColor: 'rgb(95, 188, 102)',
-        
+        backgroundColor: 'rgb(95, 188, 102)',        
     },
     fbButton:{
         height: percentH(5.5),
         width: null,
-        flex: 1,
-        // justifyContent: 'center',
-        // alignItems: 'center',
-        // backgroundColor: 'gray'
-        
+        flex: 1        
     },
     forgetPass: {
         flexDirection: 'row', 
         justifyContent: 'space-between', 
         alignItems: 'center',
-        marginTop: percentH(12.5),        
+        marginTop: percentH(12.5),
+        marginLeft: percentW(1),
+        marginRight: percentW(1),
     },
     forgetPassText: {
         fontFamily: 'Arial', 
@@ -203,25 +251,3 @@ const styles = StyleSheet.create({
         fontWeight: '500'
     }
 })
-
-
-    // renderSignInWithFbButton = () => {
-    //     return(
-    //         <View
-    //             style={{ 
-    //                 height: this.percent(5.5),
-    //                 marginTop: this.percent(1.5)
-    //              }}
-    //         >
-    //             <Icon.Button 
-    //                 name="facebook"
-    //                 backgroundColor="#3b5998"                     
-    //                 // onPress={this.loginWithFacebook}
-    //             >
-    //                 <Text 
-    //                     style={{fontFamily: 'Arial', fontSize: 15}}
-    //                 >Login with Facebook</Text>
-    //             </Icon.Button>
-    //         </View>
-    //     );
-    // }

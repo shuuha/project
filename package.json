@@ -15,6 +15,7 @@
 		"react-native-facebook-login": "^1.6.0",
 		"react-native-gesture-handler": "^1.0.0-alpha.25",
 		"react-native-gesture-recognizers": "^0.3.0",
+		"react-native-keyevent": "0.0.7",
 		"react-native-maps": "^0.16.4",
 		"react-native-swipe-gestures": "^1.0.2",
 		"react-native-unique-id": "^1.0.4",

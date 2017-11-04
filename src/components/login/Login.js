@@ -1,53 +1,52 @@
 import React, { Component } from 'react';
+import { BackHandler, View } from 'react-native';
+
 import { 
-    View, 
-    Text, 
-    StyleSheet, 
-    Image,
-    Animated,
-    TextInput,
-    Dimensions,
-    TouchableOpacity
-    } from 'react-native';
-
-import { LoginView, Logo } from '../login';
-
-import { observer } from 'mobx-react';
-
+    LoginView, 
+    Logo, 
+    PassRecovery, 
+    SignUp, 
+    BackButton,
+    ActivationCode,
+    Register
+    } from '../login';
+import { observer, Provider } from 'mobx-react';
+import { NativeRouter as Router, Route } from 'react-router-native';
 import { loginStore as store } from '../../stores/LoginStore';
 
-const { height, width } = Dimensions.get('window');
-
+@observer
 export class Login extends Component{
+
+    componentWillMount () {        
+        BackHandler.addEventListener('hardwareBackPress', ()=> store.backHandler());
+    }
+
+    componentWillUnmount () {       
+        BackHandler.removeEventListener('hardwareBackPress', ()=> store.backHandler());
+    }
+
+
     render(){
         return(
-            <View style={styles.container} >
-
-                <Logo />
-                <LoginView />
-
-
-
-{/*                <Animated.View
-                    style={[styles.inputView, this.phoneInputTransform()]}
-                >
-                    <TextInput 
-                        style={styles.input}
-                        value={store.phoneNo}
-                        placeholder='your phone number'
-                        underlineColorAndroid='transparent'
-                        onChangeText={store.onChangePhoneText}
-                        onSubmitEditing={()=> store.onSubmitEditingPhone(this)}
-                    />
-                </Animated.View>*/}
-            </View>
+            <Provider store={store} >
+                <Router>                        
+                    <View
+                        style={{flex: 1, backgroundColor: 'rgb(25, 58, 101)'}}
+                    >
+                        <Route  render={(props)=> { store.history=props.history;
+                                            return <BackButton {...props} /> }} />
+                        { 
+                            store.showLogo && 
+                            <Logo /> 
+                        }
+                        <Route exact path="/" component={LoginView} />
+                        <Route exact path='/passrecovery' component={PassRecovery} />
+                        <Route exact path='/signup' component={SignUp} />
+                        <Route exact path='/activation' component={ActivationCode} />
+                        <Route exact path='/register' component={Register} />
+                    </View>
+                </Router>
+            </Provider>
         );
     }
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: 'rgb(25, 58, 101)',
-    }
-});

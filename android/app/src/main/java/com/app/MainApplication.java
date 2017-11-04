@@ -3,6 +3,7 @@ package com.app;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.github.kevinejohn.keyevent.KeyEventPackage;
 import com.lwansbrough.RCTCamera.RCTCameraPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 import com.airbnb.android.react.maps.MapsPackage;
@@ -29,6 +30,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new KeyEventPackage(),
             new RCTCameraPackage(),
             new RNGestureHandlerPackage(),
             new MapsPackage(),

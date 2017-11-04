@@ -8,15 +8,16 @@ import { mapStore } from './stores/MapStore';
 
 import { Page, /*Map, Drawer*/ MapAndDraw, Camera } from './components';
 import { Login } from './components/login';
+// import Login from './example/components/Login';
 
 const store = new AppStore();
 
 @observer
-export default class App extends Component{
+export default class App extends Component{ 
 
     render(){
         // const { pages, dataLoaded } = store;        
-        return(                      
+        return(
             <Login />
         );    
 
