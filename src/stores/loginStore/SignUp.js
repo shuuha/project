@@ -47,7 +47,6 @@ export class SignUp{
     }
 
     onNameSubmitPress = (refs) => {
-        console.log('submit on name', refs);
         refs.inputCode.focus();
     }
 

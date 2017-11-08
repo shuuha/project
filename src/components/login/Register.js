@@ -10,7 +10,7 @@ import {
     TouchableWithoutFeedback,
     Keyboard,
     Image,
-    ScrollView
+    PixelRatio
     } from 'react-native';
 
 import { observer, inject } from 'mobx-react';
@@ -58,7 +58,7 @@ export class Register extends Component{
 
   
     render(){
-        const { register : store } = this.props.store;
+        const { register : store, register : { photos } } = this.props.store;
         return(
             <Animated.View             
                 style={[
@@ -68,15 +68,15 @@ export class Register extends Component{
             >                
             <View style={styles.avatarView} >
                 <TouchableWithoutFeedback
-                    onPress={()=> console.log('image press')}
+                    onPress={store.onAvatarPress}
                 >
                     <Image
-                        style={styles.avatar}
-                        source={images['camera']}
-                        resizeMode='contain'
+                        style={[styles.avatar, photos.imageUri && styles.image]}
+                        source={ photos.imageUri ? { uri: photos.imageUri} : images['camera']}
+                        resizeMode = { photos.imageUri ? 'cover' : 'contain'}
                     />
-                </TouchableWithoutFeedback>
-            </View>       
+                </TouchableWithoutFeedback> 
+            </View>
 
                 <View
                     style={[styles.userNameView, 
@@ -87,52 +87,71 @@ export class Register extends Component{
 
                 <View style={styles.email} >
                     <Image 
-                        style={{ height: percentH(5), width: percentH(5), marginRight: 5}}
+                        style={{ 
+                            height: PixelRatio.getPixelSizeForLayoutSize(6),
+                            width: PixelRatio.getPixelSizeForLayoutSize(6),
+                            marginRight: 5
+                        }}
                         source={images['mail']}
                         resizeMode='contain'
                     />
-                    <TextInput
+                    <TextInput                        
                         value={store.email}
+                        returnKeyType='next'
                         onChangeText={store.onChangeEmail}
+                        onSubmitEditing={()=> store.onSubmitEmail(this.refs.pass)}
                         placeholder='email@email.com'
+                        placeholderTextColor='rgb(206, 206, 206)'
                         keyboardType='email-address'
                         underlineColorAndroid='transparent'
-                        style={[styles.inputText, store.email && { fontWeight: '500' }]}
-                        placeholderTextColor='rgb(206, 206, 206)'
+                        style={[styles.inputText]}
                     />
                 </View>
             
                 <View style={styles.pass} >
                     <Image 
-                        style={{ height: percentH(5), width: percentH(5), marginRight: 5}}
+                        style={{ 
+                            height: PixelRatio.getPixelSizeForLayoutSize(6),
+                            width: PixelRatio.getPixelSizeForLayoutSize(6),
+                            marginRight: 5
+                        }}
                         source={images['lock']}
                         resizeMode='contain'
                     />
                     <TextInput
+                        ref={'pass'}
                         value={store.pass}
                         onChangeText={store.onChangePass}
+                        onSubmitEditing={()=> store.onSubmitPass(this.refs.passConfirm)}
                         placeholder='Password'
+                        placeholderTextColor='rgb(206, 206, 206)'
+                        returnKeyType='next'
                         secureTextEntry
                         underlineColorAndroid='transparent'
                         style={styles.inputText}
-                        placeholderTextColor='rgb(206, 206, 206)' 
                     />
                 </View>
 
                 <View style={[styles.pass, !this.state.showToS && { marginBottom: percentH(1.5)}]} >
                     <Image 
-                        style={{ height: percentH(5), width: percentH(5), marginRight: 5}}
+                        style={{ 
+                            height: PixelRatio.getPixelSizeForLayoutSize(6),
+                            width: PixelRatio.getPixelSizeForLayoutSize(6),
+                            marginRight: 5
+                        }}
                         source={images['lock']}
                         resizeMode='contain'
                     />
                     <TextInput 
+                        ref={'passConfirm'}
                         value={store.passConfirm}
                         onChangeText={store.onChangePassConfirm}
+                        onSubitEditing={store.onSubmitPassConfirm}
                         placeholder='Confirm password'
+                        placeholderTextColor='rgb(206, 206, 206)' 
                         secureTextEntry
                         underlineColorAndroid='transparent'
                         style={styles.inputText}
-                        placeholderTextColor='rgb(206, 206, 206)' 
                     />
                 </View>
 
@@ -165,7 +184,7 @@ export class Register extends Component{
                                 style={{ color: 'rgb(255, 255, 255)', fontSize: 18, fontWeight: '500'}}
                             >Register</Text>
                         </TouchableOpacity>
-                    </View>
+                    </View>                    
             </Animated.View>
         );
     }
@@ -218,7 +237,11 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         borderStyle: 'solid',
         borderColor: 'rgb(255, 255, 255)',
-
+    },
+    image: {
+        height: percentH(17),
+        width: percentH(17),
+        borderRadius: percentH(9),
     },
     email : {
         height: percentH(7),

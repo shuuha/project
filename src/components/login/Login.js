@@ -8,7 +8,10 @@ import {
     SignUp, 
     BackButton,
     ActivationCode,
-    Register
+    Register,
+    Photos,
+    LoggedIn,
+    ErrorText
     } from '../login';
 import { observer, Provider } from 'mobx-react';
 import { NativeRouter as Router, Route } from 'react-router-native';
@@ -25,7 +28,6 @@ export class Login extends Component{
         BackHandler.removeEventListener('hardwareBackPress', ()=> store.backHandler());
     }
 
-
     render(){
         return(
             <Provider store={store} >
@@ -37,13 +39,17 @@ export class Login extends Component{
                                             return <BackButton {...props} /> }} />
                         { 
                             store.showLogo && 
-                            <Logo /> 
+                            <Logo />
                         }
+                        { store.errorText && <ErrorText /> }
+
                         <Route exact path="/" component={LoginView} />
                         <Route exact path='/passrecovery' component={PassRecovery} />
                         <Route exact path='/signup' component={SignUp} />
                         <Route exact path='/activation' component={ActivationCode} />
                         <Route exact path='/register' component={Register} />
+                        <Route exact path='/photos' component={Photos} />
+                        <Route exact path='/loggedin' component={LoggedIn} />
                     </View>
                 </Router>
             </Provider>

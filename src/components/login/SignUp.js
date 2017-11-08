@@ -9,6 +9,7 @@ import {
     TextInput,
     TouchableOpacity,
     Keyboard,
+    PixelRatio
 } from 'react-native';
 import { images } from './assets';
 import { observer, inject } from 'mobx-react';
@@ -80,17 +81,17 @@ export class SignUp extends Component{
                         autoCapitalize='words'
                         autoCorrect={false}
                         returnKeyType='next'
-                        blurOnSubmit={false}
-                        onSubmitEditing={()=> console.log('on submit editing')/*()=>store.onNameSubmitPress(this.refs)*/}
+                        // blurOnSubmit={false}
+                        onSubmitEditing={()=>store.onNameSubmitPress(this.refs)}
                         underlineColorAndroid='transparent'
-                        style={[styles.fullnameText, store.fullname && { fontWeight: '500' }]}
+                        style={[styles.fullnameText]}
                     />
                 </View>
                 <View
                     style={{ flexDirection: 'row' }}
                 >
                     <View 
-                        style={[styles.phone, { width: percentW(27) }]}            // first input on the phone's row
+                        style={[styles.phone, { width: percentW(23) }]}            // first input on the phone's row
                     >
                         <Image 
                             style={styles.phoneImage}
@@ -101,17 +102,17 @@ export class SignUp extends Component{
                             ref={'inputCode'}
                             value={store.codeValue}
                             onChangeText={store.onChangeCode}
-                            blurOnSubmit={false}
+                            // blurOnSubmit={false}
                             onSubmitEditing={()=>store.onCodeSubmitPress(this.refs)}
                             onBlur={store.onBlur}
                             onFocus={store.onFocus}
                             returnKeyType='next'
                             placeholder='+1'
+                            placeholderTextColor='rgb(206, 206, 206)' 
                             keyboardType='numeric'
                             maxLength={5}
                             underlineColorAndroid='transparent'
-                            style={[styles.phoneText, {flex: 1}, store.codeValue && { fontWeight: '500' }]}
-                            placeholderTextColor='rgb(206, 206, 206)' 
+                            style={[styles.phoneText]}
                         />
                     </View>
                     <View
@@ -127,11 +128,12 @@ export class SignUp extends Component{
                             onChangeText={store.onChangePhone}
                             onSubmitEditing={()=>store.onPhoneSubmitPress(this.refs)}
                             placeholder='phone number'
+                            placeholderTextColor='rgb(206, 206, 206)'
+                            returnKeyType='send'
                             keyboardType='numeric'
                             maxLength={15}
                             underlineColorAndroid='transparent'
-                            style={[styles.phoneText, { flex: 1}, store.phoneValue && { fontWeight: '500' }]}
-                            placeholderTextColor='rgb(206, 206, 206)' 
+                            style={[styles.phoneText]}
                         />
                     </View>
                 </View>
@@ -180,8 +182,8 @@ const styles = StyleSheet.create({
         borderStyle: 'solid'        
     },
     fullnameImage: {
-        height: percentH(5), 
-        width: percentH(5), 
+        height: PixelRatio.getPixelSizeForLayoutSize(6), 
+        width: PixelRatio.getPixelSizeForLayoutSize(6),
         marginRight: percentW(4),
         marginLeft: -percentW(1)
     },
@@ -197,19 +199,19 @@ const styles = StyleSheet.create({
         flexDirection: 'row', 
         justifyContent: 'flex-start',
         alignItems: 'center',
-        borderTopWidth: 1,
+        // borderTopWidth: 1,
         borderBottomWidth: 1,
         borderColor: 'rgb(89, 113, 144)',
         borderStyle: 'solid',
     },
     phoneImage: {
-        height: percentH(5), 
-        width: percentH(5), 
+        height: PixelRatio.getPixelSizeForLayoutSize(6),
+        width: PixelRatio.getPixelSizeForLayoutSize(6),
         marginRight: percentW(1),
         marginLeft: percentW(1)
     },
     phoneText: {
-        // flex: 1,
+        flex: 1,
         color: 'rgb(255, 255, 255)', 
         fontFamily: 'Arial', 
         fontSize: 18, 

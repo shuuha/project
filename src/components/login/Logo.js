@@ -1,12 +1,19 @@
 import React, { Component } from 'react';
-import { Animated, Image, Dimensions, StyleSheet, View } from 'react-native';
-import { inject } from 'mobx-react';
+import { 
+    Animated, 
+    Image, 
+    Dimensions, 
+    StyleSheet, 
+    View
+    } from 'react-native';
+import { observer, inject } from 'mobx-react';
 
 import { loginStore as store } from '../../stores/LoginStore';
 
 import { images } from './assets';
 
 @inject('store')
+@observer
 export class Logo extends Component{
 
     logoAnimation = new Animated.Value(200);    

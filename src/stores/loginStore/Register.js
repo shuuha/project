@@ -1,4 +1,5 @@
 import { observable, computed, action } from 'mobx';
+import { Photos } from './register';
 
 export class Register{
 
@@ -6,7 +7,10 @@ export class Register{
     @observable email = '';
     @observable pass = '';
     @observable passConfirm = '';
+    @observable avatarImageUri;
     
+    photos = new Photos(this);
+
     constructor(loginStore){
         this.loginStore = loginStore;
     }
@@ -34,5 +38,21 @@ export class Register{
 
     onTosPress = () => {
         console.log('loading tos page');
+    }
+
+    onSubmitEmail = (nextInput) => {
+        nextInput.focus();
+    }
+
+    onSubmitPass = (nextInput) => {
+        nextInput.focus();
+    }
+
+    onSubmitPassConfirm = () => {
+        this.onRegisterPress();
+    }
+
+    onAvatarPress = () => {
+        this.loginStore.history.push('/photos')
     }
 }

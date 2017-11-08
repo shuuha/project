@@ -15,5 +15,9 @@ export class PassRecovery{
     onSendPress = () => {
 
     }
+
+    onSubmitEditing = () => {
+        this.onSendPress();
+    }
 }
     

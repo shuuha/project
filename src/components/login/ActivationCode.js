@@ -31,6 +31,7 @@ export class ActivationCode extends Component{
                 duration: 200
             }).start();
         }, 200)
+        this.refs.input0.focus();
     }
 
     componentWillMount () {

@@ -64,7 +64,7 @@ export class PassRecovery extends Component{
 
                 <Text
                     style={styles.text}
-                >To reset your password, please enter your email address</Text>
+                >To reset your password, please enter your email address</Text> 
 
                 <View style={[styles.email]} >
                     <Image 
@@ -75,6 +75,8 @@ export class PassRecovery extends Component{
                     <TextInput 
                         value={store.value}
                         onChangeText={store.onChangeText}
+                        returnKeyType='send'
+                        onSubmitEditing={store.onSubmitPass}
                         placeholder='email@email.com'
                         keyboardType='email-address'
                         underlineColorAndroid='transparent'

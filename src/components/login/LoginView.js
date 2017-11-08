@@ -8,7 +8,9 @@ import {
     Dimensions,
     TouchableOpacity,
     Keyboard,
-    Image
+    Image,
+    PixelRatio,
+    ActivityIndicator
     } from 'react-native';
 
 import { FBLogin, FBLoginManager } from 'react-native-facebook-login';
@@ -20,7 +22,8 @@ import { images } from './assets';
 @observer
 export class LoginView extends Component{
     state = {
-        top : percentH(20)
+        top : percentH(20),
+        hideLine: false
     }
 
     animatedLogin = new Animated.Value(0);
@@ -55,54 +58,79 @@ export class LoginView extends Component{
   _keyboardDidShow = (e) => {
     // pushing the view up, the overall distance is calculated from : 
     // currentMarginTop - keyboardHeight + percent of (user field + pass field + login button)
-    this.setState({ top: this.state.top - e.endCoordinates.height + percentH(24)})
+    this.setState({ top: this.state.top - e.endCoordinates.height + percentH(24), hideLine: true})
   }
 
   _keyboardDidHide = () => {
-    this.setState({ top: percentH(20)})
+    this.setState({ top: percentH(20), hideLine: false})
   }
 
   login = () => {
-      FBLoginManager.loginWithPermissions(['email', 'user_friends'], (data, error)=>{
-        console.log(data, 'error: ', error)
-    });
+    //   FBLoginManager.loginWithPermissions(['email', 'user_friends'], (data, error)=>{
+    //     console.log(data, 'error: ', error)
+    // });
+    console.log(this);
+  }
+
+  onLoginButtonPress = () => {
+      Keyboard.dismiss();
+      this.props.store.loginView.onLoginButtonPress();
   }
     render(){
-        const { loginView : store } = this.props.store;
+        const { loginView : store, loading, error  } = this.props.store;
         return(
             <Animated.View             
                 style={[
                     styles.container, { marginTop: this.state.top },
                     {opacity: this.animatedLogin } 
                 ]}
-            >            
+            >          
 
-                <View style={[styles.user]} >
+
+                <View style={[styles.user]} > 
                     <Image 
-                        style={{ height: percentH(5), width: percentH(5), marginRight: 5}}
+                        style={{ 
+                            height: PixelRatio.getPixelSizeForLayoutSize(6),
+                            width: PixelRatio.getPixelSizeForLayoutSize(6),
+                            marginRight: 5
+                        }}
                         source={images['mail']}
                         resizeMode='contain'
                     />
                     <TextInput 
+                        editable={!loading}
                         value={store.email}
                         onChangeText={store.onChangeEmail}
+                        onFocus={store.onInputFocus}
+                        returnKeyType='next'
+                        // blurOnSubmit={false}
+                        onSubmitEditing={()=> store.onSubmitEmail(this.refs.pass)}
                         placeholder='email@email.com'
-                        keyboardType='email-address'
-                        underlineColorAndroid='transparent'
-                        style={[styles.userText, store.email && { fontWeight: '500' }]}
                         placeholderTextColor='rgb(206, 206, 206)'
+                        keyboardType='email-address'
+                        underlineColorAndroid='transparent' 
+                        style={[styles.userText]}
                     />
                 </View>
             
                 <View style={styles.pass} >
                     <Image 
-                        style={{ height: percentH(5), width: percentH(5), marginRight: 5}}
+                        style={{ 
+                            height: PixelRatio.getPixelSizeForLayoutSize(6), 
+                            width: PixelRatio.getPixelSizeForLayoutSize(6), 
+                            marginRight: 5
+                        }}
                         source={images['lock']}
                         resizeMode='contain'
                     />
                     <TextInput 
+                        ref={'pass'}
+                        editable={!loading}
                         value={store.pass}
                         onChangeText={store.onChangePass}
+                        onFocus={store.onInputFocus}
+                        onSubmitEditing={store.onSubmitPass}
+                        returnKeyType='done'
                         placeholder='Password'
                         secureTextEntry
                         underlineColorAndroid='transparent'
@@ -115,22 +143,30 @@ export class LoginView extends Component{
                 <View style={styles.loginButton} >
                     <TouchableOpacity
                         style={{ flex: 1, alignItems: 'center', justifyContent: 'center', }}                        
-                        // onPress={}
+                        onPress={this.onLoginButtonPress}
+                        disabled={loading}
                     >
+                    {   loading ? 
+                        <ActivityIndicator 
+                            size={percentH(6)}
+                            color='rgb(255, 255, 255)'
+                        />
+                        :
                         <Text
                             style={{ color: 'rgb(255, 255, 255)', fontSize: 18, fontWeight: '500'}}
                         >Log in</Text>
+                    }
                     </TouchableOpacity>
                 </View>
                 <View
-                    style={{ 
+                    style={[{ 
                         borderTopWidth: 1, 
                         borderStyle: 'solid', 
                         borderColor: 'rgb(89, 113, 144)', 
                         marginBottom: percentH(1.5),
                         alignSelf: 'center',
                         width: percentW(40)
-                    }}
+                    }, this.state.hideLine && { borderTopWidth: 0 }]}
                 ></View>
 
                 <View
@@ -140,6 +176,7 @@ export class LoginView extends Component{
                         buttonView={
                             <FBLoginView 
                                 onPress={this.login}
+                                disabled={loading}
                             />
                         }
                         ref={(fbLogin) => { this.fbLogin = fbLogin }}
@@ -147,7 +184,7 @@ export class LoginView extends Component{
                         permissions={["email","user_friends"]}
                         onLogin={function(data){
                             console.log("Logged in!");
-                            console.log(data);                            
+                            console.log(data);
                         }}
                         onLoginFound={function(e){console.log('login found', e)}}
                         onLoginNotFound={function(e){console.log('not found', e)}}
@@ -160,6 +197,7 @@ export class LoginView extends Component{
                 <View style={styles.forgetPass} >
                     <TouchableOpacity
                         onPress={store.onForgotPassPress}
+                        disabled={loading}
                     >
                         <Text
                             style={styles.forgetPassText}
@@ -168,6 +206,7 @@ export class LoginView extends Component{
 
                     <TouchableOpacity
                         onPress={store.onSignUpPress}
+                        disabled={loading}
                     >
                         <Text
                             style={styles.forgetPassText}
@@ -234,7 +273,7 @@ const styles = StyleSheet.create({
     fbButton:{
         height: percentH(5.5),
         width: null,
-        flex: 1        
+        flex: 1
     },
     forgetPass: {
         flexDirection: 'row', 

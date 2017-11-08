@@ -4,7 +4,7 @@ import {
     LoginView, 
     PassRecovery, 
     Register, 
-    SignUp 
+    SignUp
     } from './loginStore';
 
 class LoginStore{
@@ -13,10 +13,13 @@ class LoginStore{
     passRecovery = new PassRecovery(this);
     register = new Register(this);
     signUp = new SignUp(this);
+    
 
     showLogoAnimation = true;
     
     @observable showLogo = true; 
+    @observable loading = false;
+    @observable errorText = null;
 
     moveBack(){
         this.history.goBack();
@@ -29,7 +32,8 @@ class LoginStore{
             return true;
         }
         else if(this.history.location.pathname == '/register'){            
-            this.showLogo = true;            
+            this.showLogo = true;
+            this.loading = false;
             this.moveBack();
             return true;
         }
@@ -42,7 +46,8 @@ class LoginStore{
 
     goBack(){
         if(this.history.location.pathname == '/register'){            
-            this.showLogo = true;            
+            this.showLogo = true;
+            this.loading = false;
             this.moveBack();
             return;
         }

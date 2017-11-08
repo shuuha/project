@@ -6,7 +6,7 @@ import { observer, Provider } from 'mobx-react/native';
 import { AppStore } from './stores/AppStore';
 import { mapStore } from './stores/MapStore';
 
-import { Page, /*Map, Drawer*/ MapAndDraw, Camera } from './components';
+import { Page, MapAndDraw, Camera } from './components';
 import { Login } from './components/login';
 // import Login from './example/components/Login';
 
@@ -16,6 +16,7 @@ const store = new AppStore();
 export default class App extends Component{ 
 
     render(){
+        console.log(' render ' );
         // const { pages, dataLoaded } = store;        
         return(
             <Login />

@@ -7,3 +7,6 @@ export * from './SignUp';
 export * from './BackButton';
 export * from './ActivationCode';
 export * from './Register';
+export * from './Photos';
+export * from './LoggedIn';
+export * from './ErrorText';
