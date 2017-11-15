@@ -9,9 +9,12 @@ import {
     TextInput,
     TouchableOpacity,
     Keyboard,
+    Vibration
     } from 'react-native';
+import * as Animatable from 'react-native-animatable';
 import { observer, inject } from 'mobx-react';
 import KeyEvent from 'react-native-keyevent';
+import { images } from './assets';
 
 const NUMBER_OF_INPUTS = [1, 2, 3, 4];
 
@@ -31,6 +34,9 @@ export class ActivationCode extends Component{
                 duration: 200
             }).start();
         }, 200)
+
+        this.props.store.activation.refs = this.refs;
+        this.props.store.activation.Vibration = Vibration;
         this.refs.input0.focus();
     }
 
@@ -49,6 +55,13 @@ export class ActivationCode extends Component{
         KeyEvent.removeKeyDownListener();
     }
 
+    componentDidUpdate(){
+        // if(this.props.store.activation.errorValues){
+        //     this.refs.input0.focus();
+        // }
+        
+    }
+
     _keyboardDidShow = (e) => {
     // pushing the view up, the overall distance is calculated from : 
     // currentMarginTop - keyboardHeight + percent of (text + user field + login button)
@@ -62,33 +75,47 @@ export class ActivationCode extends Component{
 
     render(){
         const { 
-            values,
-            onInputChange,
-            onChangeText,
-            onSelectionChange,
-            onEnter,
-            onFocus
-            } = this.props.store.activation;
-        return(            
+            activation: {
+                values,
+                onInputChange,
+                onChangeText,
+                onSelectionChange,
+                onEnter,
+                onFocus,
+                onSubmitEditing,
+                errorValues,
+                wrongSmsCode },
+            loading,
+            errorText
+            } = this.props.store;
+        return(
+            
             <Animated.View style={[
                     styles.container, 
                     { opacity: this.animatedView }, 
                     { marginTop: this.state.top }
                 ]} 
             >
-
                 <Text
                     style={styles.text}
-                >Enter activation code</Text>
+                >{errorText ? " " : 'Enter activation code'}</Text>
 
-                <View style={[styles.inputsContainer]} >
-                    {
-                       NUMBER_OF_INPUTS.map((q, i) => 
+                <Animatable.View
+                        duration={500}
+                        animation={ errorValues ? 'shake' : '' }
+                        onAnimationEnd={()=> this.refs.input0.focus()}
+                        useNativeDriver={true}            
+                >
+                    <View style={[styles.inputsContainer ]} 
+                    >
+                        {
+                           NUMBER_OF_INPUTS.map((q, i) => 
                             <View                        
                                 key={i}
-                                style={{ flex: 1, flexDirection: 'row', height: percentH(8)}}
+                                style={{ flex: 1, flexDirection: 'row', height: percentH(8) }}
                             >
-                                <TextInput                                
+                                <TextInput
+                                    editable={!loading}
                                     ref={`input${i}`}
                                     // onKeyPress={}
                                     keyboardType='numeric'
@@ -99,34 +126,48 @@ export class ActivationCode extends Component{
                                     onChangeText={(e)=> onChangeText(e, i)}
                                     onSelectionChange={onSelectionChange}
                                     onFocus={()=> onFocus(i)}
-                                    style={[styles.inputText, values[i] && { fontWeight: '500' }]}
+                                    onSubmitEditing={onSubmitEditing}
+                                    // blurOnSubmit={false}
+                                    style={[styles.inputText, wrongSmsCode && styles.errorText]}
                                 />
                                 <View
                                     style={{ flex: 0.2}}
                                 >
                                 </View>
                             </View>
-                        )                        
-                    }
-                </View>
-                <View style={styles.enterButton} >
+                            )                        
+                        }
+                    </View>
+                </Animatable.View>
+
+                <View style={[styles.enterButton, loading && { backgroundColor: 'transparent'}]} >
+                {
+                    loading ?
+                    <Image 
+                        style={{ height: percentH(5), alignSelf: 'center' }}
+                        source={images['loader']}
+                        resizeMode='contain'
+                    />
+                    :
                     <TouchableOpacity
                         style={{ flex: 1, alignItems: 'center', justifyContent: 'center', }}                        
-                        onPress={onEnter}
+                        onPress={()=> onEnter(Vibration)}
+                        disabled={loading}
                     >
                         <Text
                             style={{ color: 'rgb(255, 255, 255)', fontSize: 18, fontWeight: '500'}}
                         >Enter</Text>
                     </TouchableOpacity>
+                }
                 </View>
                 <TouchableOpacity
-
+                    // onPress={}
+                    disabled={loading}
                 >
                     <Text
                         style={[styles.text, { marginBottom: percentH(0), marginTop: percentH(15)} ]}
                     >Resend activation code</Text>
                 </TouchableOpacity>
-
             </Animated.View>
         );
     }
@@ -155,7 +196,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row', 
         // justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: percentH(3)
+        marginBottom: percentH(3),
+
     },
     inputText: {        
         flex: 0.8,
@@ -165,7 +207,8 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         borderColor: 'rgb(89, 113, 144)',
         borderStyle: 'solid',
-        textAlign: 'center'
+        textAlign: 'center',
+        fontWeight: '500'
     },
     text: {
         alignSelf: 'center',
@@ -183,7 +226,9 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         marginBottom: percentH(1.5),
         marginTop: percentH(1.5),
-        backgroundColor: 'rgb(95, 188, 102)',
-        
+        backgroundColor: 'rgb(95, 188, 102)',        
     },
+    errorText: {
+        color: 'rgb(188, 0, 0)',
+    }
 })

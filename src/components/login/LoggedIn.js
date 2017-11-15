@@ -15,6 +15,11 @@ import { observer, inject } from 'mobx-react';
 @inject('store')
 @observer
 export class LoggedIn extends Component{
+    
+    componentWillUnmount(){
+        this.props.store.loginView.stopPing();
+    }
+
     render(){
         const { loading, loginView : { userOnline, onOnlinePress } } = this.props.store;
 

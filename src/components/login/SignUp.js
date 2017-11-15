@@ -9,8 +9,10 @@ import {
     TextInput,
     TouchableOpacity,
     Keyboard,
-    PixelRatio
+    PixelRatio,
+    Vibration
 } from 'react-native';
+import * as Animatable from 'react-native-animatable';
 import { images } from './assets';
 import { observer, inject } from 'mobx-react';
 
@@ -19,7 +21,8 @@ import { observer, inject } from 'mobx-react';
 export class SignUp extends Component{
 
     state = {
-        top: percentH(10)
+        top: percentH(10),
+        newTop: null
     }
 
     animatedView = new Animated.Value(0);
@@ -31,67 +34,91 @@ export class SignUp extends Component{
                 duration: 200
             }).start();
         }, 200)
+
+        this.props.store.signUp.refs = this.refs;
+        this.props.store.signUp.Vibration = Vibration;
+        this.props.store.signUp.Keyboard = Keyboard;
     }
 
     componentWillMount () {
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
         this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);        
-    }
+    }    
 
     componentWillUnmount () {
+        Keyboard.dismiss();
         this.keyboardDidShowListener.remove();
-        this.keyboardDidHideListener.remove();        
+        this.keyboardDidHideListener.remove();
+    }
+
+    componentDidUpdate(){
+        if(!this.props.store.signUp.inputsAreValid){
+            this.refs.inputFullname.focus();
+        }
     }
 
     _keyboardDidShow = (e) => {
     // pushing the view up, the overall distance is calculated from : 
     // currentMarginTop - keyboardHeight + percent of (text + user field + login button)
-    this.setState({ top: this.state.top - e.endCoordinates.height + percentH(27)})
+    this.setState({ newTop: this.state.top - e.endCoordinates.height + percentH(27)})
     }
 
     _keyboardDidHide = () => {
-        this.setState({ top: percentH(10)})
+        this.setState({ newTop: null})
     }
 
     render(){
-        const { signUp : store } = this.props.store;
+        const { signUp : store, loading, errorText } = this.props.store;
         return(            
             <Animated.View style={[
                     styles.container, 
                     { opacity: this.animatedView }, 
-                    { marginTop: this.state.top }
+                    this.state.newTop && { marginTop: this.state.newTop }
                 ]} 
             >
 
                 <Text
                     style={styles.text}
-                >Enter your phone number</Text>
+                >{ errorText ? " " : 'Enter your phone number'}</Text>
 
-                <View style={[styles.fullname]} >
+                <Animatable.View style={[styles.fullname]}
+                    animation={store.fullnameError && store.shakeTrigger ? 'shake' : ''}
+                    duration={500}
+                    useNativeDrive={true}
+                    onAnimationEnd={()=> store.shakeTrigger = false}
+                >
                     <Image 
                         style={styles.fullnameImage}
                         source={images['man']}
                         resizeMode='contain'
                     />
                     <TextInput 
+                        editable={!loading}
+                        ref={'inputFullname'}
                         value={store.fullname}
-                        onChangeText={store.onChangeName}                        
+                        onChangeText={store.onChangeName}
                         placeholder='Fullname'
                         placeholderTextColor='rgb(206, 206, 206)'
                         autoCapitalize='words'
                         autoCorrect={false}
                         returnKeyType='next'
+                        onFocus={store.onFullnameFocus}
                         // blurOnSubmit={false}
                         onSubmitEditing={()=>store.onNameSubmitPress(this.refs)}
                         underlineColorAndroid='transparent'
-                        style={[styles.fullnameText]}
+                        style={[styles.fullnameText, store.fullnameError && styles.errorText]}
                     />
-                </View>
+                </Animatable.View>
                 <View
                     style={{ flexDirection: 'row' }}
                 >
-                    <View 
+                    <Animatable.View 
                         style={[styles.phone, { width: percentW(23) }]}            // first input on the phone's row
+
+                        animation={store.codeValueError && store.shakeTrigger ? 'shake' : ''}
+                        duration={500}
+                        useNativeDrive={true}
+                        onAnimationEnd={()=> store.shakeTrigger = false}
                     >
                         <Image 
                             style={styles.phoneImage}
@@ -99,33 +126,41 @@ export class SignUp extends Component{
                             resizeMode='contain'
                         />
                         <TextInput 
-                            ref={'inputCode'}
+                            editable={!loading}
+                            ref={'inputCodeValue'}
                             value={store.codeValue}
                             onChangeText={store.onChangeCode}
                             // blurOnSubmit={false}
                             onSubmitEditing={()=>store.onCodeSubmitPress(this.refs)}
                             onBlur={store.onBlur}
-                            onFocus={store.onFocus}
+                            onFocus={store.onCodeFocus}
                             returnKeyType='next'
                             placeholder='+1'
                             placeholderTextColor='rgb(206, 206, 206)' 
                             keyboardType='numeric'
                             maxLength={5}
                             underlineColorAndroid='transparent'
-                            style={[styles.phoneText]}
+                            style={[styles.phoneText, store.codeValueError && styles.errorText]}
                         />
-                    </View>
+                    </Animatable.View>
                     <View
                         style={{ marginRight: percentW(2) }}
                     >
                     </View>
-                    <View
+                    <Animatable.View
                         style={[styles.phone, { flex : 1}]}   //second input on the phones row
+
+                        animation={store.phoneValueError && store.shakeTrigger ? 'shake' : ''}
+                        duration={500}
+                        useNativeDrive={true}
+                        onAnimationEnd={()=> store.shakeTrigger = false}
                     >
                         <TextInput 
-                            ref={'inputPhone'}
+                            editable={!loading}
+                            ref={'inputPhoneValue'}
                             value={store.phoneValue}
                             onChangeText={store.onChangePhone}
+                            onFocus={store.onPhoneFocus}
                             onSubmitEditing={()=>store.onPhoneSubmitPress(this.refs)}
                             placeholder='phone number'
                             placeholderTextColor='rgb(206, 206, 206)'
@@ -133,20 +168,31 @@ export class SignUp extends Component{
                             keyboardType='numeric'
                             maxLength={15}
                             underlineColorAndroid='transparent'
-                            style={[styles.phoneText]}
+                            style={[styles.phoneText, store.phoneValueError && styles.errorText]}
                         />
-                    </View>
+                    </Animatable.View>
                 </View>
 
-                <View style={styles.loginButton} >
+                <View style={[styles.loginButton, loading && { backgroundColor: 'transparent'}]} >
+                    {
+                    loading ?
+                    <Image 
+                        style={{ height: percentH(5), alignSelf: 'center' }}
+                        source={images['loader']}
+                        resizeMode='contain'
+                    />
+                    :
                     <TouchableOpacity
                         style={{ flex: 1, alignItems: 'center', justifyContent: 'center', }}                        
-                        onPress={store.onSendPress}
+                        onPress={()=> store.onSendPress(Keyboard, this.refs, Vibration)}
+                        disabled={loading}
                     >
                         <Text
                             style={{ color: 'rgb(255, 255, 255)', fontSize: 18, fontWeight: '500'}}
                         >Send</Text>
+
                     </TouchableOpacity>
+                    }
                 </View>
             </Animated.View>
         );
@@ -167,9 +213,10 @@ const percentW = (num) => {
 const styles = StyleSheet.create({
     container: {        
         height: percentH(45),
-        width: percentW(64),
+        width: percentW(74),
         alignSelf: 'center',
         marginTop: percentH(10),
+        paddingHorizontal: percentW(5)
     },
     fullname : {
         height: percentH(7),
@@ -234,4 +281,10 @@ const styles = StyleSheet.create({
         marginTop: percentH(3),
         backgroundColor: 'rgb(95, 188, 102)'        
     },
+    error: {
+        borderBottomColor: 'rgb(188, 0, 0)',
+    },
+    errorText: {
+        color: 'rgb(188, 0, 0)'
+    }
 })

@@ -10,9 +10,10 @@ import {
     TouchableWithoutFeedback,
     Keyboard,
     Image,
-    PixelRatio
+    PixelRatio,
+    Vibration
     } from 'react-native';
-
+import * as Animatable from 'react-native-animatable';
 import { observer, inject } from 'mobx-react';
 import { images } from './assets';
 
@@ -34,6 +35,9 @@ export class Register extends Component{
                 duration: 200
             }).start();
         }, 200)
+
+        this.props.store.register.refs = this.refs;
+        this.props.store.register.Vibration = Vibration;
     }
 
   componentWillMount () {
@@ -58,7 +62,7 @@ export class Register extends Component{
 
   
     render(){
-        const { register : store, register : { photos } } = this.props.store;
+        const { register : store, register : { photos }, loading } = this.props.store;
         return(
             <Animated.View             
                 style={[
@@ -69,6 +73,7 @@ export class Register extends Component{
             <View style={styles.avatarView} >
                 <TouchableWithoutFeedback
                     onPress={store.onAvatarPress}
+                    disable={loading}
                 >
                     <Image
                         style={[styles.avatar, photos.imageUri && styles.image]}
@@ -80,12 +85,18 @@ export class Register extends Component{
 
                 <View
                     style={[styles.userNameView, 
-                        !this.state.showToS && {height: percentH(6), marginVertical: 0 } ]} >
-                    <Text style={styles.userNameText} >{store.userName}</Text>
+                        !this.state.showToS && {height: percentH(6), marginVertical: 0 } ]} > 
+                    <Text style={styles.userNameText} >{store.loginStore.signUp.fullname}</Text>
                 </View>
 
 
-                <View style={styles.email} >
+                <Animatable.View 
+                    style={[styles.email]} 
+                    duration={500}
+                    animation={ store.emailError && store.shakeTrigger ? 'shake' : '' }
+                    useNativeDriver={true}
+                    onAnimationEnd={()=> store.shakeTrigger = false}
+                >
                     <Image 
                         style={{ 
                             height: PixelRatio.getPixelSizeForLayoutSize(6),
@@ -95,20 +106,29 @@ export class Register extends Component{
                         source={images['mail']}
                         resizeMode='contain'
                     />
-                    <TextInput                        
+                    <TextInput
+                        editable={!loading}
+                        ref={'email'}
                         value={store.email}
                         returnKeyType='next'
                         onChangeText={store.onChangeEmail}
+                        onFocus={store.onInputFocus}
                         onSubmitEditing={()=> store.onSubmitEmail(this.refs.pass)}
                         placeholder='email@email.com'
                         placeholderTextColor='rgb(206, 206, 206)'
                         keyboardType='email-address'
                         underlineColorAndroid='transparent'
-                        style={[styles.inputText]}
+                        style={[styles.inputText, store.emailError && styles.errorText]}
                     />
-                </View>
+                </Animatable.View>
             
-                <View style={styles.pass} >
+                <Animatable.View 
+                    style={[styles.pass]}                 
+                    duration={500}
+                    animation={ store.passError && store.shakeTrigger ? 'shake' : '' }
+                    useNativeDriver={true}
+                    onAnimationEnd={()=> store.shakeTrigger = false}
+                >
                     <Image 
                         style={{ 
                             height: PixelRatio.getPixelSizeForLayoutSize(6),
@@ -119,20 +139,29 @@ export class Register extends Component{
                         resizeMode='contain'
                     />
                     <TextInput
+                        editable={!loading}
                         ref={'pass'}
                         value={store.pass}
                         onChangeText={store.onChangePass}
+                        onFocus={store.onInputFocus}
                         onSubmitEditing={()=> store.onSubmitPass(this.refs.passConfirm)}
                         placeholder='Password'
                         placeholderTextColor='rgb(206, 206, 206)'
                         returnKeyType='next'
                         secureTextEntry
                         underlineColorAndroid='transparent'
-                        style={styles.inputText}
+                        style={[styles.inputText, store.passError && styles.errorText]}
                     />
-                </View>
+                </Animatable.View>
 
-                <View style={[styles.pass, !this.state.showToS && { marginBottom: percentH(1.5)}]} >
+                <Animatable.View 
+                    style={[styles.pass, 
+                        !this.state.showToS && { marginBottom: percentH(1.5)}]} 
+                    duration={500}
+                    animation={ store.passConfirmError && store.shakeTrigger ? 'shake' : '' }
+                    useNativeDriver={true}
+                    onAnimationEnd={()=> store.shakeTrigger = false}
+                        >
                     <Image 
                         style={{ 
                             height: PixelRatio.getPixelSizeForLayoutSize(6),
@@ -142,18 +171,21 @@ export class Register extends Component{
                         source={images['lock']}
                         resizeMode='contain'
                     />
-                    <TextInput 
+                    <TextInput
+                        editable={!loading}
                         ref={'passConfirm'}
                         value={store.passConfirm}
                         onChangeText={store.onChangePassConfirm}
-                        onSubitEditing={store.onSubmitPassConfirm}
+                        onFocus={store.onInputFocus}
+                        onSubmitEditing={store.onSubmitPassConfirm}
+                        blurOnSubmit={false}
                         placeholder='Confirm password'
                         placeholderTextColor='rgb(206, 206, 206)' 
                         secureTextEntry
                         underlineColorAndroid='transparent'
-                        style={styles.inputText}
+                        style={[styles.inputText, store.passConfirmError && styles.errorText]}
                     />
-                </View>
+                </Animatable.View>
 
                 { 
                 this.state.showToS &&
@@ -166,6 +198,7 @@ export class Register extends Component{
 
                     <TouchableOpacity 
                         onPress={store.onTosPress} 
+                        disabled={loading}
                     >
                         <Text style={styles.tosText}>
                             Terms of Service
@@ -175,15 +208,24 @@ export class Register extends Component{
                 }
 
 
-                    <View style={styles.registerButton} >
+                    <View style={[styles.registerButton, loading && {backgroundColor: 'transparent'}]} >
+                      {  loading ?
+                        <Image 
+                            style={{ height: percentH(5), alignSelf: 'center' }}
+                            source={images['loader']}
+                            resizeMode='contain'
+                        />
+                        :
                         <TouchableOpacity
                             style={{ flex: 1, alignItems: 'center', justifyContent: 'center', }}                        
                             onPress={store.onRegisterPress}
-                        >
+                            disabled={loading}
+                        >                        
                             <Text
                                 style={{ color: 'rgb(255, 255, 255)', fontSize: 18, fontWeight: '500'}}
                             >Register</Text>
                         </TouchableOpacity>
+                        }
                     </View>                    
             </Animated.View>
         );
@@ -204,10 +246,11 @@ const styles = StyleSheet.create({
     container: {        
         // height: percentH(45),
         flex: 1,
-        width: percentW(64),
+        width: percentW(74),
         alignSelf: 'center',
         // marginTop: percentH(20),
-        paddingBottom: percentH(0)
+        // paddingBottom: percentH(0)
+        paddingHorizontal: percentW(5)
     },
     userNameView : {
         height: percentH(10),
@@ -286,5 +329,11 @@ const styles = StyleSheet.create({
         fontFamily: 'Arial', 
         fontSize: 13, 
         color: 'rgb(76, 154, 100)'
+    },
+    error: {
+        borderBottomColor: 'rgb(188, 0, 0)',
+    },
+    errorText: {
+        color: 'rgb(188, 0, 0)',
     }
 })

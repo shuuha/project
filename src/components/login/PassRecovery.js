@@ -8,7 +8,8 @@ import {
     Image,
     TextInput,
     TouchableOpacity,
-    Keyboard
+    Keyboard,
+    ActivityIndicator
     } from 'react-native';
 import { observer, inject } from 'mobx-react'; 
 import { images } from './assets';
@@ -30,7 +31,7 @@ export class PassRecovery extends Component{
             }).start();
         }, 200)
     }
-
+    
     componentWillMount () {
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
         this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);        
@@ -53,7 +54,7 @@ export class PassRecovery extends Component{
 
 
     render(){
-        const { passRecovery : store } = this.props.store;
+        const { passRecovery : store, loading } = this.props.store;
         return(
             <Animated.View style={[
                     styles.container, 
@@ -73,6 +74,7 @@ export class PassRecovery extends Component{
                         resizeMode='contain'
                     />
                     <TextInput 
+                        editable={!loading}
                         value={store.value}
                         onChangeText={store.onChangeText}
                         returnKeyType='send'
@@ -88,10 +90,19 @@ export class PassRecovery extends Component{
                     <TouchableOpacity
                         style={{ flex: 1, alignItems: 'center', justifyContent: 'center', }}                        
                         onPress={store.onSendPress}
+                        disabled={loading}
                     >
+                    {
+                        loading ?
+                        <AcitivityIndicator
+                            size={percentH(6)}
+                            color='rgb(255, 255, 255)'
+                        />
+                        :
                         <Text
                             style={{ color: 'rgb(255, 255, 255)', fontSize: 18, fontWeight: '500'}}
                         >Send</Text>
+                    }
                     </TouchableOpacity>
                 </View>
             </Animated.View>

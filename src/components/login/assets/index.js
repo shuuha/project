@@ -7,7 +7,8 @@ const images = {
     "lock": require('./lock.png'),
     "mail": require('./mail.png'),
     "man": require('./man.png'),
-    "phone": require('./phone.png')
+    "phone": require('./phone.png'),
+    "loader": require('./loader.gif')
 }
 
 export { images };

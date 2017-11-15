@@ -10,8 +10,12 @@ import {
     Keyboard,
     Image,
     PixelRatio,
-    ActivityIndicator
+    Vibration, 
     } from 'react-native';
+
+import * as Animatable from 'react-native-animatable';
+
+import axios from 'axios';
 
 import { FBLogin, FBLoginManager } from 'react-native-facebook-login';
 import { observer, inject } from 'mobx-react';
@@ -23,6 +27,7 @@ import { images } from './assets';
 export class LoginView extends Component{
     state = {
         top : percentH(20),
+        newTop: null,
         hideLine: false
     }
 
@@ -48,6 +53,14 @@ export class LoginView extends Component{
   componentWillMount () {
     this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
     this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
+
+    // facebook token verify function
+    //
+    // const token = this.props.store.loginView.token;
+    // const url = 'https://graph.facebook.com/me?access_token='
+    // axios.get(url+token)
+    //     .then(res => console.log(res))
+    //     .catch(err => console.log(err));
   }
 
   componentWillUnmount () {
@@ -55,39 +68,55 @@ export class LoginView extends Component{
     this.keyboardDidHideListener.remove();
   }
 
+  componentDidUpdate(){
+      const { emailError, passError } = this.props.store.loginView;
+      if(emailError && passError){
+          this.refs.email.focus();
+      }
+    //   this.props.store.loginView.emailError = false;
+    //   this.props.store.loginView.passError = false;
+  }
+
   _keyboardDidShow = (e) => {
     // pushing the view up, the overall distance is calculated from : 
     // currentMarginTop - keyboardHeight + percent of (user field + pass field + login button)
-    this.setState({ top: this.state.top - e.endCoordinates.height + percentH(24), hideLine: true})
+    this.setState({ newTop: this.state.top - e.endCoordinates.height + percentH(24), hideLine: true})
   }
 
   _keyboardDidHide = () => {
-    this.setState({ top: percentH(20), hideLine: false})
+    this.setState({ newTop: null, hideLine: false})
   }
 
   login = () => {
-    //   FBLoginManager.loginWithPermissions(['email', 'user_friends'], (data, error)=>{
-    //     console.log(data, 'error: ', error)
-    // });
-    console.log(this);
+      FBLoginManager.loginWithPermissions(['email', 'user_friends'], (error, data)=>{
+          if(data && data.type){
+            // this.props.store.fbInfo.data = data;
+            console.log(data);
+            this.props.store.loginView.onLoginWithFbButtonPress(error, data);
+          }
+          else {
+              this.props.store.errorText = 'Unable to login with facebook';
+          }
+        // console.log('data: ', data, 'error: ', error);
+      })
   }
-
-  onLoginButtonPress = () => {
-      Keyboard.dismiss();
-      this.props.store.loginView.onLoginButtonPress();
-  }
-    render(){
-        const { loginView : store, loading, error  } = this.props.store;
+  
+    render(){        
+        const { loginView : store, loading, error  } = this.props.store;        
         return(
             <Animated.View             
                 style={[
-                    styles.container, { marginTop: this.state.top },
+                    styles.container, this.state.newTop && { marginTop: this.state.newTop },
                     {opacity: this.animatedLogin } 
                 ]}
-            >          
+            >
 
-
-                <View style={[styles.user]} > 
+                <Animatable.View style={[styles.user ]} 
+                    duration={500}                
+                    animation={store.emailError && store.shakeTrigger ? 'shake' : ''}
+                    useNativeDriver={true}
+                    onAnimationEnd = {()=> store.shakeTrigger = false}
+                > 
                     <Image 
                         style={{ 
                             height: PixelRatio.getPixelSizeForLayoutSize(6),
@@ -99,6 +128,7 @@ export class LoginView extends Component{
                     />
                     <TextInput 
                         editable={!loading}
+                        ref={'email'}
                         value={store.email}
                         onChangeText={store.onChangeEmail}
                         onFocus={store.onInputFocus}
@@ -109,11 +139,16 @@ export class LoginView extends Component{
                         placeholderTextColor='rgb(206, 206, 206)'
                         keyboardType='email-address'
                         underlineColorAndroid='transparent' 
-                        style={[styles.userText]}
+                        style={[styles.userText, store.emailError && styles.errorText]}
                     />
-                </View>
+                </Animatable.View>
             
-                <View style={styles.pass} >
+                <Animatable.View style={[styles.pass]} 
+                    duration={500}                
+                    animation={store.passError && store.shakeTrigger ? 'shake' : ''}
+                    useNativeDriver={true}
+                    onAnimationEnd = {()=> store.shakeTrigger = false}
+                >
                     <Image 
                         style={{ 
                             height: PixelRatio.getPixelSizeForLayoutSize(6), 
@@ -134,29 +169,30 @@ export class LoginView extends Component{
                         placeholder='Password'
                         secureTextEntry
                         underlineColorAndroid='transparent'
-                        style={styles.userText}
+                        style={[styles.userText, store.passError && styles.errorText]}
                         placeholderTextColor='rgb(206, 206, 206)' 
                     />
-                </View>
+                </Animatable.View>            
             
-            
-                <View style={styles.loginButton} >
+                <View style={[styles.loginButton, loading && { backgroundColor: 'transparent' }]} >
+                {
+                    loading ?
+                    <Image 
+                        style={{ height: percentH(5), alignSelf: 'center' }}
+                        source={images['loader']}
+                        resizeMode='contain'                        
+                    />
+                    :
                     <TouchableOpacity
                         style={{ flex: 1, alignItems: 'center', justifyContent: 'center', }}                        
-                        onPress={this.onLoginButtonPress}
+                        onPress={()=> store.onLoginButtonPress(this.refs, Vibration, this)}
                         disabled={loading}
-                    >
-                    {   loading ? 
-                        <ActivityIndicator 
-                            size={percentH(6)}
-                            color='rgb(255, 255, 255)'
-                        />
-                        :
+                    >                    
                         <Text
                             style={{ color: 'rgb(255, 255, 255)', fontSize: 18, fontWeight: '500'}}
                         >Log in</Text>
-                    }
                     </TouchableOpacity>
+                }
                 </View>
                 <View
                     style={[{ 
@@ -185,6 +221,7 @@ export class LoginView extends Component{
                         onLogin={function(data){
                             console.log("Logged in!");
                             console.log(data);
+                            
                         }}
                         onLoginFound={function(e){console.log('login found', e)}}
                         onLoginNotFound={function(e){console.log('not found', e)}}
@@ -232,16 +269,18 @@ const percentW = (num) => {
 const styles = StyleSheet.create({
     container: {        
         height: percentH(45),
-        width: percentW(64),        
+        width: percentW(74),
         alignSelf: 'center',
-        marginTop: percentH(20),        
+        marginTop: percentH(20),
+        paddingHorizontal: percentW(5)
     },
     user : {
         height: percentH(7),
         flexDirection: 'row', 
         justifyContent: 'flex-start',
-        alignItems: 'center',
+        alignItems: 'center',        
         borderTopWidth: 1,
+        borderBottomWidth: 1,
         borderColor: 'rgb(89, 113, 144)',
         borderStyle: 'solid'
     },
@@ -250,7 +289,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',        
         alignItems: 'center',
         marginBottom: percentH(1.5),
-        borderTopWidth: 1,
+        // borderTopWidth: 1,
         borderBottomWidth: 1,
         borderColor: 'rgb(89, 113, 144)',
         borderStyle: 'solid'
@@ -288,5 +327,11 @@ const styles = StyleSheet.create({
         fontSize: 16, 
         color: 'rgb(255, 255, 255)', 
         fontWeight: '500'
+    },
+    error: {
+        borderBottomColor: 'rgb(188, 0, 0)',
+    },
+    errorText: {
+        color: 'rgb(188, 0, 0)'
     }
 })

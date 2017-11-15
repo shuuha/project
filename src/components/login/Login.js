@@ -11,7 +11,8 @@ import {
     Register,
     Photos,
     LoggedIn,
-    ErrorText
+    ErrorText,
+    FBInfo
     } from '../login';
 import { observer, Provider } from 'mobx-react';
 import { NativeRouter as Router, Route } from 'react-router-native';
@@ -31,12 +32,15 @@ export class Login extends Component{
     render(){
         return(
             <Provider store={store} >
-                <Router>                        
+                <Router>
                     <View
                         style={{flex: 1, backgroundColor: 'rgb(25, 58, 101)'}}
                     >
-                        <Route  render={(props)=> { store.history=props.history;
-                                            return <BackButton {...props} /> }} />
+                        {
+                            store.showBackButton &&
+                                <Route  render={(props)=> { store.history=props.history;
+                                                    return <BackButton {...props} /> }} />
+                        }
                         { 
                             store.showLogo && 
                             <Logo />
@@ -50,6 +54,7 @@ export class Login extends Component{
                         <Route exact path='/register' component={Register} />
                         <Route exact path='/photos' component={Photos} />
                         <Route exact path='/loggedin' component={LoggedIn} />
+                        <Route exact path='/FBInfo' component={FBInfo} />
                     </View>
                 </Router>
             </Provider>

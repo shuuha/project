@@ -4,54 +4,91 @@ import {
     LoginView, 
     PassRecovery, 
     Register, 
-    SignUp
+    SignUp,
+    FBInfo
     } from './loginStore';
 
 class LoginStore{
     activation = new Activation(this);
     loginView = new LoginView(this);
     passRecovery = new PassRecovery(this);
-    register = new Register(this);
     signUp = new SignUp(this);
+    register = new Register(this);
+    fbInfo = new FBInfo(this);    
+
+    URL_NEWUSER = 'http://app.yayintel.com:8883/api/newuser';
+    URL_AUTH = 'http://app.yayintel.com:8883/api/authenticate';
+    URL_ONLINE = 'http://app.yayintel.com:8883/api/online';
+    URL_FB = 'http://app.yayintel.com:8883/api/authenticate/facebook'; 
+
     
+    @observable showLogo = true;
+    @observable loading = false; 
+    @observable errorText = null;
+    @observable showBackButton = true;
 
     showLogoAnimation = true;
-    
-    @observable showLogo = true; 
-    @observable loading = false;
-    @observable errorText = null;
+    backAfterVerification = false;
 
-    moveBack(){
-        this.history.goBack();
+    moveBack(n){        
+        if(n) {
+            this.history.go(-n);
+            this.history.entries.splice(-n, n)
+        }
+        else {
+            this.history.goBack();
+        }
         // this.currentPage--;        
     }
 
     backHandler(){
+        const { pathname } = this.history.location;
+
         if(this.removeMode){
             this.removeMode = false;
             return true;
         }
-        else if(this.history.location.pathname == '/register'){            
+        else if(!this.showBackButton){
+            return false;
+        }
+        else if(pathname == '/register'){            
             this.showLogo = true;
-            this.loading = false;
+            this.loading = false;            
+            this.moveBack(2);
+            this.backAfterVerification = true;
+            return true;
+        }        
+        else if(pathname == '/loggedin'){
+            this.showLogo = false;
             this.moveBack();
             return true;
-        }
-        else if(this.history.location.pathname != '/'){
+        }        
+        else if(pathname != '/'){
             this.moveBack();
             return true;
         }
         return false;
     }
 
+    @action
+    setInitialState(){
+        this.errorText = null;
+        this.loading = false;
+    }
+
     goBack(){
-        if(this.history.location.pathname == '/register'){            
-            this.showLogo = true;
-            this.loading = false;
-            this.moveBack();
-            return;
+        this.setInitialState();
+        const { pathname } = this.history.location;
+        if(pathname == '/register'){
+            this.showLogo = true;            
+            this.moveBack(2);
+            this.backAfterVerification = true;
         }
-        if(this.history.location.pathname != '/'){
+        else if(pathname == '/loggedin'){
+            this.showLogo = false;
+            this.moveBack();            
+        }
+        else if(this.history.location.pathname != '/'){
             this.moveBack()
         }
     }
