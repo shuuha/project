@@ -30,6 +30,7 @@ export class Login extends Component{
     }
 
     render(){
+        console.log(store);
         return(
             <Provider store={store} >
                 <Router>

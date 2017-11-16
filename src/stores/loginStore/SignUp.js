@@ -79,7 +79,7 @@ export class SignUp{
     }
 
     onSendPress = () => {
-        this.loginStore.history.push('/activation');
+        // this.loginStore.history.push('/activation');
 
         const phoneValueResubmitted = this.phoneValue === this.savedPhoneValue;
 
@@ -92,7 +92,7 @@ export class SignUp{
         else if(!this.phoneValue){
             this.onError('phoneValue');
         }
-        else if(this.loginStore.backAfterVerification && 
+        else if(this.loginStore.movedBackAfterVerification && 
                                     !phoneValueResubmitted){
         this.loginStore.history.push('/register');
         }
@@ -100,7 +100,8 @@ export class SignUp{
             this.loginStore.loading = true;
             const data = {
                 name: this.fullname,
-                // phon: this.codeValue + this.phoneValue
+                phon: this.codeValue + this.phoneValue
+                // 420 773186737
             }
             axios.post(this.loginStore.URL_NEWUSER, data)
                 .then(res => {
@@ -108,7 +109,8 @@ export class SignUp{
                     if(res.data.success){
                         this.loginStore.token = res.data.token;
                         this.savedPhoneValue = this.phoneValue;
-                        // this.loginStore.history.push('/activation');
+
+                        this.loginStore.history.push('/activation');
                     }
                     else {
                         this.loginStore.errorText = res.data.message;    

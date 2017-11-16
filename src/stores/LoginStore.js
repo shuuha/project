@@ -28,7 +28,7 @@ class LoginStore{
     @observable showBackButton = true;
 
     showLogoAnimation = true;
-    backAfterVerification = false;
+    movedBackAfterVerification = false;
 
     moveBack(n){        
         if(n) {
@@ -55,7 +55,7 @@ class LoginStore{
             this.showLogo = true;
             this.loading = false;            
             this.moveBack(2);
-            this.backAfterVerification = true;
+            this.movedBackAfterVerification = true;
             return true;
         }        
         else if(pathname == '/loggedin'){
@@ -82,7 +82,7 @@ class LoginStore{
         if(pathname == '/register'){
             this.showLogo = true;            
             this.moveBack(2);
-            this.backAfterVerification = true;
+            this.movedBackAfterVerification = true;
         }
         else if(pathname == '/loggedin'){
             this.showLogo = false;

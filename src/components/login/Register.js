@@ -62,7 +62,12 @@ export class Register extends Component{
 
   
     render(){
-        const { register : store, register : { photos }, loading } = this.props.store;
+        const { 
+            register : store, 
+            register : { photos }, 
+            loading, 
+            errorText 
+            } = this.props.store;
         return(
             <Animated.View             
                 style={[
@@ -86,7 +91,7 @@ export class Register extends Component{
                 <View
                     style={[styles.userNameView, 
                         !this.state.showToS && {height: percentH(6), marginVertical: 0 } ]} > 
-                    <Text style={styles.userNameText} >{store.loginStore.signUp.fullname}</Text>
+                    <Text style={styles.userNameText} >{ errorText ? '' : this.props.store.signUp.fullname}</Text>
                 </View>
 
 

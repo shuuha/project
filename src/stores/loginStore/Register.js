@@ -111,6 +111,7 @@ export class Register{
                 mail: this.email,
                 pass: this.pass
             };
+            console.log('sent data on register: ', data); 
             axios.post(this.loginStore.URL_NEWUSER, data)
                 .then(res => { 
                     console.log(res);

@@ -70,36 +70,36 @@ export class Activation{
 
     @action
     onEnter = () => {
-        this.loginStore.showLogo = false;
-        this.loginStore.history.push('/register');
-        // if(this.inputsAreValid){
-        //     this.loginStore.loading = true;
-        //     const data = {
-        //         token: this.loginStore.token,
-        //         code: this.values.join('')
-        //     }
-        //     axios.post(this.loginStore.URL_NEWUSER, data)
-        //         .then(res => {
-        //             if(res.data.success){
-        //                 this.loginStore.token = res.data.token;
-        //                 this.loginStore.showLogo = false;
-        //                 this.loginStore.history.push('/register');
-        //             }
-        //             else {
-        //                 this.wrongSmsCode = true;
-        //                 this.onError();
-        //             }
-        //                 this.loginStore.loading = false;
-        //         })
-        //         .catch( err => {
-        //             this.loginStore.errorText = 'Network error';
-        //             this.loginStore.loading = false;                    
-        //             console.log(err)
-        //         });
-        // }
-        // else {
-        //     this.onError();
-        // }
+        // this.loginStore.showLogo = false;
+        // this.loginStore.history.push('/register'); 
+        if(this.inputsAreValid){
+            this.loginStore.loading = true;
+            const data = {
+                token: this.loginStore.token,
+                code: this.values.join('')
+            }
+            axios.post(this.loginStore.URL_NEWUSER, data)
+                .then(res => {
+                    if(res.data.success){
+                        this.loginStore.token = res.data.token;
+                        this.loginStore.showLogo = false;
+                        this.loginStore.history.push('/register');
+                    }
+                    else {
+                        this.wrongSmsCode = true;
+                        this.onError();
+                    }
+                        this.loginStore.loading = false;
+                })
+                .catch( err => {
+                    this.loginStore.errorText = 'Network error';
+                    this.loginStore.loading = false;                    
+                    console.log(err)
+                });
+        }
+        else {
+            this.onError();
+        }
     }
 
     onSelectionChange = (e) => {
