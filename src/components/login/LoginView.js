@@ -13,10 +13,9 @@ import {
     Vibration, 
     } from 'react-native';
 
+import { Redirect } from 'react-router-native';
 import * as Animatable from 'react-native-animatable';
-
 import axios from 'axios';
-
 import { FBLogin, FBLoginManager } from 'react-native-facebook-login';
 import { observer, inject } from 'mobx-react';
 import { FBLoginView } from '../login';
@@ -48,6 +47,8 @@ export class LoginView extends Component{
                 duration: 500
             }).start(()=> this.props.store.loginView.isLoginViewInitialRender = false);
         }, ms)
+        this.props.store.loginView.Vibration = Vibration;
+        this.props.store.loginView.refs = this.refs;
     }
 
   componentWillMount () {
@@ -104,6 +105,10 @@ export class LoginView extends Component{
     render(){        
         const { loginView : store, loading, error  } = this.props.store;        
         return(
+            this.props.store.loggedIn ?
+
+            <Redirect to='/loggedin' />
+            :            
             <Animated.View             
                 style={[
                     styles.container, this.state.newTop && { marginTop: this.state.newTop },
@@ -133,7 +138,7 @@ export class LoginView extends Component{
                         onChangeText={store.onChangeEmail}
                         onFocus={store.onInputFocus}
                         returnKeyType='next'
-                        // blurOnSubmit={false}
+                        blurOnSubmit={false}
                         onSubmitEditing={()=> store.onSubmitEmail(this.refs.pass)}
                         placeholder='email@email.com'
                         placeholderTextColor='rgb(206, 206, 206)'

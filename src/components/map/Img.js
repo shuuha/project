@@ -69,8 +69,7 @@ export class Img extends React.Component {
 
   componentWillUnmount(){
     this._translateX.removeAllListeners();
-    this._translateY.removeAllListeners(); 
-    this._onDragGestureEvent.removeListener();
+    this._translateY.removeAllListeners();
   }
 
 
@@ -242,14 +241,13 @@ export class Img extends React.Component {
                     ],
                   },
                 ]}
-              >
-                  <Image                    
-                    style={{ flex: 1, height: null, width: null, position: 'relative'}}
+              >                    
+                  <Image
+                    style={{ height, width, position: 'absolute'}}
                     source={this.props.source}
                     // resizeMode='cover'
-                  >                  
+                  />
                     {this.props.children}
-                  </Image>
               </Animated.View>
           </PinchGestureHandler>
         {/*</RotationGestureHandler>*/}
@@ -258,6 +256,8 @@ export class Img extends React.Component {
     );
   }
 }
+
+const { height, width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({  
     imageStyle: {

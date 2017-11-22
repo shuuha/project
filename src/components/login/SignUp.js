@@ -46,21 +46,16 @@ export class SignUp extends Component{
     }    
 
     componentWillUnmount () {
-        Keyboard.dismiss();
         this.keyboardDidShowListener.remove();
         this.keyboardDidHideListener.remove();
-    }
-
-    componentDidUpdate(){
-        if(!this.props.store.signUp.inputsAreValid){
-            this.refs.inputFullname.focus();
-        }
-    }
+        Keyboard.dismiss();
+    }    
 
     _keyboardDidShow = (e) => {
     // pushing the view up, the overall distance is calculated from : 
     // currentMarginTop - keyboardHeight + percent of (text + user field + login button)
-    this.setState({ newTop: this.state.top - e.endCoordinates.height + percentH(27)})
+    this.setState({ newTop: this.state.top - e.endCoordinates.height + percentH(27)});
+    this.props.store.errorText = null;
     }
 
     _keyboardDidHide = () => {
@@ -103,7 +98,7 @@ export class SignUp extends Component{
                         autoCorrect={false}
                         returnKeyType='next'
                         onFocus={store.onFullnameFocus}
-                        // blurOnSubmit={false}
+                        blurOnSubmit={false}
                         onSubmitEditing={()=>store.onNameSubmitPress(this.refs)}
                         underlineColorAndroid='transparent'
                         style={[styles.fullnameText, store.fullnameError && styles.errorText]}
@@ -130,7 +125,7 @@ export class SignUp extends Component{
                             ref={'inputCodeValue'}
                             value={store.codeValue}
                             onChangeText={store.onChangeCode}
-                            // blurOnSubmit={false}
+                            blurOnSubmit={false}
                             onSubmitEditing={()=>store.onCodeSubmitPress(this.refs)}
                             onBlur={store.onBlur}
                             onFocus={store.onCodeFocus}
@@ -184,7 +179,7 @@ export class SignUp extends Component{
                     :
                     <TouchableOpacity
                         style={{ flex: 1, alignItems: 'center', justifyContent: 'center', }}                        
-                        onPress={()=> store.onSendPress(Keyboard, this.refs, Vibration)}
+                        onPress={store.onSendPress}
                         disabled={loading}
                     >
                         <Text

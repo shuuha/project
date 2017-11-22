@@ -7,8 +7,9 @@ import { observer, inject } from 'mobx-react';
 @observer
 export class ErrorText extends Component{
     render(){
-        const { errorText } = this.props.store;
-        return(            
+        const { errorText} = this.props.store;
+        return(
+            errorText &&
             <View
                 style={{ 
                     position: 'absolute', 
@@ -19,7 +20,7 @@ export class ErrorText extends Component{
             >
                 <Text
                     style={{ 
-                        color: 'red', 
+                        color: 'red',
                         fontSize: 20, 
                         fontFamily: 'Arial',
                         textAlign: 'center'  

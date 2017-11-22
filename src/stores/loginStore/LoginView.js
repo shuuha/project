@@ -9,32 +9,16 @@ export class LoginView{
     @observable emailError = false;
     @observable passError = false;
     @observable userOnline = false;
-    @observable shakeTrigger = false;
+    @observable shakeTrigger = false;    
 
     isLoginViewInitialRender = true;
     timerId;
+    refs;
+    Vibration;
 
     constructor(loginStore){
         this.loginStore = loginStore;
     }
-
-    stopPing = () => {
-        clearInterval(this.timerId);
-    }
-
-    startPing = () => {
-        const data = { 
-            // position: { lat: this.loginStore.lat, lng: this.loginStore.lng },
-            position: {lat: 100, lng: 100 },
-            token: this.loginStore.token
-        };
-        this.timerId = setInterval(()=>{
-            axios.post(this.loginStore.URL_ONLINE, data)
-                // .then((res) => console.log(res.data))
-                .catch((err)=> this.loginStore.errorText = err);
-        }, 5000)
-    }
-
 
     @action
     onChangeEmail = (text) => {
@@ -54,21 +38,21 @@ export class LoginView{
         this.loginStore.errorText = null
     }
 
-    @action
-    onLoginButtonPress = (refs, Vibration) => {
-        if(!this.email){ 
-            this.emailError = true;
+    ifPropHasNoValue = (prop) => {
+            this[prop + 'Error'] = true;
             this.shakeTrigger = true;
-            Vibration.vibrate([300, 100]);
-            refs.email.focus();
-        }
-        else if(!this.pass){
-            this.passError = true;
-            this.shakeTrigger = true;
-            Vibration.vibrate([300, 100]);
-            refs.pass.focus();
-        }
+            this.Vibration.vibrate([300, 100]);
+            this.refs[prop].focus();
+    }
 
+    @action
+    onLoginButtonPress = () => {
+        if(!this.email){ 
+            this.ifPropHasNoValue('email');
+        } 
+        else if(!this.pass){
+            this.ifPropHasNoValue('pass');
+        }
         else if(!this.emailError && !this.passError){
             this.loginStore.loading = true;
             this.loginStore.errorText = null;
@@ -90,14 +74,16 @@ export class LoginView{
                 .then((res)=>{
                     if(res.data.token){
                         this.loginStore.token = res.data.token;
+                        this.loginStore.showBackButton = false;
+                        this.loginStore.loggedIn = true;
                         this.loginStore.history.push('/loggedin');
                     }
                     else {
                         this.emailError = true;
                         this.passError = false;
                         this.pass = '';
-                        Vibration.vibrate([300, 100]);
-                        refs.email.focus();
+                        this.Vibration.vibrate([300, 100]);
+                        this.refs.pass.focus();
                         // this.loginStore.errorText = res.data.message;
                     }
                     this.loginStore.loading = false;
@@ -124,38 +110,44 @@ export class LoginView{
         this.loginStore.history.push('/activation');
     }
     
+    createFacebookData = (data, profile) => {
+        return {
+            id: data.credentials.userId,
+            token: data.credentials.token,
+            email: profile.email,
+            name: profile.name,
+            imageUrl: profile.picture.data.url
+        };        
+    }
+
+    handleSuccess = (res) => {
+        if(res.data.token){
+            this.loginStore.token = res.data.token;
+            this.loginStore.history.push('/FBInfo');
+        }
+        else {
+            this.loginStore.errorText = res.data.message;
+        }
+    }
+
     onLoginWithFbButtonPress = (error, data) => {
 
         this.getCurrentLocation()
             .then((res)=> {
                 const profile = JSON.parse(data.profile);
-                const facebookData = {
-                    id: data.credentials.userId,
-                    token: data.credentials.token,
-                    email: profile.email,
-                    name: profile.name,
-                    imageUrl: profile.picture.data.url
-                };
-
-            return localStorage.merge('facebookData', facebookData) 
-                    .then(()=> localStorage.get('facebookData'))
-                    .then(data => axios.post(this.loginStore.URL_AUTH, data))
-                    .catch((err) => console.log('local storage i/o error', err));
+                this.createFacebookData(data, profile);
+            // return localStorage.merge('facebookData', facebookData) 
+            //         .then(()=> localStorage.get('facebookData'))
+            //         .then(data => axios.post(this.loginStore.URL_AUTH, data))
+            //         .catch((err) => console.log('local storage i/o error', err));
+                return axios.post(this.loginStore.URL_AUTH, facebookData);
             })
-            .then((res)=> {
-                if(res.data.token){
-                    this.loginStore.token = res.data.token;
-                    this.loginStore.history.push('/FBInfo');
-                }
-                else {
-                    this.loginStore.errorText = res.data.message;
-                }
-            })            
+            .then((res)=> this.handleSuccess())
             .catch((err) => {
                 this.loginStore.errorText = 'Network error';
                 console.log(err);
             });
-    }   
+    }
 
     onSubmitEmail = (nextInput) => {
         nextInput.focus();
@@ -169,11 +161,15 @@ export class LoginView{
         const promise = new Promise((resolve, reject)=>{
             navigator.geolocation.getCurrentPosition(({coords}) => {
                 const { latitude, longitude } = coords;
-                this.loginStore.lat = latitude;
-                this.loginStore.lng = longitude;
+                // this.loginStore.lat = latitude;
+                // this.loginStore.lng = longitude;
+                this.loginStore.lat = 100;
+                this.loginStore.lng = 100;
                 resolve(coords);
             },
             (error) => {
+                this.loginStore.loading = false;
+                this.loginStore.errorText = 'No location provider available';
                 console.log(JSON.stringify(error));
                 reject(error)},
             {timeout: 10000} 
@@ -182,15 +178,39 @@ export class LoginView{
         return promise;
     }    
 
-    onOnlinePress = () => {
+    stopPing = () => {
+        clearInterval(this.timerId); 
+    }
+
+    startPing = () => {
+        const userData = { 
+            // position: { lat: this.loginStore.lat, lng: this.loginStore.lng },
+            position: {lat: 100, lng: 100},
+            online: this.userOnline,
+            token: this.loginStore.token
+        };
+        this.timerId = setInterval(()=>{
+            axios.post(this.loginStore.URL_ONLINE, userData)
+                // .then((res) => console.log(res.data))
+                .catch((err)=> {
+                    console.log('startPing function error');
+                    this.loginStore.errorText = err;
+                });
+        }, 5000);
+    }
+
+
+    goOnline = () => {
         this.loginStore.loading = true;
+        this.loginStore.errorText = true;
         this.getCurrentLocation()
             .then(()=> { 
                 const data = { 
                     position: { lat: this.loginStore.lat, lng: this.loginStore.lng },
                     token: this.loginStore.token
                 };
-                return axios.post(this.loginStore.URL_ONLINE, data)
+                console.log(data);
+                return axios.post(this.loginStore.URL_ONLINE, data);
             })
             .then((res)=> {
                 if(res.data.success){
@@ -199,6 +219,33 @@ export class LoginView{
                     this.startPing();
                 }
             })
-            .catch((err)=> console.log(err))
+            .catch((err)=> console.log( 'goOnline function error', err))
+    }
+
+    goOffline = () => {
+        this.loginStore.loading = true;
+        const data = {
+            goOffline: true,
+            token: this.loginStore.token
+        };
+        axios.post(this.loginStore.URL_ONLINE, data)
+            .then(res => {
+                console.log(res);
+                if(res.data.success){
+                    this.userOnline = false;
+                    this.loginStore.loading = false;
+                    this.stopPing();
+                }
+            })
+            .catch(err => console.log('goOffline function error', err));
+    }
+
+    onOnlinePress = () => {
+        if(this.userOnline){
+            this.goOffline();
+        } else {
+            this.goOnline();
+        }
+        
     }
 }

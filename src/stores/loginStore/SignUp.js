@@ -17,8 +17,8 @@ export class SignUp{
 
     refs;
     savedPhoneValue;
+    phoneIsVerified = false;
     Vibration;
-    Keyboard;
 
     @action
     onChangeName = (e) => {
@@ -72,58 +72,62 @@ export class SignUp{
         this.shakeTrigger = true;
         this.Vibration.vibrate([300, 100]);
         this.refs['input' + propNameUpper].focus(); 
+    }    
+
+    phoneIsNotResubmitted = () => {
+        return this.phoneValue === this.savedPhoneValue;
+    }    
+
+    sendPhoneAndName = (data) => {
+        axios.post(this.loginStore.URL_NEWUSER, data)
+            .then(res => {
+                if(res.data.success){
+                    this.loginStore.token = res.data.token;
+                    this.savedPhoneValue = this.phoneValue;
+                    this.loginStore.phoneVerified = false;
+                    this.loginStore.history.push('/activation');
+                } else {
+                    this.loginStore.errorText = res.data.message;    
+                }
+                    this.loginStore.loading = false;                
+            })
+            .catch(err => {
+                this.loginStore.loading = false;
+                this.loginStore.errorText = 'Network error';
+                console.log(err, 'sendUserData function error')});
     }
 
-    inputsAreValid(){
-        return this.fullnameError && this.codeValueError && this.phoneValueError;
-    }
-
-    onSendPress = () => {
-        // this.loginStore.history.push('/activation');
-
-        const phoneValueResubmitted = this.phoneValue === this.savedPhoneValue;
-
-        if(!this.fullname){
-            this.onError('fullname');
-        }
-        else if(!this.codeValue){
-            this.onError('codeValue');
-        }
-        else if(!this.phoneValue){
-            this.onError('phoneValue');
-        }
-        else if(this.loginStore.movedBackAfterVerification && 
-                                    !phoneValueResubmitted){
-        this.loginStore.history.push('/register');
-        }
-        else if(this.inputsAreValid){
-            this.loginStore.loading = true;
-            const data = {
+    getPhoneAndName = () => {
+        return {
                 name: this.fullname,
                 phon: this.codeValue + this.phoneValue
                 // 420 773186737
-            }
-            axios.post(this.loginStore.URL_NEWUSER, data)
-                .then(res => {
-                    console.log(res);
-                    if(res.data.success){
-                        this.loginStore.token = res.data.token;
-                        this.savedPhoneValue = this.phoneValue;
+        }
+    }
 
-                        this.loginStore.history.push('/activation');
-                    }
-                    else {
-                        this.loginStore.errorText = res.data.message;    
-                    }
-                        this.loginStore.loading = false;
-                    
-                })
-                .catch(err => {
-                    this.loginStore.loading = false;
-                    this.loginStore.errorText = 'Network error';
-                    this.Keyboard.dismiss();
-                    console.log(err, 'sign up, on send press')});
+    onSendPress = () => {
+        if(!this.fullname){
+            this.onError('fullname');
+        } 
+        else if(!this.codeValue){
+            this.onError('codeValue');
+        } 
+        else if(!this.phoneValue){
+            this.onError('phoneValue');
         }        
+        else if (this.phoneIsNotResubmitted()){
+            if(this.loginStore.phoneVerified){
+                this.loginStore.moveBackCount = 1;
+                this.loginStore.history.push('/register');
+            }
+            else {
+                this.loginStore.history.push('/activation');
+            }
+        }
+        else {
+            this.loginStore.loading = true;
+            this.sendPhoneAndName(this.getPhoneAndName());
+        }
     }
 
     onNameSubmitPress = () => {

@@ -5,12 +5,17 @@ export class Activation{
     @observable values = ['', '', '' , ''];    
     @observable errorValues = false;
     @observable wrongSmsCode = false;
+    @observable resendStatus = '';
+    @observable canResend = true;
+    @observable swingTrigger = false;
+
+    RESEND_CODE_DELAY = 10000;
     activeInputIndex;
     refs;
     Vibration;
 
     constructor(loginStore){
-        this.loginStore = loginStore 
+        this.loginStore = loginStore;        
     }
     
     onInputChange = (refs, i, e, keyCode) => {
@@ -23,7 +28,7 @@ export class Activation{
 
     onInputDeleteKeyPress = (keyCode) => {
         let i = this.activeInputIndex;
-        if(keyCode == 67 && i > 0 && this.values[i].length == 0){
+        if(keyCode == 67 && i > 0 && this.values[i].length == 0){ 
             this.refs['input' + --i].focus();
         }
     }
@@ -68,45 +73,89 @@ export class Activation{
         }
     }
 
+    onSuccessResponse = (res) => {
+        this.loginStore.token = res.data.token;
+        this.loginStore.phoneVerified = true;
+        this.loginStore.moveBackCount = 2;
+        this.loginStore.history.push('/register');
+        this.values = ['', '', '' , ''];
+    }
+
+    sendData = (data) => {
+        axios.post(this.loginStore.URL_NEWUSER, data)
+            .then(res => {
+                if(res.data.success){
+                    this.onSuccessResponse(res);
+                } 
+                else {
+                    this.wrongSmsCode = true;
+                    this.onError();
+                }
+                    this.loginStore.loading = false;
+            })
+            .catch( err => {
+                this.loginStore.errorText = 'Network error';
+                this.loginStore.loading = false;                    
+                console.log( 'sendSmsCode function error', err)
+            });
+    }
+
     @action
-    onEnter = () => {
-        // this.loginStore.showLogo = false;
-        // this.loginStore.history.push('/register'); 
+    onEnter = () => {        
         if(this.inputsAreValid){
             this.loginStore.loading = true;
             const data = {
                 token: this.loginStore.token,
                 code: this.values.join('')
             }
-            axios.post(this.loginStore.URL_NEWUSER, data)
-                .then(res => {
-                    if(res.data.success){
-                        this.loginStore.token = res.data.token;
-                        this.loginStore.showLogo = false;
-                        this.loginStore.history.push('/register');
-                    }
-                    else {
-                        this.wrongSmsCode = true;
-                        this.onError();
-                    }
-                        this.loginStore.loading = false;
-                })
-                .catch( err => {
-                    this.loginStore.errorText = 'Network error';
-                    this.loginStore.loading = false;                    
-                    console.log(err)
-                });
+            this.sendData(data);
         }
         else {
             this.onError();
         }
     }
 
-    onSelectionChange = (e) => {
+    enableResendCode = () => {
+        setTimeout(()=> {
+            this.canResend = true;
+        }, this.RESEND_CODE_DELAY);
+    }
+
+    resendCode = () => {
+        if(this.canResend){
+            this.values = ['', '', '' , ''];
+            this.loginStore.loading = true;
+            const data = this.loginStore.signUp.getPhoneAndName();
+            
+            const send = () => {
+                return axios.post(this.loginStore.URL_NEWUSER, data)
+                    .then(res => {
+                        if(res.data.success){
+                            this.swingTrigger = true;
+                            this.resendMessage = 'Sms will be delivered shortly';
+                        }
+                        else {
+                            this.loginStore.errorText = res.data.message;
+                        }
+                        this.loginStore.loading = false;
+                        this.enableResendCode();
+                    })
+                    .catch(err => {
+                        this.enableResendCode();
+                        console.log('resend code function error', err)});
+            }
+
+            setTimeout(send, 5000);
+
+            this.canResend = false;
+        }
     }
 
     onFocus = (i) => {
         this.loginStore.errorText = null;
-        this.activeInputIndex = i;
+        this.resendMessage = '';
+        if(i) {
+            this.activeInputIndex = i;
+        }
     }
 }

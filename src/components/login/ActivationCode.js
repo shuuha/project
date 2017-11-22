@@ -33,11 +33,12 @@ export class ActivationCode extends Component{
                 toValue: 1,
                 duration: 200
             }).start();
+        this.refs.input0.focus();
         }, 200)
 
         this.props.store.activation.refs = this.refs;
         this.props.store.activation.Vibration = Vibration;
-        this.refs.input0.focus();
+        Keyboard.dismiss();
     }
 
     componentWillMount () {
@@ -84,10 +85,27 @@ export class ActivationCode extends Component{
                 onFocus,
                 onSubmitEditing,
                 errorValues,
-                wrongSmsCode },
+                wrongSmsCode,
+                resendCode,
+                resendMessage,
+                canResend,
+                swingTrigger },
             loading,
             errorText
             } = this.props.store;
+
+            const renderText = () => {
+                if(errorText){
+                    return ' ';
+                }
+                else if(resendMessage){
+                    return resendMessage;
+                }
+                else {
+                    return 'Enter activation code';
+                }
+            }
+
         return(
             
             <Animated.View style={[
@@ -96,10 +114,17 @@ export class ActivationCode extends Component{
                     { marginTop: this.state.top }
                 ]} 
             >
-                <Text
-                    style={styles.text}
-                >{errorText ? " " : 'Enter activation code'}</Text>
-
+                <Animatable.View
+                    style={styles.textContainer}
+                    animation={swingTrigger ? 'swing' : ''}
+                    duration={500}
+                    useNativeDrive={true}
+                    onAnimationEnd={()=> this.props.store.activation.swingTrigger = false}
+                >
+                    <Text
+                        style={styles.text}
+                    >{renderText()}</Text>
+                </Animatable.View>
                 <Animatable.View
                         duration={500}
                         animation={ errorValues ? 'shake' : '' }
@@ -151,7 +176,7 @@ export class ActivationCode extends Component{
                     :
                     <TouchableOpacity
                         style={{ flex: 1, alignItems: 'center', justifyContent: 'center', }}                        
-                        onPress={()=> onEnter(Vibration)}
+                        onPress={onEnter}
                         disabled={loading}
                     >
                         <Text
@@ -160,12 +185,13 @@ export class ActivationCode extends Component{
                     </TouchableOpacity>
                 }
                 </View>
-                <TouchableOpacity
-                    // onPress={}
-                    disabled={loading}
+                <TouchableOpacity                    
+                    onPress={resendCode}
+                    disabled={!canResend || loading }
                 >
                     <Text
-                        style={[styles.text, { marginBottom: percentH(0), marginTop: percentH(15)} ]}
+                        style={[styles.text, { marginTop: percentH(15)},
+                                !canResend && { color: 'rgb(137, 137, 137)' } ]}
                     >Resend activation code</Text>
                 </TouchableOpacity>
             </Animated.View>
@@ -185,7 +211,7 @@ const percentW = (num) => {
 
 const styles = StyleSheet.create({
     container: {        
-        height: percentH(45),
+        height: percentH(55),
         width: percentW(64),
         alignSelf: 'center',
         marginTop: percentH(10),
@@ -210,15 +236,20 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontWeight: '500'
     },
-    text: {
-        alignSelf: 'center',
+    textContainer: {
         width: percentW(64),
+        height: percentH(8),
+        marginBottom: percentH(2.5),
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    text: {
+        // alignSelf: 'center',
         textAlign: 'center',
         color: 'rgb(255, 255, 255)',
         fontFamily: 'Arial',
         fontSize: 20, 
         fontWeight: '500',
-        marginBottom: percentH(2.5)
     },
     enterButton: {
         height: percentH(5.5),

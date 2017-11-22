@@ -12,10 +12,11 @@ import {
     Photos,
     LoggedIn,
     ErrorText,
-    FBInfo
+    FBInfo,
+    ServiceMenu
     } from '../login';
 import { observer, Provider } from 'mobx-react';
-import { NativeRouter as Router, Route } from 'react-router-native';
+import { NativeRouter as Router, Route, Redirect } from 'react-router-native';
 import { loginStore as store } from '../../stores/LoginStore';
 
 @observer
@@ -25,7 +26,7 @@ export class Login extends Component{
         BackHandler.addEventListener('hardwareBackPress', ()=> store.backHandler());
     }
 
-    componentWillUnmount () {       
+    componentWillUnmount () {
         BackHandler.removeEventListener('hardwareBackPress', ()=> store.backHandler());
     }
 
@@ -37,16 +38,14 @@ export class Login extends Component{
                     <View
                         style={{flex: 1, backgroundColor: 'rgb(25, 58, 101)'}}
                     >
-                        {
-                            store.showBackButton &&
-                                <Route  render={(props)=> { store.history=props.history;
+                    
+                        <Route render={(props)=> { store.history=props.history;
+                                return <ServiceMenu {...props} /> }} />
+
+{/*                            <Route  render={(props)=> { store.history=props.history;
                                                     return <BackButton {...props} /> }} />
-                        }
-                        { 
-                            store.showLogo && 
-                            <Logo />
-                        }
-                        { store.errorText && <ErrorText /> }
+                            <Logo /> 
+                            <ErrorText /> 
 
                         <Route exact path="/" component={LoginView} />
                         <Route exact path='/passrecovery' component={PassRecovery} />
@@ -55,7 +54,7 @@ export class Login extends Component{
                         <Route exact path='/register' component={Register} />
                         <Route exact path='/photos' component={Photos} />
                         <Route exact path='/loggedin' component={LoggedIn} />
-                        <Route exact path='/FBInfo' component={FBInfo} />
+                        <Route exact path='/FBInfo' component={FBInfo} />*/}
                     </View>
                 </Router>
             </Provider>

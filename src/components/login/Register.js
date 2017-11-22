@@ -43,6 +43,8 @@ export class Register extends Component{
   componentWillMount () {
     this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
     this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
+    
+    this.props.store.showLogo = false;
   }
 
   componentWillUnmount () {
@@ -53,7 +55,8 @@ export class Register extends Component{
   _keyboardDidShow = (e) => {
     // pushing the view up, the overall distance is calculated from : 
     // currentMarginTop - keyboardHeight + percent of (input fields + button)
-    this.setState({ top: -e.endCoordinates.height + percentH(30), showToS: false})
+    this.setState({ top: -e.endCoordinates.height + percentH(30), showToS: false});
+    this.props.store.errorText = null;
   }
 
   _keyboardDidHide = () => {
@@ -78,7 +81,7 @@ export class Register extends Component{
             <View style={styles.avatarView} >
                 <TouchableWithoutFeedback
                     onPress={store.onAvatarPress}
-                    disable={loading}
+                    disabled={loading}
                 >
                     <Image
                         style={[styles.avatar, photos.imageUri && styles.image]}
@@ -118,6 +121,7 @@ export class Register extends Component{
                         returnKeyType='next'
                         onChangeText={store.onChangeEmail}
                         onFocus={store.onInputFocus}
+                        blurOnSubmit={false}
                         onSubmitEditing={()=> store.onSubmitEmail(this.refs.pass)}
                         placeholder='email@email.com'
                         placeholderTextColor='rgb(206, 206, 206)'
@@ -149,6 +153,7 @@ export class Register extends Component{
                         value={store.pass}
                         onChangeText={store.onChangePass}
                         onFocus={store.onInputFocus}
+                        blurOnSubmit={false}
                         onSubmitEditing={()=> store.onSubmitPass(this.refs.passConfirm)}
                         placeholder='Password'
                         placeholderTextColor='rgb(206, 206, 206)'

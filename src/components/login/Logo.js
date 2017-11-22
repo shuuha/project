@@ -38,7 +38,8 @@ export class Logo extends Component{
 
     render(){
         return(
-
+                this.props.store.showLogo
+                &&
                 <Animated.View
                     style={[styles.logoView, this.props.store.showLogoAnimation && this.logoTransform()  ]}
                 >                

@@ -117,23 +117,30 @@ export class Register{
                     console.log(res);
                     if(res.data.success){
                         this.loginStore.token = res.data.token;
-                    return localStorage.save('serverToken', this.loginStore.token)
+                        // return localStorage.save('serverToken', this.loginStore.token);
                     }
                     else {
-                        console.log('no successfull response');
-                        return;                        
+                        this.loginStore.errorText = res.data.message;
                     }
                 })
-                .then(() => {
-                    return localStorage.get('serverToken')
-                            .then((res) => console.log(res))
-                            .then(()=> {
-                                console.log('registration complete');
-                                this.loginStore.showLogo = true;
-                                this.loginStore.loading = false;
-                                this.loginStore.showBackButton = false;
-                                this.loginStore.history.push('/loggedin')})
-                            .catch((e)=> console.log(e, 'register, local storage'))
+                // .then(() => {
+                //     return localStorage.get('serverToken')
+                //             .then((res) => console.log(res, this.loginStore.token))
+                //             .then(()=> {
+                //                 console.log('registration complete');
+                //                 this.loginStore.showLogo = true;
+                //                 this.loginStore.loading = false;
+                //                 this.loginStore.showBackButton = false;
+                //                 this.loginStore.history.push('/loggedin')})
+                //             .catch((e)=> console.log(e, 'register, local storage'))
+                // })
+                .then(()=> {
+                    console.log('registration complete');
+                    this.loginStore.loggedIn = true;
+                    this.loginStore.showLogo = true;
+                    this.loginStore.loading = false;
+                    this.loginStore.showBackButton = false;
+                    this.loginStore.history.push('/loggedin');
                 })
                 .catch(err => {
                     this.loginStore.loading = false;

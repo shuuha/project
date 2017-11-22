@@ -5,7 +5,8 @@ import {
     PassRecovery, 
     Register, 
     SignUp,
-    FBInfo
+    FBInfo,
+    ServiceMenu
     } from './loginStore';
 
 class LoginStore{
@@ -14,7 +15,8 @@ class LoginStore{
     passRecovery = new PassRecovery(this);
     signUp = new SignUp(this);
     register = new Register(this);
-    fbInfo = new FBInfo(this);    
+    fbInfo = new FBInfo(this);
+    serviceMenu = new ServiceMenu(this);
 
     URL_NEWUSER = 'http://app.yayintel.com:8883/api/newuser';
     URL_AUTH = 'http://app.yayintel.com:8883/api/authenticate';
@@ -26,9 +28,10 @@ class LoginStore{
     @observable loading = false; 
     @observable errorText = null;
     @observable showBackButton = true;
+    @observable loggedIn = false;
 
     showLogoAnimation = true;
-    movedBackAfterVerification = false;
+    moveBackCount = 1;             
 
     moveBack(n){        
         if(n) {
@@ -38,7 +41,6 @@ class LoginStore{
         else {
             this.history.goBack();
         }
-        // this.currentPage--;        
     }
 
     backHandler(){
@@ -48,26 +50,12 @@ class LoginStore{
             this.removeMode = false;
             return true;
         }
-        else if(!this.showBackButton){
+        else if(pathname == '/' || pathname == '/loggedin'){
             return false;
         }
-        else if(pathname == '/register'){            
-            this.showLogo = true;
-            this.loading = false;            
-            this.moveBack(2);
-            this.movedBackAfterVerification = true;
-            return true;
+        else {
+            return this.handleBackNavigation();
         }        
-        else if(pathname == '/loggedin'){
-            this.showLogo = false;
-            this.moveBack();
-            return true;
-        }        
-        else if(pathname != '/'){
-            this.moveBack();
-            return true;
-        }
-        return false;
     }
 
     @action
@@ -76,21 +64,17 @@ class LoginStore{
         this.loading = false;
     }
 
-    goBack(){
-        this.setInitialState();
+    handleBackNavigation(){
+        this.setInitialState();        
         const { pathname } = this.history.location;
         if(pathname == '/register'){
             this.showLogo = true;            
-            this.moveBack(2);
-            this.movedBackAfterVerification = true;
-        }
-        else if(pathname == '/loggedin'){
-            this.showLogo = false;
-            this.moveBack();            
-        }
-        else if(this.history.location.pathname != '/'){
-            this.moveBack()
-        }
+            this.moveBack(this.moveBackCount);
+        }        
+        else {
+            this.moveBack();
+        }        
+        return true;
     }
 
     goForward(){

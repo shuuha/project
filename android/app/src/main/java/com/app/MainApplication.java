@@ -37,6 +37,11 @@ public class MainApplication extends Application implements ReactApplication {
             new FacebookLoginPackage() // <------ add the package
       );
     }
+
+    @Override
+    protected String getJSMainModuleName() {
+      return "index";
+    }
   };
 
   @Override

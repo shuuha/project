@@ -17,11 +17,11 @@ export class BackButton extends Component{
     render(){        
     const { pathname } = this.props.history.location;
         return(            
-             pathname !== '/'
-             &&
+             (pathname !== '/'
+             && this.props.store.showBackButton) &&
             <TouchableOpacity
                 style={styles.button}
-                onPress={()=> this.props.store.goBack()}
+                onPress={()=> this.props.store.handleBackNavigation()}
             >
                 <Image
                     source={images['arrow']}
