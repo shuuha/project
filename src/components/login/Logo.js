@@ -4,7 +4,8 @@ import {
     Image, 
     Dimensions, 
     StyleSheet, 
-    View
+    View,
+    Platform
     } from 'react-native';
 import { observer, inject } from 'mobx-react';
 
@@ -65,11 +66,15 @@ const percentW = (num) => {
 
 const styles = StyleSheet.create({
     logoView:{
-        // position: 'absolute',
-        // top: '38%',
-        // left: '11%'
-        marginTop: percentH(7),
-        marginLeft: percentW(11)        
+        ...Platform.select({
+            ios: {
+                marginTop: percentH(11)
+            },
+            android: {
+                marginTop: percentH(7)
+            }
+        }),  
+        marginLeft: percentW(11)
     },
     logo: {
         height: percentH(22),
