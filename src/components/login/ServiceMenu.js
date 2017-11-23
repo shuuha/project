@@ -11,6 +11,7 @@ import {
 
 import { observer, inject } from 'mobx-react';
 import { SlidingButton } from './SlidingButton';
+import { normalize } from './normalize';
 
 import { images } from './assets';
 
@@ -123,7 +124,7 @@ const styles = StyleSheet.create({
     companyName: {
         color: 'rgb(255, 255, 255)', 
         fontFamily: 'Arial', 
-        fontSize: 25,
+        fontSize: normalize(28),
         alignSelf: 'center',        
         marginTop: percentH(7),
         marginBottom: percentH(4),
@@ -132,7 +133,7 @@ const styles = StyleSheet.create({
         color: 'rgb(255, 255, 255)', 
         fontFamily: 'Arial', 
         fontStyle: 'italic',
-        fontSize: 20,
+        fontSize: normalize(23),
         alignSelf: 'center',
         marginBottom: percentH(2)
     },
@@ -163,7 +164,7 @@ const styles = StyleSheet.create({
     text: {
         color: 'rgb(255, 255, 255)', 
         fontFamily: 'Arial', 
-        fontSize: 25,
+        fontSize: normalize(28),
         marginVertical: percentH(1)
     },
     icon: {
@@ -191,6 +192,6 @@ const styles = StyleSheet.create({
     buttonText: {
         color: 'rgb(255, 255, 255)', 
         fontFamily: 'Arial', 
-        fontSize: 16
+        fontSize: normalize(18)
     }
 })

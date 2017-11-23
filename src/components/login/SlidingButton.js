@@ -8,7 +8,9 @@ import {
     PanResponder,
 } from 'react-native';
 
-const DISTANCE_TO_TRIGGER = -150;
+const { width, height } = Dimensions.get('window');
+
+const DISTANCE_TO_TRIGGER = -(width - width/5);
 
 
 export class SlidingButton extends Component {
@@ -80,6 +82,7 @@ export class SlidingButton extends Component {
     }
 
     render(){
+        console.log(width);
         return(
             <Animated.View
                 pointerEvents = 'box-none'
@@ -103,7 +106,7 @@ export class SlidingButton extends Component {
     }
 }
 
-const { width, height } = Dimensions.get('window');
+
 
 const percentH = (num) => {
     return (height / 100) * num;

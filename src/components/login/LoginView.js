@@ -103,7 +103,7 @@ export class LoginView extends Component{
   }
   
     render(){        
-        const { loginView : store, loading, error  } = this.props.store;        
+        const { loginView : store, loading, error  } = this.props.store;
         return(
             this.props.store.loggedIn ?
 
@@ -264,14 +264,19 @@ export class LoginView extends Component{
 }
 
 const { height, width } = Dimensions.get('window');
-
+//calculated based on the width == 360
+const SCALE_FACTOR = 20;
+const responsiveFontsize = width / 20;
 const percentH = (num) => {
     return (height / 100) * num;
-}
+};
 
 const percentW = (num) => {
     return (width / 100) * num;
-}
+};
+
+
+
 
 const styles = StyleSheet.create({
     container: {        
