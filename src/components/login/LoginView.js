@@ -133,6 +133,7 @@ export class LoginView extends Component{
                     />
                     <TextInput 
                         editable={!loading}
+                        autoCorrect={false}
                         ref={'email'}
                         value={store.email}
                         onChangeText={store.onChangeEmail}
@@ -165,6 +166,7 @@ export class LoginView extends Component{
                     />
                     <TextInput 
                         ref={'pass'}
+                        autoCorrect={false}
                         editable={!loading}
                         value={store.pass}
                         onChangeText={store.onChangePass}

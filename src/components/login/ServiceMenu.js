@@ -8,7 +8,9 @@ import {
     Dimensions,
     TouchableOpacity
 } from 'react-native';
+
 import { observer, inject } from 'mobx-react';
+import { SlidingButton } from './SlidingButton';
 
 import { images } from './assets';
 
@@ -44,7 +46,7 @@ export class ServiceMenu extends Component {
             >{ name } </Text>
             </TouchableOpacity>
         );
-    }
+    }    
 
     render(){
         const { 
@@ -53,9 +55,11 @@ export class ServiceMenu extends Component {
             currentTime, 
             timeToComplete,
             price,
+            balance,
             onPhotoshopPress,
             onHtmlPress,
-            onWebDesignPress
+            onWebDesignPress,
+            onSlideSuccess
         } = this.props.store.serviceMenu;
         return(
             <View
@@ -80,7 +84,7 @@ export class ServiceMenu extends Component {
                         style={styles.iconAndTextContainer}
                     >            
                         { this.renderIconAndText('clock1', currentTime) }
-                        { this.renderIconAndText('money', price) }
+                        { this.renderIconAndText('money', balance) }
                         { this.renderIconAndText('clock', timeToComplete, { borderBottomWidth: 0}) }
                     </View>
 
@@ -93,7 +97,10 @@ export class ServiceMenu extends Component {
                     </View>
                 </View>
 
-
+                    <SlidingButton 
+                        onSlideSuccess={onSlideSuccess}
+                        price={price}
+                    />
             </View>
         );
     }
