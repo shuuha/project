@@ -112,8 +112,9 @@ export class Register extends Component{
                         resizeMode='contain'
                     />
                     <TextInput
-                        editable={!loading}
                         ref={'email'}
+                        editable={!loading}
+                        autoCorrect={false}
                         value={store.email}
                         returnKeyType='next'
                         onChangeText={store.onChangeEmail}
@@ -141,8 +142,9 @@ export class Register extends Component{
                         resizeMode='contain'
                     />
                     <TextInput
-                        editable={!loading}
                         ref={'pass'}
+                        editable={!loading}
+                        autoCorrect={false}
                         value={store.pass}
                         onChangeText={store.onChangePass}
                         onFocus={store.onInputFocus}
@@ -171,8 +173,9 @@ export class Register extends Component{
                         resizeMode='contain'
                     />
                     <TextInput
-                        editable={!loading}
                         ref={'passConfirm'}
+                        editable={!loading}
+                        autoCorrect={false}
                         value={store.passConfirm}
                         onChangeText={store.onChangePassConfirm}
                         onFocus={store.onInputFocus}

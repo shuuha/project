@@ -9,8 +9,7 @@ import {
     TextInput,
     TouchableOpacity,
     Keyboard,
-    Vibration,
-    Alert
+    Vibration
     } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { observer, inject } from 'mobx-react';
@@ -144,7 +143,7 @@ export class ActivationCode extends Component{
                                 <TextInput
                                     editable={!loading}
                                     ref={`input${i}`}
-                                    onKeyPress={(e)=> Alert.alert(e)}
+                                    // onKeyPress={(e)=> Alert.alert(e)}
                                     keyboardType='numeric'
                                     underlineColorAndroid='transparent'
                                     value={values[i]}

@@ -26,11 +26,19 @@ export class Photos{
     }
 
     getPhotos = () => {
-        CameraRoll.getPhotos({
+        const fetchParams = {
             first: 35,
             groupName: 'Camera',
+            groupTypes: 'All',
             assetType: 'Photos'
-        })
+        };
+
+        if (Platform.OS === 'android') {
+        // not supported in android
+            delete fetchParams.groupTypes;
+        }
+
+        CameraRoll.getPhotos(fetchParams)
         .then((res) => {
             this.photos = this.photos.concat(res.edges);
         })
@@ -48,13 +56,14 @@ export class Photos{
         const fetchParams = {
             first: 35,
             groupName: 'Camera',
+            groupTypes: 'All',
             assetType: 'Photos',
         };
 
-        // if (Platform.OS === 'android') {
-        // // not supported in android
-        //     delete fetchParams.groupTypes;
-        // }
+        if (Platform.OS === 'android') {
+        // not supported in android
+            delete fetchParams.groupTypes;
+        }
 
         if (this.lastCursor) {
             fetchParams.after = this.lastCursor;
