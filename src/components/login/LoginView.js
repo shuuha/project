@@ -11,6 +11,7 @@ import {
     Image,
     PixelRatio,
     Vibration, 
+    Platform
     } from 'react-native';
 
 import { Redirect } from 'react-router-native';
@@ -123,11 +124,7 @@ export class LoginView extends Component{
                     onAnimationEnd = {()=> store.shakeTrigger = false}
                 > 
                     <Image 
-                        style={{ 
-                            height: PixelRatio.getPixelSizeForLayoutSize(6),
-                            width: PixelRatio.getPixelSizeForLayoutSize(6),
-                            marginRight: 5
-                        }}
+                        style={styles.icon}
                         source={images['mail']}
                         resizeMode='contain'
                     />
@@ -156,11 +153,7 @@ export class LoginView extends Component{
                     onAnimationEnd = {()=> store.shakeTrigger = false}
                 >
                     <Image 
-                        style={{ 
-                            height: PixelRatio.getPixelSizeForLayoutSize(6), 
-                            width: PixelRatio.getPixelSizeForLayoutSize(6), 
-                            marginRight: 5
-                        }}
+                        style={styles.icon}
                         source={images['lock']}
                         resizeMode='contain'
                     />
@@ -285,6 +278,19 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         marginTop: percentH(20),
         paddingHorizontal: percentW(5)
+    },
+    icon: {
+        ...Platform.select({
+            ios: {
+                height: PixelRatio.getPixelSizeForLayoutSize(8),
+                width: PixelRatio.getPixelSizeForLayoutSize(8),
+            },
+            android: {
+                height: PixelRatio.getPixelSizeForLayoutSize(6),
+                width: PixelRatio.getPixelSizeForLayoutSize(6)
+            }
+        }),
+        marginRight: 5
     },
     user : {
         height: percentH(7),
