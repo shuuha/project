@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         ...Platform.select({
             ios: {
-                top: percentH(5)
+                top: percentH(4)
             },
             android: {
                 top: percentH(3)

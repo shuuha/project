@@ -290,7 +290,7 @@ const styles = StyleSheet.create({
                 width: PixelRatio.getPixelSizeForLayoutSize(6)
             }
         }),
-        marginRight: 5
+        marginRight: percentW(1)
     },
     user : {
         height: percentH(7),
@@ -307,7 +307,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',        
         alignItems: 'center',
         marginBottom: percentH(1.5),
-        // borderTopWidth: 1,
         borderBottomWidth: 1,
         borderColor: 'rgb(89, 113, 144)',
         borderStyle: 'solid'
@@ -317,7 +316,6 @@ const styles = StyleSheet.create({
         color: 'rgb(255, 255, 255)', 
         fontFamily: 'Arial', 
         fontSize: 18, 
-        /*fontWeight: '500'*/
     },
     loginButton: {        
         height: percentH(5.5),

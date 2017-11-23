@@ -10,7 +10,8 @@ import {
     TouchableOpacity,
     Keyboard,
     PixelRatio,
-    Vibration
+    Vibration,
+    Platform
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { images } from './assets';
@@ -224,8 +225,16 @@ const styles = StyleSheet.create({
         borderStyle: 'solid'        
     },
     fullnameImage: {
-        height: PixelRatio.getPixelSizeForLayoutSize(6), 
-        width: PixelRatio.getPixelSizeForLayoutSize(6),
+        ...Platform.select({
+            ios: {
+                height: PixelRatio.getPixelSizeForLayoutSize(8),
+                width: PixelRatio.getPixelSizeForLayoutSize(8),
+            },
+            android: {
+                height: PixelRatio.getPixelSizeForLayoutSize(6),
+                width: PixelRatio.getPixelSizeForLayoutSize(6)
+            }
+        }),        
         marginRight: percentW(4),
         marginLeft: -percentW(1)
     },
@@ -247,8 +256,16 @@ const styles = StyleSheet.create({
         borderStyle: 'solid',
     },
     phoneImage: {
-        height: PixelRatio.getPixelSizeForLayoutSize(6),
-        width: PixelRatio.getPixelSizeForLayoutSize(6),
+        ...Platform.select({
+            ios: {
+                height: PixelRatio.getPixelSizeForLayoutSize(8),
+                width: PixelRatio.getPixelSizeForLayoutSize(8),
+            },
+            android: {
+                height: PixelRatio.getPixelSizeForLayoutSize(6),
+                width: PixelRatio.getPixelSizeForLayoutSize(6)
+            }
+        }), 
         marginRight: percentW(1),
         marginLeft: percentW(1)
     },
