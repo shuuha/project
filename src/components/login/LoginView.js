@@ -333,6 +333,7 @@ const styles = StyleSheet.create({
         marginTop: percentH(12.5),
         marginLeft: percentW(1),
         marginRight: percentW(1),
+        marginBottom: percentW(1)
     },
     forgetPassText: {
         fontFamily: 'Arial', 
