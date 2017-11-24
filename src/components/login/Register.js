@@ -263,10 +263,10 @@ const styles = StyleSheet.create({
             },
             android: {
                 height: PixelRatio.getPixelSizeForLayoutSize(6),
-                width: PixelRatio.getPixelSizeForLayoutSize(6)
+                width: PixelRatio.getPixelSizeForLayoutSize(6),
+                marginRight: percentW(1)
             }
         }),
-        marginRight: percentW(1)
     },
     userNameView : {
         height: percentH(10),
