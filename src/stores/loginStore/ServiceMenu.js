@@ -4,7 +4,7 @@ import { Vibration } from 'react-native';
 export class ServiceMenu{
     @observable currentTime = '13:00';
     @observable timeToComplete = '4 Hours';
-    @observable price = '$10';
+    @observable _seconds = 10;
     @observable balance = '$200';
     @observable _companyName ='Yay Intelligence as';
     @observable companyAddress = 'Markvein  35A, 0554 Oslo';
@@ -16,6 +16,11 @@ export class ServiceMenu{
     @computed
     get companyName(){
         return this._companyName.toUpperCase();
+    }
+
+    @computed
+    get seconds(){
+        return this._seconds + ' S';
     }
 
     onPhotoshopPress = () => {

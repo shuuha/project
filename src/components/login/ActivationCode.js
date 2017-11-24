@@ -181,7 +181,11 @@ export class ActivationCode extends Component{
                         disabled={loading}
                     >
                         <Text
-                            style={{ color: 'rgb(255, 255, 255)', fontSize: 18, fontWeight: '500'}}
+                            style={{ 
+                                color: 'rgb(255, 255, 255)', 
+                                fontSize: percentW(5), 
+                                fontWeight: '500'
+                            }}
                         >Enter</Text>
                     </TouchableOpacity>
                 }
@@ -230,7 +234,7 @@ const styles = StyleSheet.create({
         flex: 0.8,
         color: 'rgb(255, 255, 255)', 
         fontFamily: 'Arial', 
-        fontSize: 25, 
+        fontSize: percentW(7),
         borderBottomWidth: 1,
         borderColor: 'rgb(89, 113, 144)',
         borderStyle: 'solid',
@@ -249,7 +253,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         color: 'rgb(255, 255, 255)',
         fontFamily: 'Arial',
-        fontSize: 20, 
+        fontSize: percentW(5.6),  
         fontWeight: '500',
     },
     enterButton: {

@@ -9,7 +9,9 @@ import {
     TextInput,
     TouchableOpacity,
     Keyboard,
-    ActivityIndicator
+    ActivityIndicator,
+    PixelRatio,
+    Platform
     } from 'react-native';
 import { observer, inject } from 'mobx-react'; 
 import { images } from './assets';
@@ -69,14 +71,15 @@ export class PassRecovery extends Component{
 
                 <View style={[styles.email]} >
                     <Image 
-                        style={{ height: percentH(5), width: percentH(5), marginRight: 5}}
+                        style={styles.icon}
                         source={images['mail']}
                         resizeMode='contain'
                     />
                     <TextInput 
                         editable={!loading}
+                        autoCorrect={false}
                         value={store.value}
-                        onChangeText={store.onChangeText}
+                        onChangeText={store.onChangeText} 
                         returnKeyType='send'
                         onSubmitEditing={store.onSubmitPass}
                         placeholder='email@email.com'
@@ -100,7 +103,11 @@ export class PassRecovery extends Component{
                         />
                         :
                         <Text
-                            style={{ color: 'rgb(255, 255, 255)', fontSize: 18, fontWeight: '500'}}
+                            style={{ 
+                                color: 'rgb(255, 255, 255)', 
+                                fontSize: percentW(5), 
+                                fontWeight: '500'
+                            }}
                         >Send</Text>
                     }
                     </TouchableOpacity>
@@ -127,6 +134,19 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         marginTop: percentH(10),
     },
+    icon: {
+        ...Platform.select({
+            ios: {
+                height: PixelRatio.getPixelSizeForLayoutSize(8),
+                width: PixelRatio.getPixelSizeForLayoutSize(8),
+            },
+            android: {
+                height: PixelRatio.getPixelSizeForLayoutSize(6),
+                width: PixelRatio.getPixelSizeForLayoutSize(6)
+            }
+        }),
+        marginRight: percentW(1)
+    },
     email : {
         height: percentH(7),
         flexDirection: 'row', 
@@ -141,7 +161,7 @@ const styles = StyleSheet.create({
         flex: 1,
         color: 'rgb(255, 255, 255)', 
         fontFamily: 'Arial', 
-        fontSize: 18, 
+        fontSize: percentW(5), 
         /*fontWeight: '500'*/
     },
     text: {
@@ -150,7 +170,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         color: 'rgb(255, 255, 255)',
         fontFamily: 'Arial',
-        fontSize: 18, 
+        fontSize: percentW(5), 
         fontWeight: '500',
         marginBottom: percentH(2.5)
     },

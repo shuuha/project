@@ -47,6 +47,7 @@ const percentW = (num) => {
 const styles = StyleSheet.create({
     button: {
         position: 'absolute',
+        zIndex: 2,
         ...Platform.select({
             ios: {
                 top: percentH(4)

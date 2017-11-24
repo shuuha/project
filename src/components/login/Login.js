@@ -37,16 +37,15 @@ export class Login extends Component{
                 <Router>
                     <View
                         style={{flex: 1, backgroundColor: 'rgb(25, 58, 101)'}}
-                    >
-                    
- {/*                       <Route render={(props)=> { store.history=props.history;
+                    >                    
+                        {/*<Route exact path='/servicemenu' render={(props)=> { store.history=props.history;
                                 return <ServiceMenu {...props} /> }} />*/}
 
-                            <Route  render={(props)=> { store.history=props.history;
-                                                    return <BackButton {...props} /> }} />
-                            <Logo /> 
-                            <ErrorText /> 
-
+                        <Route  render={(props)=> { store.history=props.history;
+                                                return <BackButton {...props} /> }} />
+                        <Logo /> 
+                        <ErrorText /> 
+                        
                         <Route exact path="/" component={LoginView} />
                         <Route exact path='/passrecovery' component={PassRecovery} />
                         <Route exact path='/signup' component={SignUp} />
@@ -55,6 +54,7 @@ export class Login extends Component{
                         <Route exact path='/photos' component={Photos} />
                         <Route exact path='/loggedin' component={LoggedIn} />
                         <Route exact path='/FBInfo' component={FBInfo} />
+                        <Route exact path='/servicemenu' component={ServiceMenu} />
                     </View>
                 </Router>
             </Provider>

@@ -92,61 +92,62 @@ export class Register{
 
     @action
     onRegisterPress = () => {
-        if(!this.isEmailValid){
-            this.emailError = true;
-            this.onError('email');
-        }
-        else if(!this.isPassValid){
-            this.passError = true;
-            this.onError('pass');
-        }
-        else if(!this.isPassConfirmValid){
-            this.passConfirmError = true;
-            this.onError('passConfirm');
-        }        
-        else if(this.inputsAreValid){
-            this.loginStore.loading = true;
-            const data = {
-                token: this.loginStore.token,
-                mail: this.email,
-                pass: this.pass
-            };
-            console.log('sent data on register: ', data); 
-            axios.post(this.loginStore.URL_NEWUSER, data)
-                .then(res => { 
-                    console.log(res);
-                    if(res.data.success){
-                        this.loginStore.token = res.data.token;
-                        // return localStorage.save('serverToken', this.loginStore.token);
-                    }
-                    else {
-                        this.loginStore.errorText = res.data.message;
-                    }
-                })
-                // .then(() => {
-                //     return localStorage.get('serverToken')
-                //             .then((res) => console.log(res, this.loginStore.token))
-                //             .then(()=> {
-                //                 console.log('registration complete');
-                //                 this.loginStore.showLogo = true;
-                //                 this.loginStore.loading = false;
-                //                 this.loginStore.showBackButton = false;
-                //                 this.loginStore.history.push('/loggedin')})
-                //             .catch((e)=> console.log(e, 'register, local storage'))
-                // })
-                .then(()=> {
-                    console.log('registration complete');
-                    this.loginStore.loggedIn = true;
-                    this.loginStore.showLogo = true;
-                    this.loginStore.loading = false;
-                    this.loginStore.showBackButton = false;
-                    this.loginStore.history.push('/loggedin');
-                })
-                .catch(err => {
-                    this.loginStore.loading = false;
-                    this.loginStore.errorText = 'Network error';
-                    console.log(err, 'register, on register press')})
-        }        
+        this.loginStore.history.push('/loggedin');
+        // if(!this.isEmailValid){
+        //     this.emailError = true;
+        //     this.onError('email');
+        // }
+        // else if(!this.isPassValid){
+        //     this.passError = true;
+        //     this.onError('pass');
+        // }
+        // else if(!this.isPassConfirmValid){
+        //     this.passConfirmError = true;
+        //     this.onError('passConfirm');
+        // }        
+        // else if(this.inputsAreValid){
+        //     this.loginStore.loading = true;
+        //     const data = {
+        //         token: this.loginStore.token,
+        //         mail: this.email,
+        //         pass: this.pass
+        //     };
+        //     console.log('sent data on register: ', data); 
+        //     axios.post(this.loginStore.URL_NEWUSER, data)
+        //         .then(res => { 
+        //             console.log(res);
+        //             if(res.data.success){
+        //                 this.loginStore.token = res.data.token;
+        //                 // return localStorage.save('serverToken', this.loginStore.token);
+        //             }
+        //             else {
+        //                 this.loginStore.errorText = res.data.message;
+        //             }
+        //         })
+        //         // .then(() => {
+        //         //     return localStorage.get('serverToken')
+        //         //             .then((res) => console.log(res, this.loginStore.token))
+        //         //             .then(()=> {
+        //         //                 console.log('registration complete');
+        //         //                 this.loginStore.showLogo = true;
+        //         //                 this.loginStore.loading = false;
+        //         //                 this.loginStore.showBackButton = false;
+        //         //                 this.loginStore.history.push('/loggedin')})
+        //         //             .catch((e)=> console.log(e, 'register, local storage'))
+        //         // })
+        //         .then(()=> {
+        //             console.log('registration complete');
+        //             this.loginStore.loggedIn = true;
+        //             this.loginStore.showLogo = true;
+        //             this.loginStore.loading = false;
+        //             this.loginStore.showBackButton = false;
+        //             this.loginStore.history.push('/loggedin');
+        //         })
+        //         .catch(err => {
+        //             this.loginStore.loading = false;
+        //             this.loginStore.errorText = 'Network error';
+        //             console.log(err, 'register, on register press')})
+        // }        
     }    
 
     @action

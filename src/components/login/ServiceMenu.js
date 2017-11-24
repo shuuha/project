@@ -7,7 +7,8 @@ import {
     PixelRatio,
     Dimensions,
     TouchableOpacity,
-    Platform
+    Platform,
+    Animated
 } from 'react-native';
 
 import { observer, inject } from 'mobx-react';
@@ -18,6 +19,17 @@ import { images } from './assets';
 @inject('store')
 @observer
 export class ServiceMenu extends Component {
+
+    animatedView = new Animated.Value(0);
+
+    componentDidMount = () => {
+        setTimeout(()=>{
+            Animated.timing(this.animatedView, {
+                toValue: 1,
+                duration: 200
+            }).start();
+        }, 200)
+    }
 
     renderIconAndText = (icon, text, style) => {
         return (
@@ -55,7 +67,7 @@ export class ServiceMenu extends Component {
             companyAddress, 
             currentTime, 
             timeToComplete,
-            price,
+            seconds,
             balance,
             onPhotoshopPress,
             onHtmlPress,
@@ -63,8 +75,8 @@ export class ServiceMenu extends Component {
             onSlideSuccess
         } = this.props.store.serviceMenu;
         return(
-            <View
-                style={styles.container}
+            <Animated.View
+                style={[styles.container,  { opacity: this.animatedView } ]}
             >
                 <Text
                     style={styles.companyName}
@@ -100,9 +112,9 @@ export class ServiceMenu extends Component {
 
                     <SlidingButton 
                         onSlideSuccess={onSlideSuccess}
-                        price={price}
+                        seconds={seconds}
                     />
-            </View>
+            </Animated.View>
         );
     }
 }

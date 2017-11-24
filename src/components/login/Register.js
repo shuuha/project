@@ -194,7 +194,7 @@ export class Register extends Component{
                 <View
                     style={styles.tosView}
                 >
-                    <Text style={[styles.tosText, {fontSize: 14, color: 'rgb(255, 255, 255)' }]} >
+                    <Text style={[styles.tosText, {fontSize: percentW(3.9), color: 'rgb(255, 255, 255)' }]} >
                         By registering you accept our
                     </Text>
 
@@ -224,7 +224,7 @@ export class Register extends Component{
                             disabled={loading}
                         >                        
                             <Text
-                                style={{ color: 'rgb(255, 255, 255)', fontSize: 18, fontWeight: '500'}}
+                                style={{ color: 'rgb(255, 255, 255)', fontSize: percentW(5), fontWeight: '500'}}
                             >Register</Text>
                         </TouchableOpacity>
                         }
@@ -278,7 +278,7 @@ const styles = StyleSheet.create({
         color: 'rgb(255, 255, 255)', 
         fontFamily: 'Arial', 
         fontStyle: 'italic',
-        fontSize: 20,
+        fontSize: percentW(5.6),
     },
     avatar: {
         height: percentH(10),
@@ -323,8 +323,7 @@ const styles = StyleSheet.create({
         flex: 1,
         color: 'rgb(255, 255, 255)', 
         fontFamily: 'Arial', 
-        fontSize: 20, 
-        /*fontWeight: '500'*/
+        fontSize: percentW(5.6)
     },
     registerButton: {
         height: percentH(5.5),
@@ -342,7 +341,7 @@ const styles = StyleSheet.create({
     tosText: {
         textAlign: 'center',        
         fontFamily: 'Arial', 
-        fontSize: 13, 
+        fontSize: percentW(3.7), 
         color: 'rgb(76, 154, 100)'
     },
     error: {

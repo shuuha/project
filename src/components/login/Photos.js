@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
     },
     header: {
         position: 'absolute',
-        top: percentH(2.5),
+        top: percentH(5),
         left: percentW(40),
         justifyContent: 'center',
         alignItems: 'center',

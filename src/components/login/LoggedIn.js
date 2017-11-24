@@ -5,7 +5,8 @@ import {
     Dimensions,
     StyleSheet,
     TouchableOpacity,
-    ActivityIndicator
+    ActivityIndicator,
+    Animated
     } from 'react-native';
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -16,6 +17,22 @@ import { observer, inject } from 'mobx-react';
 @observer
 export class LoggedIn extends Component{
     
+    animatedView = new Animated.Value(0);
+
+    componentWillMount(){
+        this.props.store.showLogo = true;
+        this.props.store.showBackButton = false;
+    }
+
+    componentDidMount = () => {
+        setTimeout(()=>{
+            Animated.timing(this.animatedView, {
+                toValue: 1,
+                duration: 200
+            }).start();
+        }, 200)
+    }
+
     componentWillUnmount(){
         this.props.store.loginView.stopPing();
     }
@@ -24,28 +41,56 @@ export class LoggedIn extends Component{
         const { loading, loginView : { userOnline, onOnlinePress } } = this.props.store;
 
         return(
-            <TouchableOpacity
-                style={{ flex: 1}}
-                onPress={onOnlinePress}
+            <Animated.View style={[{ flex: 1},  { opacity: this.animatedView }]}>
+            <View 
+                style={{ 
+                    flex: 0.2, 
+                    flexDirection: 'row', 
+                    justifyContent: 'center', 
+                    alignItems: 'center'
+                }}
             >
-                <View
-                    style={[styles.container, loading && { alignItems: 'center' } ]}
+                <TouchableOpacity
+                    style={{ 
+                        height: percentH(7), 
+                        width: percentW(30), 
+                        backgroundColor: 'rgb(95, 189, 103)', 
+                        borderRadius: 5,                        
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                    }}
+                    onPress={()=> {
+                        this.props.store.showLogo = false;
+                        this.props.store.history.push('/servicemenu')}}
                 >
-                    {
-                    loading ? 
-                    <ActivityIndicator
-                        size={percentW(20)}
-                        color='rgb(255, 255, 255)'
-                    />
-                    :
-                    <Icon 
-                        name='check-circle-outline'
-                        style={[styles.icon, userOnline && { color:'rgb(94, 189, 100)' } ]}
-                    />
-                    }
+                    <Text
+                        style={{ color: 'white', fontWeight: '500' }}
+                    >Fake request</Text>
+                </TouchableOpacity>
+            </View>
+                <TouchableOpacity
+                    style={{ flex: 0.8}}
+                    onPress={onOnlinePress}
+                >
+                    <View
+                        style={[styles.container, loading && { alignItems: 'center' } ]}
+                    >
+                        {
+                        loading ? 
+                        <ActivityIndicator
+                            size={percentW(20)}
+                            color='rgb(255, 255, 255)'
+                        />
+                        :
+                        <Icon 
+                            name='check-circle-outline'
+                            style={[styles.icon, userOnline && { color:'rgb(94, 189, 100)' } ]}
+                        />
+                        }
 
-                </View>
-            </TouchableOpacity>
+                    </View>
+                </TouchableOpacity>
+            </Animated.View>
         );
     }
 }

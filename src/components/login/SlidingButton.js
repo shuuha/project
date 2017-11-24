@@ -94,11 +94,11 @@ export class SlidingButton extends Component {
                     {...this.panResponder.panHandlers}
                     style={this.transformStyles()}
                 >
-                    <Text style={styles.text} >{this.props.price}</Text>
+                        <Text style={styles.text} >Slide to accept</Text>
                     <View
                         style={styles.textContainer}
                     >
-                        <Text style={styles.text} >Slide to accept</Text>
+                        <Text style={styles.text} >{this.props.seconds}</Text>
                     </View>
                 </Animated.View>
             </Animated.View>

@@ -16,7 +16,7 @@ export class ErrorText extends Component{
                     top: '35%', 
                     width: '64%', 
                     alignSelf: 'center',
-                    zIndex: 100
+                    zIndex: 1
                 }}
             >
                 <Text

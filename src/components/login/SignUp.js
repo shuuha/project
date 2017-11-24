@@ -184,7 +184,11 @@ export class SignUp extends Component{
                         disabled={loading}
                     >
                         <Text
-                            style={{ color: 'rgb(255, 255, 255)', fontSize: 18, fontWeight: '500'}}
+                            style={{ 
+                                color: 'rgb(255, 255, 255)', 
+                                fontSize: percentW(5), 
+                                fontWeight: '500'
+                            }}
                         >Send</Text>
 
                     </TouchableOpacity>
@@ -242,7 +246,7 @@ const styles = StyleSheet.create({
         flex: 1,
         color: 'rgb(255, 255, 255)', 
         fontFamily: 'Arial', 
-        fontSize: 18, 
+        fontSize: percentW(5), 
         /*fontWeight: '500'*/
     },    
     phone : {
@@ -250,7 +254,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row', 
         justifyContent: 'flex-start',
         alignItems: 'center',
-        // borderTopWidth: 1,
         borderBottomWidth: 1,
         borderColor: 'rgb(89, 113, 144)',
         borderStyle: 'solid',
@@ -260,20 +263,22 @@ const styles = StyleSheet.create({
             ios: {
                 height: PixelRatio.getPixelSizeForLayoutSize(8),
                 width: PixelRatio.getPixelSizeForLayoutSize(8),
+                marginRight: percentW(2),
+                marginLeft: percentW(1)
             },
             android: {
                 height: PixelRatio.getPixelSizeForLayoutSize(6),
-                width: PixelRatio.getPixelSizeForLayoutSize(6)
+                width: PixelRatio.getPixelSizeForLayoutSize(6),
+                marginRight: percentW(1),
+                marginLeft: percentW(1)
             }
         }), 
-        marginRight: percentW(1),
-        marginLeft: percentW(1)
     },
     phoneText: {
         flex: 1,
         color: 'rgb(255, 255, 255)', 
         fontFamily: 'Arial', 
-        fontSize: 18, 
+        fontSize: percentW(5), 
         /*fontWeight: '500'*/
     },
     text: {
@@ -282,7 +287,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         color: 'rgb(255, 255, 255)',
         fontFamily: 'Arial',
-        fontSize: 18, 
+        fontSize: percentW(5), 
         fontWeight: '500',
         marginBottom: percentH(3)
     },

@@ -189,7 +189,7 @@ export class LoginView extends Component{
                         disabled={loading}
                     >                    
                         <Text
-                            style={{ color: 'rgb(255, 255, 255)', fontSize: 18, fontWeight: '500'}}
+                            style={{ color: 'rgb(255, 255, 255)', fontSize: percentW(5), fontWeight: '500'}}
                         >Log in</Text>
                     </TouchableOpacity>
                 }
@@ -279,13 +279,14 @@ const styles = StyleSheet.create({
             ios: {
                 height: PixelRatio.getPixelSizeForLayoutSize(8),
                 width: PixelRatio.getPixelSizeForLayoutSize(8),
+                marginRight: percentW(2)
             },
             android: {
                 height: PixelRatio.getPixelSizeForLayoutSize(6),
-                width: PixelRatio.getPixelSizeForLayoutSize(6)
+                width: PixelRatio.getPixelSizeForLayoutSize(6),
+                marginRight: percentW(1)
             }
         }),
-        marginRight: percentW(1)
     },
     user : {
         height: percentH(7),
@@ -310,7 +311,7 @@ const styles = StyleSheet.create({
         flex: 1,
         color: 'rgb(255, 255, 255)', 
         fontFamily: 'Arial', 
-        fontSize: 18, 
+        fontSize: percentW(5), 
     },
     loginButton: {        
         height: percentH(5.5),
@@ -335,7 +336,7 @@ const styles = StyleSheet.create({
     },
     forgetPassText: {
         fontFamily: 'Arial', 
-        fontSize: 16, 
+        fontSize: percentW(4.4), 
         color: 'rgb(255, 255, 255)', 
         fontWeight: '500'
     },
