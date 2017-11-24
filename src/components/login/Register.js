@@ -94,7 +94,10 @@ export class Register extends Component{
 
                 <View
                     style={[styles.userNameView, 
-                        !this.state.showToS && {height: percentH(6), marginVertical: 0 } ]} > 
+                        !this.state.showToS && { height: percentH(6), 
+                            ...Platform.select({ ios: { marginVertical: percentH(1.5)},
+                                android: { marginVertical: 0 } }) }
+                    ]} > 
                     <Text style={styles.userNameText} >{ errorText ? '' : this.props.store.signUp.fullname}</Text>
                 </View>
 
