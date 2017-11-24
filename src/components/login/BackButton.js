@@ -5,7 +5,8 @@ import {
     StyleSheet,
     Dimensions, 
     Image,
-    TouchableOpacity
+    TouchableOpacity,
+    Platform
 } from 'react-native';
 
 import { observer, inject } from 'mobx-react';
@@ -46,7 +47,14 @@ const percentW = (num) => {
 const styles = StyleSheet.create({
     button: {
         position: 'absolute',
-        top: percentH(3),
+        ...Platform.select({
+            ios: {
+                top: percentH(4)
+            },
+            android: {
+                top: percentH(3)
+            }
+        }),
         left: percentW(4)
     },
     buttonImage: {

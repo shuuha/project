@@ -11,6 +11,7 @@ import {
     Image,
     PixelRatio,
     Vibration, 
+    Platform
     } from 'react-native';
 
 import { Redirect } from 'react-router-native';
@@ -123,11 +124,7 @@ export class LoginView extends Component{
                     onAnimationEnd = {()=> store.shakeTrigger = false}
                 > 
                     <Image 
-                        style={{ 
-                            height: PixelRatio.getPixelSizeForLayoutSize(6),
-                            width: PixelRatio.getPixelSizeForLayoutSize(6),
-                            marginRight: 5
-                        }}
+                        style={styles.icon}
                         source={images['mail']}
                         resizeMode='contain'
                     />
@@ -156,11 +153,7 @@ export class LoginView extends Component{
                     onAnimationEnd = {()=> store.shakeTrigger = false}
                 >
                     <Image 
-                        style={{ 
-                            height: PixelRatio.getPixelSizeForLayoutSize(6), 
-                            width: PixelRatio.getPixelSizeForLayoutSize(6), 
-                            marginRight: 5
-                        }}
+                        style={styles.icon}
                         source={images['lock']}
                         resizeMode='contain'
                     />
@@ -264,9 +257,7 @@ export class LoginView extends Component{
 }
 
 const { height, width } = Dimensions.get('window');
-//calculated based on the width == 360
-const SCALE_FACTOR = 20;
-const responsiveFontsize = width / 20;
+
 const percentH = (num) => {
     return (height / 100) * num;
 };
@@ -275,9 +266,6 @@ const percentW = (num) => {
     return (width / 100) * num;
 };
 
-
-
-
 const styles = StyleSheet.create({
     container: {        
         height: percentH(45),
@@ -285,6 +273,19 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         marginTop: percentH(20),
         paddingHorizontal: percentW(5)
+    },
+    icon: {
+        ...Platform.select({
+            ios: {
+                height: PixelRatio.getPixelSizeForLayoutSize(8),
+                width: PixelRatio.getPixelSizeForLayoutSize(8),
+            },
+            android: {
+                height: PixelRatio.getPixelSizeForLayoutSize(6),
+                width: PixelRatio.getPixelSizeForLayoutSize(6)
+            }
+        }),
+        marginRight: percentW(1)
     },
     user : {
         height: percentH(7),
@@ -301,7 +302,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',        
         alignItems: 'center',
         marginBottom: percentH(1.5),
-        // borderTopWidth: 1,
         borderBottomWidth: 1,
         borderColor: 'rgb(89, 113, 144)',
         borderStyle: 'solid'
@@ -311,7 +311,6 @@ const styles = StyleSheet.create({
         color: 'rgb(255, 255, 255)', 
         fontFamily: 'Arial', 
         fontSize: 18, 
-        /*fontWeight: '500'*/
     },
     loginButton: {        
         height: percentH(5.5),

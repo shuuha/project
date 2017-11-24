@@ -136,6 +136,6 @@ const styles = StyleSheet.create({
         color: 'rgb(255, 255, 255)', 
         fontFamily: 'Arial', 
         fontStyle: 'italic',
-        fontSize: 25
+        fontSize: percentW(7)
     },
 })

@@ -22,7 +22,8 @@ const NUMBER_OF_INPUTS = [1, 2, 3, 4];
 @observer
 export class ActivationCode extends Component{
     state = {
-        top: percentH(10)
+        top: percentH(10),
+        newTop: null
     }
 
     animatedView = new Animated.Value(0);
@@ -66,11 +67,11 @@ export class ActivationCode extends Component{
     _keyboardDidShow = (e) => {
     // pushing the view up, the overall distance is calculated from : 
     // currentMarginTop - keyboardHeight + percent of (text + user field + login button)
-    this.setState({ top: this.state.top - e.endCoordinates.height + percentH(28)})
+    this.setState({ newTop: this.state.top - e.endCoordinates.height + percentH(28)})
     }
 
     _keyboardDidHide = () => {
-        this.setState({ top: percentH(10)})
+        this.setState({ newTop: null })
     }
     
 
@@ -111,7 +112,7 @@ export class ActivationCode extends Component{
             <Animated.View style={[
                     styles.container, 
                     { opacity: this.animatedView }, 
-                    { marginTop: this.state.top }
+                     this.state.newTop && { marginTop: this.state.newTop }
                 ]} 
             >
                 <Animatable.View
@@ -142,7 +143,7 @@ export class ActivationCode extends Component{
                                 <TextInput
                                     editable={!loading}
                                     ref={`input${i}`}
-                                    // onKeyPress={}
+                                    // onKeyPress={(e)=> Alert.alert(e)}
                                     keyboardType='numeric'
                                     underlineColorAndroid='transparent'
                                     value={values[i]}

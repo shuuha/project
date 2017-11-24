@@ -6,12 +6,12 @@ import {
     StyleSheet, 
     PixelRatio,
     Dimensions,
-    TouchableOpacity
+    TouchableOpacity,
+    Platform
 } from 'react-native';
 
 import { observer, inject } from 'mobx-react';
 import { SlidingButton } from './SlidingButton';
-import { normalize } from './normalize';
 
 import { images } from './assets';
 
@@ -124,16 +124,23 @@ const styles = StyleSheet.create({
     companyName: {
         color: 'rgb(255, 255, 255)', 
         fontFamily: 'Arial', 
-        fontSize: normalize(28),
+        fontSize: percentW(8),
         alignSelf: 'center',        
-        marginTop: percentH(7),
         marginBottom: percentH(4),
+        ...Platform.select({
+            ios: {
+                marginTop: percentH(12)
+            },
+            android: {
+                marginTop: percentH(7)
+            }
+        })
     },
     companyAddress: {
         color: 'rgb(255, 255, 255)', 
         fontFamily: 'Arial', 
         fontStyle: 'italic',
-        fontSize: normalize(23),
+        fontSize: percentW(6),
         alignSelf: 'center',
         marginBottom: percentH(2)
     },
@@ -145,12 +152,13 @@ const styles = StyleSheet.create({
     iconsAndButtonsContainer: {
         marginTop: percentH(2),
         flexDirection: 'row',
-        justifyContent: 'space-between'
-
+        justifyContent: 'space-between',
     },
     iconAndTextContainer: {
         marginLeft: percentW(7),        
-        width: percentW(43)
+        width: percentW(43),
+        justifyContent: 'center'
+        
     }, 
     iconAndText: {
         flexDirection: 'row',
@@ -164,12 +172,20 @@ const styles = StyleSheet.create({
     text: {
         color: 'rgb(255, 255, 255)', 
         fontFamily: 'Arial', 
-        fontSize: normalize(28),
+        fontSize: percentW(7),
         marginVertical: percentH(1)
     },
     icon: {
-        height: PixelRatio.getPixelSizeForLayoutSize(10),
-        width: PixelRatio.getPixelSizeForLayoutSize(10),
+        ...Platform.select({
+            ios: {
+                height: PixelRatio.getPixelSizeForLayoutSize(12),
+                width: PixelRatio.getPixelSizeForLayoutSize(12),
+            },
+            android: {
+                height: PixelRatio.getPixelSizeForLayoutSize(10),
+                width: PixelRatio.getPixelSizeForLayoutSize(10)
+            }
+        })
     },
     buttonsContainer: {        
         marginRight: percentW(7),
@@ -192,6 +208,6 @@ const styles = StyleSheet.create({
     buttonText: {
         color: 'rgb(255, 255, 255)', 
         fontFamily: 'Arial', 
-        fontSize: normalize(18)
+        fontSize: percentW(4)
     }
 })

@@ -106,28 +106,29 @@ export class SignUp{
     }
 
     onSendPress = () => {
-        if(!this.fullname){
-            this.onError('fullname');
-        } 
-        else if(!this.codeValue){
-            this.onError('codeValue');
-        } 
-        else if(!this.phoneValue){
-            this.onError('phoneValue');
-        }        
-        else if (this.phoneIsNotResubmitted()){
-            if(this.loginStore.phoneVerified){
-                this.loginStore.moveBackCount = 1;
-                this.loginStore.history.push('/register');
-            }
-            else {
-                this.loginStore.history.push('/activation');
-            }
-        }
-        else {
-            this.loginStore.loading = true;
-            this.sendPhoneAndName(this.getPhoneAndName());
-        }
+        this.loginStore.history.push('/activation');
+        // if(!this.fullname){
+        //     this.onError('fullname');
+        // } 
+        // else if(!this.codeValue){
+        //     this.onError('codeValue');
+        // } 
+        // else if(!this.phoneValue){
+        //     this.onError('phoneValue');
+        // }        
+        // else if (this.phoneIsNotResubmitted()){
+        //     if(this.loginStore.phoneVerified){
+        //         this.loginStore.moveBackCount = 1;
+        //         this.loginStore.history.push('/register');
+        //     }
+        //     else {
+        //         this.loginStore.history.push('/activation');
+        //     }
+        // }
+        // else {
+        //     this.loginStore.loading = true;
+        //     this.sendPhoneAndName(this.getPhoneAndName());
+        // }
     }
 
     onNameSubmitPress = () => {

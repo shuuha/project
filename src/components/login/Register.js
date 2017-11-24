@@ -11,7 +11,8 @@ import {
     Keyboard,
     Image,
     PixelRatio,
-    Vibration
+    Vibration,
+    Platform
     } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { observer, inject } from 'mobx-react';
@@ -106,17 +107,14 @@ export class Register extends Component{
                     onAnimationEnd={()=> store.shakeTrigger = false}
                 >
                     <Image 
-                        style={{ 
-                            height: PixelRatio.getPixelSizeForLayoutSize(6),
-                            width: PixelRatio.getPixelSizeForLayoutSize(6),
-                            marginRight: 5
-                        }}
+                        style={styles.icon}
                         source={images['mail']}
                         resizeMode='contain'
                     />
                     <TextInput
-                        editable={!loading}
                         ref={'email'}
+                        editable={!loading}
+                        autoCorrect={false}
                         value={store.email}
                         returnKeyType='next'
                         onChangeText={store.onChangeEmail}
@@ -139,17 +137,14 @@ export class Register extends Component{
                     onAnimationEnd={()=> store.shakeTrigger = false}
                 >
                     <Image 
-                        style={{ 
-                            height: PixelRatio.getPixelSizeForLayoutSize(6),
-                            width: PixelRatio.getPixelSizeForLayoutSize(6),
-                            marginRight: 5
-                        }}
+                        style={styles.icon}
                         source={images['lock']}
                         resizeMode='contain'
                     />
                     <TextInput
-                        editable={!loading}
                         ref={'pass'}
+                        editable={!loading}
+                        autoCorrect={false}
                         value={store.pass}
                         onChangeText={store.onChangePass}
                         onFocus={store.onInputFocus}
@@ -173,17 +168,14 @@ export class Register extends Component{
                     onAnimationEnd={()=> store.shakeTrigger = false}
                         >
                     <Image 
-                        style={{ 
-                            height: PixelRatio.getPixelSizeForLayoutSize(6),
-                            width: PixelRatio.getPixelSizeForLayoutSize(6),
-                            marginRight: 5
-                        }}
+                        style={styles.icon}
                         source={images['lock']}
                         resizeMode='contain'
                     />
                     <TextInput
-                        editable={!loading}
                         ref={'passConfirm'}
+                        editable={!loading}
+                        autoCorrect={false}
                         value={store.passConfirm}
                         onChangeText={store.onChangePassConfirm}
                         onFocus={store.onInputFocus}
@@ -261,6 +253,19 @@ const styles = StyleSheet.create({
         // marginTop: percentH(20),
         // paddingBottom: percentH(0)
         paddingHorizontal: percentW(5)
+    },
+    icon: {
+        ...Platform.select({
+            ios: {
+                height: PixelRatio.getPixelSizeForLayoutSize(8),
+                width: PixelRatio.getPixelSizeForLayoutSize(8),
+            },
+            android: {
+                height: PixelRatio.getPixelSizeForLayoutSize(6),
+                width: PixelRatio.getPixelSizeForLayoutSize(6)
+            }
+        }),
+        marginRight: percentW(1)
     },
     userNameView : {
         height: percentH(10),
