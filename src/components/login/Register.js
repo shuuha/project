@@ -259,6 +259,7 @@ const styles = StyleSheet.create({
             ios: {
                 height: PixelRatio.getPixelSizeForLayoutSize(8),
                 width: PixelRatio.getPixelSizeForLayoutSize(8),
+                marginRight: percentW(2)
             },
             android: {
                 height: PixelRatio.getPixelSizeForLayoutSize(6),
