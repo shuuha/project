@@ -102,18 +102,17 @@ export class Activation{
 
     @action
     onEnter = () => {
-        this.loginStore.history.push('/register');
-        // if(this.inputsAreValid){
-        //     this.loginStore.loading = true;
-        //     const data = {
-        //         token: this.loginStore.token,
-        //         code: this.values.join('')
-        //     }
-        //     this.sendData(data);
-        // }
-        // else {
-        //     this.onError();
-        // }
+        if(this.inputsAreValid){
+            this.loginStore.loading = true;
+            const data = {
+                token: this.loginStore.token,
+                code: this.values.join('')
+            }
+            this.sendData(data);
+        }
+        else {
+            this.onError();
+        }
     }
 
     enableResendCode = () => {

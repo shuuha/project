@@ -78,7 +78,7 @@ export class LoggedIn extends Component{
                         {
                         loading ? 
                         <ActivityIndicator
-                            size={percentW(20)}
+                            size={Platform.OS === 'android' ? percentW(20) : 'large'}
                             color='rgb(255, 255, 255)'
                         />
                         :

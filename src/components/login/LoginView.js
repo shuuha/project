@@ -19,7 +19,7 @@ import * as Animatable from 'react-native-animatable';
 import axios from 'axios';
 import { FBLogin, FBLoginManager } from 'react-native-facebook-login';
 import { observer, inject } from 'mobx-react';
-import { FBLoginView } from '../login';
+import { FacebookButton } from './FacebookButton';
 import { images } from './assets';
 
 @inject('store')
@@ -207,10 +207,10 @@ export class LoginView extends Component{
 
                 <View
                     style={styles.fbButton}
-                >                
+                >
                     <FBLogin
                         buttonView={
-                            <FBLoginView 
+                            <FacebookButton 
                                 onPress={this.login}
                                 disabled={loading}
                             />
@@ -220,8 +220,7 @@ export class LoginView extends Component{
                         permissions={["email","user_friends"]}
                         onLogin={function(data){
                             console.log("Logged in!");
-                            console.log(data);
-                            
+                            console.log(data);                            
                         }}
                         onLoginFound={function(e){console.log('login found', e)}}
                         onLoginNotFound={function(e){console.log('not found', e)}}
@@ -229,6 +228,10 @@ export class LoginView extends Component{
                         onCancel={function(e){console.log('cancel', e)}}
                         onPermissionsMissing={function(e){console.log('permission missing', e)}}
                     />
+                    {/*<FacebookButton 
+                        disabled={loading}
+                        onPress={this.login}
+                    />*/}
                 </View>
 
                 <View style={styles.forgetPass} >

@@ -39,10 +39,10 @@ export class LoginView{
     }
 
     ifPropHasNoValue = (prop) => {
-            this[prop + 'Error'] = true;
-            this.shakeTrigger = true;
-            this.Vibration.vibrate([300, 100]);
-            this.refs[prop].focus();
+        this[prop + 'Error'] = true;
+        this.shakeTrigger = true;
+        this.Vibration.vibrate([300, 100]);
+        this.refs[prop].focus();
     }
 
     @action
@@ -161,10 +161,10 @@ export class LoginView{
         const promise = new Promise((resolve, reject)=>{
             navigator.geolocation.getCurrentPosition(({coords}) => {
                 const { latitude, longitude } = coords;
-                // this.loginStore.lat = latitude;
-                // this.loginStore.lng = longitude;
-                this.loginStore.lat = 100;
-                this.loginStore.lng = 100;
+                this.loginStore.lat = latitude;
+                this.loginStore.lng = longitude;
+                // this.loginStore.lat = 100;
+                // this.loginStore.lng = 100;
                 resolve(coords);
             },
             (error) => {
@@ -184,8 +184,8 @@ export class LoginView{
 
     startPing = () => {
         const userData = { 
-            // position: { lat: this.loginStore.lat, lng: this.loginStore.lng },
-            position: {lat: 100, lng: 100},
+            position: { lat: this.loginStore.lat, lng: this.loginStore.lng },
+            // position: {lat: 100, lng: 100},
             online: this.userOnline,
             token: this.loginStore.token
         };
