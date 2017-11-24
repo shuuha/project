@@ -66,6 +66,7 @@ export class LoginView extends Component{
 
     FBLoginManager.getCredentials( (error, data) => {
         if (!error) {
+            console.log(error, data);
         }
         else {
             console.log(error);

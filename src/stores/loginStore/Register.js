@@ -1,5 +1,5 @@
 import { observable, computed, action } from 'mobx';
-import localStorage from 'react-native-local-storage';
+// import localStorage from 'react-native-local-storage';
 import axios from 'axios';
 import { Photos } from './register';
 

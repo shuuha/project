@@ -10,7 +10,7 @@ import {
 
 const { width, height } = Dimensions.get('window');
 
-const DISTANCE_TO_TRIGGER = (width - width/5);
+const DISTANCE_TO_TRIGGER = (width - width/3);
 
 
 export class SlidingButton extends Component {

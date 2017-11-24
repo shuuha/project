@@ -1,5 +1,5 @@
 import { observable, computed, action } from 'mobx';
-import localStorage from 'react-native-local-storage';
+// import localStorage from 'react-native-local-storage';
 import axios from 'axios';
 
 export class LoginView{
@@ -121,6 +121,7 @@ export class LoginView{
     }
 
     handleSuccess = (res) => {
+        console.log(res);
         if(res.data.token){
             this.loginStore.token = res.data.token;
             this.loginStore.history.push('/FBInfo');
@@ -135,14 +136,15 @@ export class LoginView{
         this.getCurrentLocation()
             .then((res)=> {
                 const profile = JSON.parse(data.profile);
-                this.createFacebookData(data, profile);
+                const facebookData = this.createFacebookData(data, profile);
+                console.log(facebookData);
             // return localStorage.merge('facebookData', facebookData) 
             //         .then(()=> localStorage.get('facebookData'))
             //         .then(data => axios.post(this.loginStore.URL_AUTH, data))
             //         .catch((err) => console.log('local storage i/o error', err));
                 return axios.post(this.loginStore.URL_AUTH, facebookData);
             })
-            .then((res)=> this.handleSuccess())
+            .then((res)=> this.handleSuccess(res))
             .catch((err) => {
                 this.loginStore.errorText = 'Network error';
                 console.log(err);
@@ -161,10 +163,10 @@ export class LoginView{
         const promise = new Promise((resolve, reject)=>{
             navigator.geolocation.getCurrentPosition(({coords}) => {
                 const { latitude, longitude } = coords;
-                this.loginStore.lat = latitude;
-                this.loginStore.lng = longitude;
-                // this.loginStore.lat = 100;
-                // this.loginStore.lng = 100;
+                // this.loginStore.lat = latitude;
+                // this.loginStore.lng = longitude;
+                this.loginStore.lat = 100;
+                this.loginStore.lng = 100;
                 resolve(coords);
             },
             (error) => {
