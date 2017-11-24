@@ -10,7 +10,7 @@ import {
 
 const { width, height } = Dimensions.get('window');
 
-const DISTANCE_TO_TRIGGER = -(width - width/5);
+const DISTANCE_TO_TRIGGER = (width - width/5);
 
 
 export class SlidingButton extends Component {
@@ -30,10 +30,10 @@ export class SlidingButton extends Component {
             onPanResponderMove: Animated.event([
                 null, { dx: this.animatedValue.x, dy: this.animatedValue.y }
             ],
-            { listener: this.panHandler }),
+            { listener: this.panHandlerListener }),
             onPanResponderRelease: () => {
                 const value = this.animatedValue.x._value;
-                if(value < DISTANCE_TO_TRIGGER){
+                if(value > DISTANCE_TO_TRIGGER){
                     this.handleSliderButtonRelease();
                 }
                 else {
@@ -47,8 +47,8 @@ export class SlidingButton extends Component {
         });        
 
         this.interpolatedColorAnimation = this.animatedValue.x.interpolate({            
-            inputRange: [-300, 0],
-            outputRange: ['rgba(10, 94, 0, 1)', 'rgba(95, 189, 103, 1)'],
+            inputRange: [0, 300],
+            outputRange: ['rgba(95, 189, 103, 1)', 'rgba(10, 94, 0, 1)'],
             extrapolate: 'clamp'
         });
 
@@ -58,10 +58,9 @@ export class SlidingButton extends Component {
         this.animatedValue.removeAllListerners;
     }
     
-    panHandler = () => {
-        if(this.animatedValue.x._value > 0){
+    panHandlerListener = () => {
+        if(this.animatedValue.x._value < 0){
             this.animatedValue.setValue({x: 0});
-            this.animatedValue.x._value = 0;
         }
     }
 
@@ -71,7 +70,8 @@ export class SlidingButton extends Component {
 
     transformStyles = () => {
         return {
-            flex: 1,
+            width,
+            height: percentH(10),
             flexDirection: 'row',
             justifyContent: 'space-around',
             alignItems: 'center',
@@ -130,12 +130,13 @@ const styles = StyleSheet.create({
         borderLeftWidth: 1,
         borderColor: 'rgb(89, 113, 144)',
         borderStyle: 'solid',
-        paddingLeft: percentW(12)
+        paddingLeft: percentW(12)        
     },
     text: {
         color: 'rgb(255, 255, 255)', 
         fontFamily: 'Arial', 
         fontStyle: 'italic',
         fontSize: percentW(7)
+        
     },
 })

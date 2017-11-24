@@ -63,6 +63,14 @@ export class LoginView extends Component{
     // axios.get(url+token)
     //     .then(res => console.log(res))
     //     .catch(err => console.log(err));
+
+    FBLoginManager.getCredentials( (error, data) => {
+        if (!error) {
+        }
+        else {
+            console.log(error);
+        }
+    });
   }
 
   componentWillUnmount () {
@@ -208,30 +216,10 @@ export class LoginView extends Component{
                 <View
                     style={styles.fbButton}
                 >
-                    <FBLogin
-                        buttonView={
-                            <FacebookButton 
-                                onPress={this.login}
-                                disabled={loading}
-                            />
-                        }
-                        ref={(fbLogin) => { this.fbLogin = fbLogin }}
-                        loginBehavior={FBLoginManager.LoginBehaviors.Native}
-                        permissions={["email","user_friends"]}
-                        onLogin={function(data){
-                            console.log("Logged in!");
-                            console.log(data);                            
-                        }}
-                        onLoginFound={function(e){console.log('login found', e)}}
-                        onLoginNotFound={function(e){console.log('not found', e)}}
-                        onLogout={function(e){console.log('logout', e)}}
-                        onCancel={function(e){console.log('cancel', e)}}
-                        onPermissionsMissing={function(e){console.log('permission missing', e)}}
-                    />
-                    {/*<FacebookButton 
+                 <FacebookButton 
                         disabled={loading}
                         onPress={this.login}
-                    />*/}
+                    />
                 </View>
 
                 <View style={styles.forgetPass} >
