@@ -45,15 +45,18 @@ export class Photos{
 
 
     getInitialPhotos = () => {
-        CameraRoll.getPhotos(this.getFetchParams())
-        .then((res) => {
-            this.noMorePhotos = !res.page_info.has_next_page;
-            this.photos = this.photos.concat(res.edges);
-        })
-        .catch((err) => console.log(err));
+        if(!this.noMorePhotos){
+            CameraRoll.getPhotos(this.getFetchParams())
+            .then((res) => {
+                this.noMorePhotos = !res.page_info.has_next_page;
+                this.photos = this.photos.concat(res.edges);
+            })
+            .catch((err) => console.log(err));
+        }
     }
 
     tryPhotoLoad = () => {
+        
         if (!this.loadingMore && !this.noMorePhotos) {
             this.loadingMore = true;
             this.loadPhotos();
