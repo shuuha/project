@@ -18,10 +18,7 @@ import { images } from './assets';
 
 @inject('store')
 @observer
-export class PassRecovery extends Component{
-    state = {
-        top: percentH(10)
-    }
+export class PassRecovery extends Component{   
 
     animatedView = new Animated.Value(0);
     animatedTranslateY = new Animated.Value(0);
@@ -46,7 +43,6 @@ export class PassRecovery extends Component{
     }
 
     _keyboardDidShow = (e) => {          
-        this.setState({ hideLine: true });
         const keyboardHeightAndSomeMargin = -e.endCoordinates.height + percentH(28);
         Animated.timing(this.animatedTranslateY, {
             toValue: keyboardHeightAndSomeMargin,
@@ -55,7 +51,6 @@ export class PassRecovery extends Component{
     }
 
     _keyboardDidHide = () => {
-        this.setState({ hideLine: false });
         Animated.timing(this.animatedTranslateY, {
             toValue: 0,
             duration: 200

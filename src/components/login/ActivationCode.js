@@ -20,11 +20,7 @@ const NUMBER_OF_INPUTS = [1, 2, 3, 4];
 
 @inject('store')
 @observer
-export class ActivationCode extends Component{
-    state = {
-        top: percentH(10),
-        newTop: null
-    }
+export class ActivationCode extends Component{    
 
     animatedView = new Animated.Value(0);
 
@@ -64,14 +60,19 @@ export class ActivationCode extends Component{
         
     }
 
-    _keyboardDidShow = (e) => {
-    // pushing the view up, the overall distance is calculated from : 
-    // currentMarginTop - keyboardHeight + percent of (text + user field + login button)
-    this.setState({ newTop: this.state.top - e.endCoordinates.height + percentH(28)})
+    _keyboardDidShow = (e) => {          
+        const keyboardHeightAndSomeMargin = -e.endCoordinates.height + percentH(28);
+        Animated.timing(this.animatedTranslateY, {
+            toValue: keyboardHeightAndSomeMargin,
+            duration: 200
+        }).start();
     }
 
     _keyboardDidHide = () => {
-        this.setState({ newTop: null })
+        Animated.timing(this.animatedTranslateY, {
+            toValue: 0,
+            duration: 200
+        }).start();
     }
     
 
@@ -111,8 +112,8 @@ export class ActivationCode extends Component{
             
             <Animated.View style={[
                     styles.container, 
+                    { transform: [ { translateY: this.animatedTranslateY } ]}, 
                     { opacity: this.animatedView }, 
-                     this.state.newTop && { marginTop: this.state.newTop }
                 ]} 
             >
                 <Animatable.View
