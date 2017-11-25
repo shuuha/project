@@ -26,13 +26,11 @@ import { images } from './assets';
 @observer
 export class LoginView extends Component{
     state = {
-        top : percentH(20),
-        newTop: null,
         hideLine: false
     }
 
     animatedLogin = new Animated.Value(0);
-
+    animatedTranslateY = new Animated.Value(0);
 
     componentDidMount = () => {
         let ms;
@@ -91,11 +89,19 @@ export class LoginView extends Component{
   _keyboardDidShow = (e) => {
     // pushing the view up, the overall distance is calculated from : 
     // currentMarginTop - keyboardHeight + percent of (user field + pass field + login button)
-    this.setState({ newTop: this.state.top - e.endCoordinates.height + percentH(24), hideLine: true})
+    this.setState({ hideLine: true });
+    Animated.timing(this.animatedTranslateY, {
+        toValue: -e.endCoordinates.height + percentH(24),
+        duration: 250
+    }).start();
   }
 
   _keyboardDidHide = () => {
-    this.setState({ newTop: null, hideLine: false})
+    this.setState({ hideLine: false });
+    Animated.timing(this.animatedTranslateY, {
+        toValue: 0,
+        duration: 250
+    }).start();
   }
 
   login = () => {
@@ -111,7 +117,14 @@ export class LoginView extends Component{
         // console.log('data: ', data, 'error: ', error);
       })
   }
-  
+    transformStyles =() => {
+        return {
+            transform: [
+                { translateY: this.animatedTranslateY }
+            ]
+        }
+    }
+
     render(){        
         const { loginView : store, loading, error  } = this.props.store;
         return(
@@ -119,20 +132,19 @@ export class LoginView extends Component{
 
             <Redirect to='/loggedin' />
             :            
-            <Animated.View             
+            <Animated.View
                 style={[
-                    styles.container, this.state.newTop && { marginTop: this.state.newTop },
-                    {opacity: this.animatedLogin } 
+                    styles.container, this.transformStyles(), { opacity: this.animatedLogin }
                 ]}
             >
-
+            
                 <Animatable.View style={[styles.user ]} 
-                    duration={500}                
+                    duration={500}
                     animation={store.emailError && store.shakeTrigger ? 'shake' : ''}
                     useNativeDriver={true}
                     onAnimationEnd = {()=> store.shakeTrigger = false}
-                > 
-                    <Image 
+                >
+                    <Image
                         style={styles.icon}
                         source={images['mail']}
                         resizeMode='contain'
@@ -182,7 +194,7 @@ export class LoginView extends Component{
                         placeholderTextColor='rgb(206, 206, 206)' 
                     />
                 </Animatable.View>            
-            
+
                 <View style={[styles.loginButton, loading && { backgroundColor: 'transparent' }]} >
                 {
                     loading ?
