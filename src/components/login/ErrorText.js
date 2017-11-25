@@ -19,7 +19,7 @@ export class ErrorText extends Component{
         if(errorText){
             Animated.timing(this.animatedOpacity,{
                 toValue: 1,
-                duration: 500
+                duration: 700
             }).start();
         }
         return(

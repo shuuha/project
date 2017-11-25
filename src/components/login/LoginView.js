@@ -86,13 +86,12 @@ export class LoginView extends Component{
     //   this.props.store.loginView.passError = false;
   }
 
-  _keyboardDidShow = (e) => {
-    // pushing the view up, the overall distance is calculated from : 
-    // currentMarginTop - keyboardHeight + percent of (user field + pass field + login button)
+  _keyboardDidShow = (e) => {          
     this.setState({ hideLine: true });
+    const keyboardHeightAndSomeMargin = -e.endCoordinates.height + percentH(24);
     Animated.timing(this.animatedTranslateY, {
-        toValue: -e.endCoordinates.height + percentH(24),
-        duration: 250
+        toValue: keyboardHeightAndSomeMargin,
+        duration: 200
     }).start();
   }
 
@@ -100,7 +99,7 @@ export class LoginView extends Component{
     this.setState({ hideLine: false });
     Animated.timing(this.animatedTranslateY, {
         toValue: 0,
-        duration: 250
+        duration: 200
     }).start();
   }
 
@@ -117,13 +116,7 @@ export class LoginView extends Component{
         // console.log('data: ', data, 'error: ', error);
       })
   }
-    transformStyles =() => {
-        return {
-            transform: [
-                { translateY: this.animatedTranslateY }
-            ]
-        }
-    }
+    
 
     render(){        
         const { loginView : store, loading, error  } = this.props.store;
@@ -133,8 +126,10 @@ export class LoginView extends Component{
             <Redirect to='/loggedin' />
             :            
             <Animated.View
-                style={[
-                    styles.container, this.transformStyles(), { opacity: this.animatedLogin }
+                style={[ 
+                    styles.container, 
+                    { transform: [ { translateY: this.animatedTranslateY } ]}, 
+                    { opacity: this.animatedLogin }
                 ]}
             >
             

@@ -24,6 +24,7 @@ export class PassRecovery extends Component{
     }
 
     animatedView = new Animated.Value(0);
+    animatedTranslateY = new Animated.Value(0);
 
     componentDidMount = () => {
         setTimeout(()=>{
@@ -44,22 +45,29 @@ export class PassRecovery extends Component{
         this.keyboardDidHideListener.remove();        
     }
 
-    _keyboardDidShow = (e) => {
-    // pushing the view up, the overall distance is calculated from : 
-    // currentMarginTop - keyboardHeight + percent of (text + user field + login button)
-    this.setState({ top: this.state.top - e.endCoordinates.height + percentH(28)})
+    _keyboardDidShow = (e) => {          
+        this.setState({ hideLine: true });
+        const keyboardHeightAndSomeMargin = -e.endCoordinates.height + percentH(28);
+        Animated.timing(this.animatedTranslateY, {
+            toValue: keyboardHeightAndSomeMargin,
+            duration: 200
+        }).start();
     }
 
     _keyboardDidHide = () => {
-        this.setState({ top: percentH(10)})
+        this.setState({ hideLine: false });
+        Animated.timing(this.animatedTranslateY, {
+            toValue: 0,
+            duration: 200
+        }).start();
     }
-
 
     render(){
         const { passRecovery : store, loading } = this.props.store;
         return(
             <Animated.View style={[
                     styles.container, 
+                    { transform: [ { translateY: this.animatedTranslateY } ]}, 
                     { opacity: this.animatedView }, 
                     { marginTop: this.state.top }
                 ]} 
