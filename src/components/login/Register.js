@@ -65,7 +65,7 @@ export class Register extends Component{
 
     _keyboardDidShow = (e) => {
         this.setState({ showToS: false });
-        const keyboardHeightAndSomeMargin = -e.endCoordinates.height + percentH(29);
+        const keyboardHeightAndSomeMargin = -e.endCoordinates.height + percentH(20);
         Animated.timing(this.animatedTranslateY, {
             toValue: keyboardHeightAndSomeMargin,
             duration: 200
