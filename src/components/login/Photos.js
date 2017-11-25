@@ -18,7 +18,7 @@ import { observer, inject } from 'mobx-react';
 export class Photos extends Component{   
 
     componentWillMount(){
-        this.props.store.register.photos.getPhotos();
+        this.props.store.register.photos.getInitialPhotos();
     }
 
     

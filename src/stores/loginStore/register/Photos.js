@@ -25,55 +25,51 @@ export class Photos{
         return this._dataSource;
     }
 
-    getPhotos = () => {
-        const fetchParams = {
+
+    getFetchParams = (newProp) => {
+        const params = {
             first: 35,
             groupName: 'Camera',
             groupTypes: 'All',
-            assetType: 'Photos'
+            assetType: 'Photos',
+            ...newProp
         };
-
-        if (Platform.OS === 'android') {
-        // not supported in android
-            delete fetchParams.groupTypes;
+        if(Platform.OS === 'android'){
+            delete params.groupTypes;
         }
+        else {
+            delete params.groupName;
+        }
+        return params;
+    }
 
-        CameraRoll.getPhotos(fetchParams)
+
+    getInitialPhotos = () => {
+        CameraRoll.getPhotos(this.getFetchParams())
         .then((res) => {
+            this.noMorePhotos = !res.page_info.has_next_page;
             this.photos = this.photos.concat(res.edges);
         })
         .catch((err) => console.log(err));
     }
 
     tryPhotoLoad = () => {
-        if (!this.loadingMore) {
+        if (!this.loadingMore && !this.noMorePhotos) {
             this.loadingMore = true;
             this.loadPhotos();
         }
     }
 
     loadPhotos = () => {
-        const fetchParams = {
-            first: 35,
-            groupName: 'Camera',
-            groupTypes: 'All',
-            assetType: 'Photos',
-        };
+        // if (this.lastCursor) {
+            const newParams = this.getFetchParams({after: this.lastCursor})
+        // }
 
-        if (Platform.OS === 'android') {
-        // not supported in android
-            delete fetchParams.groupTypes;
-        }
-
-        if (this.lastCursor) {
-            fetchParams.after = this.lastCursor;
-        }
-
-        CameraRoll.getPhotos(fetchParams).then((data) => {
-            this.appendAssets(data);
-        }).catch((e) => {
-            console.log(e);
-        });
+        CameraRoll.getPhotos(newParams)
+            .then((data) => {
+                this.appendAssets(data);
+            })
+            .catch((e) => console.log(e));
     }
 
     appendAssets = (data) => {
