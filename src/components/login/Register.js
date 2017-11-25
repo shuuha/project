@@ -35,7 +35,7 @@ export class Register extends Component{
 
     marginInterpolate = this.animatedTranslateY.interpolate({
         inputRange: [-100, 0],
-        outputRange: [percentH(1.5), percentH(3)],
+        outputRange: [Platform.OS === 'ios' ? percentH(1.5) : percentH(0.5), percentH(3)],
         extrapolate: 'clamp'
     })
 
@@ -65,7 +65,7 @@ export class Register extends Component{
 
     _keyboardDidShow = (e) => {
         this.setState({ showToS: false });
-        const keyboardHeightAndSomeMargin = -e.endCoordinates.height + percentH(20);
+        const keyboardHeightAndSomeMargin = -e.endCoordinates.height + percentH(30);
         Animated.timing(this.animatedTranslateY, {
             toValue: keyboardHeightAndSomeMargin,
             duration: 200
@@ -108,12 +108,7 @@ export class Register extends Component{
             </View>
 
                 <Animated.View
-                    style={[styles.userNameView, 
-                        // !this.state.showToS && { height: percentH(6), 
-                        //     ...Platform.select({ ios: { marginVertical: percentH(1.5)},
-                        //         android: { marginVertical: 0 } }) },
-                        // !this.state.showTos && { height: percentH(6), marginVertical: 0 },
-                        // { transform: [ { translateY: this.animatedTranslateY } ]},
+                    style={[styles.userNameView,                         
                         { height: this.heightInterpolate, marginVertical: this.marginInterpolate }
                     ]} > 
                     <Text 
