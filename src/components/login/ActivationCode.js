@@ -23,6 +23,7 @@ const NUMBER_OF_INPUTS = [1, 2, 3, 4];
 export class ActivationCode extends Component{    
 
     animatedView = new Animated.Value(0);
+    animatedTranslateY = new Animated.Value(0);
 
     componentDidMount = () => {
         setTimeout(()=>{
