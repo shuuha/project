@@ -19,14 +19,10 @@ import { observer, inject } from 'mobx-react';
 
 @inject('store')
 @observer
-export class SignUp extends Component{
-
-    state = {
-        top: percentH(10),
-        newTop: null
-    }
+export class SignUp extends Component{    
 
     animatedView = new Animated.Value(0);
+    animatedTranslateY = new Animated.Value(0);
 
     componentDidMount = () => {
         setTimeout(()=>{
@@ -52,15 +48,19 @@ export class SignUp extends Component{
         Keyboard.dismiss();
     }    
 
-    _keyboardDidShow = (e) => {
-    // pushing the view up, the overall distance is calculated from : 
-    // currentMarginTop - keyboardHeight + percent of (text + user field + login button)
-    this.setState({ newTop: this.state.top - e.endCoordinates.height + percentH(27)});
-    this.props.store.errorText = null;
+    _keyboardDidShow = (e) => {          
+        const keyboardHeightAndSomeMargin = -e.endCoordinates.height + percentH(27);
+        Animated.timing(this.animatedTranslateY, {
+            toValue: keyboardHeightAndSomeMargin,
+            duration: 200
+        }).start();
     }
 
     _keyboardDidHide = () => {
-        this.setState({ newTop: null})
+        Animated.timing(this.animatedTranslateY, {
+            toValue: 0,
+            duration: 200
+        }).start();
     }
 
     render(){
@@ -69,7 +69,7 @@ export class SignUp extends Component{
             <Animated.View style={[
                     styles.container, 
                     { opacity: this.animatedView }, 
-                    this.state.newTop && { marginTop: this.state.newTop }
+                    { transform: [ { translateY: this.animatedTranslateY } ]},
                 ]} 
             >
 

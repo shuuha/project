@@ -22,49 +22,63 @@ import { images } from './assets';
 @observer
 export class Register extends Component{
 
-    state = {
-        top: 0,
-        showToS: true
-    }
+    state = { showToS: true };
 
     animatedValue = new Animated.Value(0);
+    animatedTranslateY = new Animated.Value(0);
+    
+    heightInterpolate = this.animatedTranslateY.interpolate({
+        inputRange: [-100, 0],
+        outputRange: [0, percentH(10)],
+        extrapolate: 'clamp'
+    })
 
-    componentDidMount = () => {        
-        setTimeout(()=>{
-            Animated.timing(this.animatedValue, {
-                toValue: 1,
-                duration: 200
-            }).start();
-        }, 200)
+    marginInterpolate = this.animatedTranslateY.interpolate({
+        inputRange: [-100, 0],
+        outputRange: [percentH(1.5), percentH(3)],
+        extrapolate: 'clamp'
+    })
 
-        this.props.store.register.refs = this.refs;
-        this.props.store.register.Vibration = Vibration;
+    componentDidMount = () => {
+            setTimeout(()=>{
+                Animated.timing(this.animatedValue, {
+                    toValue: 1,
+                    duration: 200
+                }).start();
+            }, 200)
+
+            this.props.store.register.refs = this.refs;
+            this.props.store.register.Vibration = Vibration;
+        }
+
+    componentWillMount () {
+        this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
+        this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
+        
+        this.props.store.showLogo = false;
     }
 
-  componentWillMount () {
-    this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
-    this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
+    componentWillUnmount () {
+        this.keyboardDidShowListener.remove();
+        this.keyboardDidHideListener.remove();
+    }
+
+    _keyboardDidShow = (e) => {
+        this.setState({ showToS: false });
+        const keyboardHeightAndSomeMargin = -e.endCoordinates.height + percentH(29);
+        Animated.timing(this.animatedTranslateY, {
+            toValue: keyboardHeightAndSomeMargin,
+            duration: 200
+        }).start();
+    }
+
+    _keyboardDidHide = () => {        
+        Animated.timing(this.animatedTranslateY, {
+            toValue: 0,
+            duration: 200
+        }).start(this.setState({ showToS: true }));
+    }
     
-    this.props.store.showLogo = false;
-  }
-
-  componentWillUnmount () {
-    this.keyboardDidShowListener.remove();
-    this.keyboardDidHideListener.remove();
-  }
-
-  _keyboardDidShow = (e) => {
-    // pushing the view up, the overall distance is calculated from : 
-    // currentMarginTop - keyboardHeight + percent of (input fields + button)
-    this.setState({ top: -e.endCoordinates.height + percentH(30), showToS: false});
-    this.props.store.errorText = null;
-  }
-
-  _keyboardDidHide = () => {
-    this.setState({ top: 0, showToS: true})
-  }
-
-  
     render(){
         const { 
             register : store, 
@@ -75,8 +89,9 @@ export class Register extends Component{
         return(
             <Animated.View             
                 style={[
-                    styles.container, { marginTop: this.state.top },
-                    {opacity: this.animatedValue } 
+                    styles.container, 
+                    { transform: [ { translateY: this.animatedTranslateY } ]},
+                    { opacity: this.animatedValue }
                 ]}
             >                
             <View style={styles.avatarView} >
@@ -92,14 +107,19 @@ export class Register extends Component{
                 </TouchableWithoutFeedback> 
             </View>
 
-                <View
+                <Animated.View
                     style={[styles.userNameView, 
-                        !this.state.showToS && { height: percentH(6), 
-                            ...Platform.select({ ios: { marginVertical: percentH(1.5)},
-                                android: { marginVertical: 0 } }) }
+                        // !this.state.showToS && { height: percentH(6), 
+                        //     ...Platform.select({ ios: { marginVertical: percentH(1.5)},
+                        //         android: { marginVertical: 0 } }) },
+                        // !this.state.showTos && { height: percentH(6), marginVertical: 0 },
+                        // { transform: [ { translateY: this.animatedTranslateY } ]},
+                        { height: this.heightInterpolate, marginVertical: this.marginInterpolate }
                     ]} > 
-                    <Text style={styles.userNameText} >{ errorText ? '' : this.props.store.signUp.fullname}</Text>
-                </View>
+                    <Text 
+                        style={styles.userNameText} 
+                    > { errorText ? '' : this.props.store.signUp.fullname}</Text>
+                </Animated.View>
 
 
                 <Animatable.View 
@@ -209,7 +229,7 @@ export class Register extends Component{
                             Terms of Service
                         </Text>
                     </TouchableOpacity>
-                </View>
+                </View>                
                 }
 
 
@@ -250,7 +270,8 @@ const percentW = (num) => {
 const styles = StyleSheet.create({
     container: {        
         // height: percentH(45),
-        flex: 1,
+        // flex: 1,
+        height,
         width: percentW(74),
         alignSelf: 'center',
         // marginTop: percentH(20),
@@ -272,10 +293,10 @@ const styles = StyleSheet.create({
         }),
     },
     userNameView : {
-        height: percentH(10),
+        // height: percentH(10),
         justifyContent: 'center',
         alignItems: 'center',
-        marginVertical: percentH(3),
+        // marginVertical: percentH(3),
         },
     userNameText: {
         alignSelf: 'center',            

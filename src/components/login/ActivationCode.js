@@ -62,7 +62,7 @@ export class ActivationCode extends Component{
     }
 
     _keyboardDidShow = (e) => {          
-        const keyboardHeightAndSomeMargin = -e.endCoordinates.height + percentH(28);
+        const keyboardHeightAndSomeMargin = -e.endCoordinates.height + percentH(27);
         Animated.timing(this.animatedTranslateY, {
             toValue: keyboardHeightAndSomeMargin,
             duration: 200

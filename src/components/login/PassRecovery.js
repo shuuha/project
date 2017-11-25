@@ -63,8 +63,7 @@ export class PassRecovery extends Component{
             <Animated.View style={[
                     styles.container, 
                     { transform: [ { translateY: this.animatedTranslateY } ]}, 
-                    { opacity: this.animatedView }, 
-                    { marginTop: this.state.top }
+                    { opacity: this.animatedView }
                 ]} 
             >
 
