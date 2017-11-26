@@ -9,6 +9,3 @@ export * from './Register';
 export * from './Photos';
 export * from './LoggedIn';
 export * from './ErrorText';
-export * from './FBInfo';
-export * from './ServiceMenu';
-export * from './SlidingButton';

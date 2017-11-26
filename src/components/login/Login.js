@@ -54,7 +54,7 @@ export class Login extends Component{
                         <Route exact path='/photos' component={Photos} />
                         <Route exact path='/loggedin' component={LoggedIn} />
                         <Route exact path='/FBInfo' component={FBInfo} />
-                        <Route exact path='/servicemenu' component={ServiceMenu} />
+                        {/*<Route exact path='/servicemenu' component={ServiceMenu} />*/}
                     </View>
                 </Router>
             </Provider>

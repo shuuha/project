@@ -4,11 +4,11 @@ import { NativeRouter as Router, Route, Switch } from 'react-router-native';
 import { observer, Provider } from 'mobx-react/native';
 
 import { AppStore } from './stores/AppStore';
-import { mapStore } from './stores/MapStore';
+// import { mapStore } from './stores/MapStore';
+import { loginStore, serviceStore } from './stores';
 
-import { Page, MapAndDraw, Camera } from './components';
-import { Login } from './components/login';
-// import Login from './example/components/Login';
+// import { Page, MapAndDraw, Camera } from './components';
+import { Login, Service } from './components';
 
 const store = new AppStore();
 
@@ -19,7 +19,18 @@ export default class App extends Component{
         console.log(' render ' );
         // const { pages, dataLoaded } = store;        
         return(
-            <Login />
+            <Router>
+                <Switch>
+                    <Route exact path='/' render={(props) => {
+                        loginStore.mainHistory=props.history;
+                        return <Login /> 
+                    }} />
+                    <Route /*exact*/ path='/service' render={(props) => {
+                        serviceStore.mainHistory=props.history;
+                        return <Service /> 
+                    }} />
+                </Switch>
+            </Router>
         );    
 
             {/*dataLoaded ? 

@@ -12,14 +12,13 @@ import {
 } from 'react-native';
 
 import { observer, inject } from 'mobx-react';
-import { SlidingButton } from './SlidingButton';
-import { Map } from './Map';
+import { SlidingButton, Map } from '../service';
 
 import { images } from './assets';
 
 @inject('store')
 @observer
-export class ServiceMenu extends Component {
+export class Menu extends Component {
 
     animatedView = new Animated.Value(0);
 
@@ -74,7 +73,7 @@ export class ServiceMenu extends Component {
             onHtmlPress,
             onWebDesignPress,
             onSlideSuccess
-        } = this.props.store.serviceMenu;
+        } = this.props.store.menu;
         return(
             <Animated.View
                 style={[styles.container,  { opacity: this.animatedView } ]}

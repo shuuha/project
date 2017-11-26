@@ -62,7 +62,8 @@ export class LoggedIn extends Component{
                     }}
                     onPress={()=> {
                         this.props.store.showLogo = false;
-                        this.props.store.history.push('/servicemenu')}}
+                        console.log(this.props.store);
+                        this.props.store.mainHistory.push('/service')}}
                 >
                     <Text
                         style={{ color: 'white', fontWeight: '500' }}
