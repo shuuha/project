@@ -221,14 +221,13 @@ export class LoginView extends Component{
                     }, this.state.hideLine && { borderTopWidth: 0 }]}
                 ></View>
 
-                <View
+                
+                <FacebookButton 
+                    disabled={loading}
+                    onPress={this.login}
                     style={styles.fbButton}
-                >
-                 <FacebookButton 
-                        disabled={loading}
-                        onPress={this.login}
-                    />
-                </View>
+                />
+                
 
                 <View style={styles.forgetPass} >
                     <TouchableOpacity
@@ -313,23 +312,19 @@ const styles = StyleSheet.create({
         fontSize: percentW(5), 
     },
     loginButton: {        
-        height: percentH(5.5),
-        width: null,
-        flex: 1,
+        height: percentH(5.5),        
         borderRadius: 5,
         marginBottom: percentH(1.5),
-        backgroundColor: 'rgb(95, 188, 102)',        
+        backgroundColor: 'rgb(95, 188, 102)',
     },
-    fbButton:{
-        height: percentH(5.5),
-        width: null,
-        flex: 1
+    fbButton: {
+        height: percentH(5.5)
     },
     forgetPass: {
         flexDirection: 'row', 
         justifyContent: 'space-between', 
         alignItems: 'center',
-        marginTop: percentH(12.5),
+        marginTop: percentH(11.5),
         marginLeft: percentW(1),
         marginRight: percentW(1),
         marginBottom: percentW(1)

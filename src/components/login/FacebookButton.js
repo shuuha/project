@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { Text } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 export const FacebookButton = (props) => {
@@ -10,7 +10,7 @@ export const FacebookButton = (props) => {
               name={"facebook"}
               size={20}
               borderRadius={5}
-              style={{ backgroundColor: 'rgb(59, 89, 152)', justifyContent: 'center'  }}
+              style={[{ backgroundColor: 'rgb(59, 89, 152)', justifyContent: 'center' }, props.style]}
               >
                 <Text 
                     style={{ 
@@ -18,8 +18,7 @@ export const FacebookButton = (props) => {
                         fontSize: 15, 
                         color: 'rgb(255, 255, 255)'
                     }}                
-                >Sign in with Facebook</Text>
-                
+                >Sign in with Facebook</Text>                
             </Icon.Button>
     );
 }

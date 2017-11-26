@@ -13,6 +13,7 @@ import {
 
 import { observer, inject } from 'mobx-react';
 import { SlidingButton } from './SlidingButton';
+import { Map } from './Map';
 
 import { images } from './assets';
 
@@ -88,6 +89,7 @@ export class ServiceMenu extends Component {
                 <View
                     style={styles.mapContainer}
                 >
+                    <Map />
                 </View>
 
                 <View
