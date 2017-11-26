@@ -12,6 +12,7 @@ export class Map extends Component {
                     latitudeDelta: 0.092,
                     longitudeDelta: 0.0421
                 }}
+                style={{ flex: 1 }}
             />
         );
     }

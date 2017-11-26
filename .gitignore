@@ -1,7 +1,6 @@
 /test/
 .watchmanconfig
 /android/idea/
-/ios/
 
 # OSX
 #
