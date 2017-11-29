@@ -1,4 +1,4 @@
-const images = {
+const images = {    
     "logo": require('./logo.png'),
     "user": require('./user.png'),
     "password": require('./password.png'),

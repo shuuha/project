@@ -1,36 +1,59 @@
 import React, { Component } from 'react';
-import { View, Text, Dimensions } from 'react-native';
-import { NativeRouter as Router, Route, Switch } from 'react-router-native';
+import { 
+    View, 
+    Text, 
+    Dimensions,
+    NetInfo, 
+    StatusBar 
+} from 'react-native';
+
+import { 
+    NativeRouter as Router, 
+    Route, 
+    Switch,
+    Redirect 
+} from 'react-router-native';
+
 import { observer, Provider } from 'mobx-react/native';
-
-import { AppStore } from './stores/AppStore';
-// import { mapStore } from './stores/MapStore';
-import { loginStore, serviceStore } from './stores';
-
+import { store } from './stores/App';
 // import { Page, MapAndDraw, Camera } from './components';
-import { Login, Service } from './components';
-
-const store = new AppStore();
+import { Login, Service, ErrorText, BackButton } from './components';
 
 @observer
-export default class App extends Component{ 
+export default class App extends Component{
 
     render(){
         console.log(' render ' );
-        // const { pages, dataLoaded } = store;        
+        // const { pages, dataLoaded } = store;
         return(
-            <Router>
-                <Switch>
-                    <Route exact path='/' render={(props) => {
-                        loginStore.mainHistory=props.history;
-                        return <Login /> 
-                    }} />
-                    <Route /*exact*/ path='/service' render={(props) => {
-                        serviceStore.mainHistory=props.history;
-                        return <Service /> 
-                    }} />
-                </Switch>
-            </Router>
+            <Provider store={store} >
+                <Router>
+                    <View
+                        style={{ flex: 1, backgroundColor: 'rgb(25, 58, 101)'}}
+                    >
+                        <StatusBar 
+                            backgroundColor='rgb(25, 58, 101)'
+                            barStyle="light-content"
+                        />
+                        <BackButton />                        
+                        <ErrorText />
+
+                        <Switch>                            
+                            <Route exact path='/' render={(props) => {
+                                store.appHistory=props.history;
+                                if(store.user.loggedIn) {
+                                    return <Redirect to='/service' />
+                                }
+                                return <Login />
+                            }} />
+                            <Route path='/service' render={(props) => {
+                                store.appHistory=props.history;
+                                return <Service />
+                            }} />
+                        </Switch>
+                    </View>
+                </Router>
+            </Provider>
         );    
 
             {/*dataLoaded ? 

@@ -64,7 +64,10 @@ export class SignUp extends Component{
     }
 
     render(){
-        const { signUp : store, loading, errorText } = this.props.store;
+        const { 
+            signUp : store, 
+            appStore: { loading, errorText }
+            } = this.props.store;
         return(            
             <Animated.View style={[
                     styles.container, 

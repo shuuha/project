@@ -58,7 +58,10 @@ export class PassRecovery extends Component{
     }
 
     render(){
-        const { passRecovery : store, loading } = this.props.store;
+        const { 
+            passRecovery : store, 
+            appStore: { loading },
+        } = this.props.store;
         return(
             <Animated.View style={[
                     styles.container, 
@@ -179,11 +182,10 @@ const styles = StyleSheet.create({
     },
     sendButton: {
         height: percentH(5.5),
-        width: percentW(64),        
+        width: percentW(64),
         borderRadius: 5,
         marginBottom: percentH(1.5),
         marginTop: percentH(1.5),
-        backgroundColor: 'rgb(95, 188, 102)',
-        
+        backgroundColor: 'rgb(95, 188, 102)',        
     },
 })

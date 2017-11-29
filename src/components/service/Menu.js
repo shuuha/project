@@ -88,7 +88,7 @@ export class Menu extends Component {
                 <View
                     style={styles.mapContainer}
                 >
-                    <Map />
+                    {/*<Map />*/}
                 </View>
 
                 <View

@@ -1,7 +1,7 @@
-import { serviceStore } from './ServiceStore';
-import { loginStore } from './LoginStore';
+import { Service } from './Service';
+import { Login } from './Login';
 
 export { 
-    serviceStore,
-    loginStore
+    Service,
+    Login
 }

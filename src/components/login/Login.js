@@ -2,59 +2,55 @@ import React, { Component } from 'react';
 import { BackHandler, View } from 'react-native';
 
 import { 
-    LoginView, 
-    Logo, 
+    Main,
     PassRecovery, 
-    SignUp, 
-    BackButton,
+    SignUp,     
     ActivationCode,
     Register,
     Photos,
-    LoggedIn,
-    ErrorText,
-    FBInfo,
-    ServiceMenu
+    Logo
     } from '../login';
-import { observer, Provider } from 'mobx-react';
-import { NativeRouter as Router, Route, Redirect } from 'react-router-native';
-import { loginStore as store } from '../../stores/LoginStore';
+    
+import { observer, inject, Provider } from 'mobx-react';
+import { 
+    NativeRouter as Router, 
+    Route, 
+    Redirect, 
+    Switch 
+} from 'react-router-native';
 
+@inject('store')
 @observer
 export class Login extends Component{
 
     componentWillMount () {        
-        BackHandler.addEventListener('hardwareBackPress', ()=> store.backHandler());
+        BackHandler.addEventListener('hardwareBackPress', ()=> this.props.store.login.backHandler());
     }
 
     componentWillUnmount () {
-        BackHandler.removeEventListener('hardwareBackPress', ()=> store.backHandler());
+        BackHandler.removeEventListener('hardwareBackPress', ()=> this.props.store.login.backHandler());
     }
 
     render(){
-        console.log(store);
+        const store = this.props.store.login;
         return(
             <Provider store={store} >
                 <Router>
                     <View
                         style={{flex: 1, backgroundColor: 'rgb(25, 58, 101)'}}
-                    >                    
-                        {/*<Route exact path='/servicemenu' render={(props)=> { store.history=props.history;
-                                return <ServiceMenu {...props} /> }} />*/}
-
-                        <Route  render={(props)=> { store.history=props.history;
-                                                return <BackButton {...props} /> }} />
-                        <Logo /> 
-                        <ErrorText /> 
-                        
-                        <Route exact path="/" component={LoginView} />
-                        <Route exact path='/passrecovery' component={PassRecovery} />
-                        <Route exact path='/signup' component={SignUp} />
-                        <Route exact path='/activation' component={ActivationCode} />
-                        <Route exact path='/register' component={Register} />
-                        <Route exact path='/photos' component={Photos} />
-                        <Route exact path='/loggedin' component={LoggedIn} />
-                        <Route exact path='/FBInfo' component={FBInfo} />
-                        {/*<Route exact path='/servicemenu' component={ServiceMenu} />*/}
+                    >
+                        <Logo />
+                    
+                        <Switch>
+                            <Route exact path="/" render={(props)=> {
+                                store.history = props.history;
+                                return <Main {...props} /> }} />
+                            <Route path='/passrecovery' component={PassRecovery} />
+                            <Route path='/signup' component={SignUp} />
+                            <Route path='/activation' component={ActivationCode} />
+                            <Route path='/register' component={Register} />
+                            <Route path='/photos' component={Photos} />
+                        </Switch>
                     </View>
                 </Router>
             </Provider>

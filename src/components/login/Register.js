@@ -55,7 +55,7 @@ export class Register extends Component{
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
         this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
         
-        this.props.store.showLogo = false;
+        this.props.store.appStore.showLogo = false;
     }
 
     componentWillUnmount () {
@@ -83,8 +83,7 @@ export class Register extends Component{
         const { 
             register : store, 
             register : { photos }, 
-            loading, 
-            errorText 
+            appStore: { loading, errorText }
             } = this.props.store;
         return(
             <Animated.View             

@@ -93,8 +93,10 @@ export class ActivationCode extends Component{
                 resendMessage,
                 canResend,
                 swingTrigger },
-            loading,
-            errorText
+            appStore: {
+                loading,
+                errorText
+                }
             } = this.props.store;
 
             const renderText = () => {

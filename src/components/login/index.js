@@ -1,11 +1,19 @@
-export * from './Login';
-export * from './LoginView';
-export * from './Logo';
-export * from './PassRecovery';
-export * from './SignUp';
-export * from './BackButton';
-export * from './ActivationCode';
-export * from './Register';
-export * from './Photos';
-export * from './LoggedIn';
-export * from './ErrorText';
+import { Login } from './Login';
+import { Main }  from './Main';
+import { PassRecovery } from './PassRecovery';
+import { SignUp } from './SignUp';
+import { ActivationCode } from './ActivationCode';
+import { Register } from './Register';
+import { Photos } from './Photos';
+import { Logo } from './Logo';
+
+export {
+    Login,
+    Main,
+    PassRecovery,
+    SignUp,
+    ActivationCode,
+    Register,
+    Photos,
+    Logo
+};
