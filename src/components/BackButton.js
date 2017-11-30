@@ -17,14 +17,13 @@ import { images } from './assets';
 @inject('store')
 @observer
 class BackButton extends Component{
-    render(){        
-    const { pathname } = this.props.history.location;
+    render(){
+    const { showBackButton, levelTwo } = this.props.store.navigation;
         return(            
-             (pathname !== '/'
-             && this.props.store.showBackButton) &&
+             (showBackButton && levelTwo.pathname !=='/') &&
             <TouchableOpacity
                 style={styles.button}
-                onPress={()=> this.props.store.handleBackNavigation()}
+                onPress={()=> levelTwo.handleBackNavigation()}
             >
                 <Image
                     source={images['arrow']}

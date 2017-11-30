@@ -15,6 +15,10 @@ export class Photos{
         this.register = registerStore;
     }
 
+    get appStore(){
+        return this.register.loginStore.appStore;
+    }
+
     @computed
     get dataSource(){
         const ds = new ListView.DataSource({
@@ -106,6 +110,6 @@ export class Photos{
 
     selectImage = (uri) => {
         this.imageUri = uri;
-        this.register.loginStore.history.goBack();
+        this.appStore.secondNavigation.moveBack();
     }
 }

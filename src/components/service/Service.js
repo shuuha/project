@@ -10,6 +10,7 @@ import { Menu, LoggedIn, Logo } from '../service';
 export class Service extends Component {
     render(){
         const store = this.props.store.service;
+        const { levelTwo }= this.props.store.navigation;
         return(
             <Provider store={store}>
                 <Router>
@@ -20,7 +21,7 @@ export class Service extends Component {
 
                         <Switch>
                             <Route exact path='/' render={(props)=> {
-                                store.history = props.history;
+                                levelTwo.history = props.history;
                                 return <LoggedIn /> }} />
                             }}
                             <Route path='/menu' component={Menu} />

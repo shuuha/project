@@ -11,17 +11,22 @@ export class SignUp{
     @observable phoneValueError = false;
     @observable shakeTrigger = false;
 
-    constructor(loginStore){
-        this.loginStore = loginStore; 
-    }
-
     refs;
     savedPhoneValue;
     phoneIsVerified = false;
     Vibration;
 
+    constructor(loginStore){
+        this.loginStore = loginStore; 
+    }
+
+
     get appStore(){
         return this.loginStore.appStore;
+    }
+
+    get navigation(){
+        return this.appStore.navigation;
     }
 
     @action
@@ -82,14 +87,14 @@ export class SignUp{
         return this.phoneValue === this.savedPhoneValue;
     }    
 
-    sendPhoneAndName = (data) => {
+    sendData = (data) => {
         axios.post(this.loginStore.appStore.URL_NEWUSER, data)
             .then(res => {
                 if(res.data.success){
                     this.loginStore.token = res.data.token;
                     this.savedPhoneValue = this.phoneValue;
                     this.loginStore.phoneVerified = false;
-                    this.loginStore.history.push('/activation');
+                    this.navigation.levelTwo.moveTo('/activation');
                 } else {
                     this.appStore.errorText = res.data.message;    
                 }
@@ -126,17 +131,17 @@ export class SignUp{
         }        
         else if (this.phoneIsNotResubmitted()){
             if(this.loginStore.phoneVerified){
-                this.loginStore.moveBackCount = 1;
-                this.loginStore.history.push('/register');
+                this.navigation.levelTwo.moveBackCount = 1;
+                this.navigation.levelTwo.moveTo('/register');
             }
             else {
-                this.loginStore.history.push('/activation');
+                this.navigation.levelTwo.moveTo('/activation');
             }
         }
         else {
             this.appStore.loading = true;
             this.saveUserInfo();
-            this.sendPhoneAndName(this.getPhoneAndName());
+            this.sendData(this.getPhoneAndName());
         }
     }
     

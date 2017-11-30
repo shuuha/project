@@ -24,6 +24,7 @@ export default class App extends Component{
 
     render(){
         console.log(' render ' );
+        const { levelOne } = store.navigation;
         // const { pages, dataLoaded } = store;
         return(
             <Provider store={store} >
@@ -35,22 +36,21 @@ export default class App extends Component{
                             backgroundColor='rgb(25, 58, 101)'
                             barStyle="light-content"
                         />
-                        <BackButton />                        
                         <ErrorText />
 
                         <Switch>                            
                             <Route exact path='/' render={(props) => {
-                                store.appHistory=props.history;
+                                levelOne.history = props.history;
                                 if(store.user.loggedIn) {
                                     return <Redirect to='/service' />
                                 }
                                 return <Login />
                             }} />
-                            <Route path='/service' render={(props) => {
-                                store.appHistory=props.history;
+                            <Route path='/service' render={(props) => {                                
                                 return <Service />
                             }} />
                         </Switch>
+                        <BackButton />
                     </View>
                 </Router>
             </Provider>

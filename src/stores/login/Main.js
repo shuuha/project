@@ -1,8 +1,9 @@
 import { observable, computed, action } from 'mobx';
-// import localStorage from 'react-native-local-storage';
+import RNSecureKeyStore from 'react-native-secure-key-store';
+
 import axios from 'axios';
 
-export class Main{
+export class Main {
 
     @observable email = '';
     @observable pass = '';
@@ -15,12 +16,16 @@ export class Main{
     refs;
     Vibration;
 
-    constructor(loginStore){
+    constructor(loginStore) {
         this.loginStore = loginStore;        
     }
 
-    get appStore(){
+    get appStore() {
         return this.loginStore.appStore;
+    }
+
+    get navigation() {
+        return this.appStore.navigation;
     }
 
     @action
@@ -48,20 +53,17 @@ export class Main{
         this.refs[prop].focus();
     }
 
-
     @action
     postData = (data) => {
-        console.log(data, this.appStore.URL_AUTH);
         return axios.post(this.appStore.URL_AUTH, data)
-        .then((res)=>{
+        .then((res)=> {
             console.log(res);
-            if(res.data.token){
+            if (res.data.token) {
                 this.appStore.user.token = res.data.token;
-                this.appStore.showBackButton = false;
                 this.appStore.user.loggedIn = true;
-                this.appStore.appHistory.replace('/service');
-            }
-            else {
+
+                return this.appStore.saveUserToStorage()                
+            } else {
                 this.emailError = true;
                 this.passError = false;
                 this.pass = '';
@@ -71,6 +73,9 @@ export class Main{
             }
             this.appStore.loading = false;
         })
+        .then(() => this.navigation.levelOne.moveTo('/service'))
+        .then(() => this.appStore.getUserFromStorage())
+        .then((res) => console.log(res))
         .catch((err)=> {
             console.log(err, 'error while login in with the existing login credentials');
             this.appStore.errorText = 'Network error';
@@ -80,13 +85,11 @@ export class Main{
 
     @action
     onLoginButtonPress = () => {
-        if(!this.email){
+        if (!this.email) {
             this.ifPropHasNoValue('email');
-        } 
-        else if(!this.pass){
+        } else if (!this.pass) {
             this.ifPropHasNoValue('pass');
-        }
-        else if(!this.emailError && !this.passError){
+        } else if (!this.emailError && !this.passError) {
             this.appStore.loading = true;
             this.appStore.errorText = null;            
 
@@ -100,16 +103,16 @@ export class Main{
 
     onForgotPassPress = () => {
         this.appStore.errorText = null;
-        this.loginStore.history.push('/passrecovery'); 
+        this.navigation.levelTwo.moveTo('/passrecovery'); 
     }
 
     onSignUpPress = () => {
         this.appStore.errorText = null;
-        this.loginStore.history.push('/signup');        
+        this.navigation.levelTwo.moveTo('/signup');        
     }
 
     onEnterPhoneNo = () => {
-        this.loginStore.history.push('/activation');
+        this.navigation.levelTwo.moveTo('/activation');
     }
     
     createFacebookData = (data, profile) => {
@@ -123,12 +126,9 @@ export class Main{
     }
 
     handleSuccess = (res) => {
-        console.log(res);
-        if(res.data.token){
+        if (res.data.token) {
             this.appStore.user.token = res.data.token;
-            // this.loginStore.history.push('/FBInfo');
-        }
-        else {
+        } else {
             this.appStore.errorText = res.data.message;
         }
     }

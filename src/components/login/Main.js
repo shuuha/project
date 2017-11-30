@@ -95,6 +95,7 @@ export class Main extends Component{
         duration: 200,
         // userNativeDriver: true
     }).start();
+    this.props.store.appStore.setInitialState();
   }
 
   _keyboardDidHide = () => {

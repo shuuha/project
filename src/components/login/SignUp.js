@@ -54,6 +54,7 @@ export class SignUp extends Component{
             toValue: keyboardHeightAndSomeMargin,
             duration: 200
         }).start();
+        this.props.store.appStore.errorText = null;
     }
 
     _keyboardDidHide = () => {

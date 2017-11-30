@@ -29,6 +29,10 @@ export class Register{
         return this.loginStore.appStore;
     }
 
+    get navigation(){
+        return this.appStore.navigation;
+    }
+
     @action
     setInitialState = () => {
         // this.emailValidError = false;
@@ -147,11 +151,10 @@ export class Register{
                 // })
                 .then(()=> {
                     console.log('registration complete');
-                    this.appStore.showLogo = true;
-                    this.appStore.showBackButton = false;
+                    this.appStore.showLogo = true;                    
                     this.appStore.loading = false;
                     this.appStore.user.loggedIn = true;
-                    this.appStore.appHistory.push('/service');
+                    this.navigation.levelOne.moveTo('/service');
                 })
                 .catch(err => {
                     this.appStore.loading = false;
@@ -182,7 +185,6 @@ export class Register{
     }
 
     onAvatarPress = () => {
-        this.loginStore.history.push('/photos')
+        this.navigation.levelTwo.moveTo('/photos');
     }
-
 }

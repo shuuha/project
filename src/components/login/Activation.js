@@ -20,7 +20,7 @@ const NUMBER_OF_INPUTS = [1, 2, 3, 4];
 
 @inject('store')
 @observer
-export class ActivationCode extends Component{    
+export class Activation extends Component{    
 
     animatedView = new Animated.Value(0);
     animatedTranslateY = new Animated.Value(0);
@@ -52,16 +52,15 @@ export class ActivationCode extends Component{
         this.keyboardDidShowListener.remove();
         this.keyboardDidHideListener.remove();
         KeyEvent.removeKeyDownListener();
+
+        console.log('component will unmount');
+        this.props.store.activation.resetValues();
     }
 
-    componentDidUpdate(){
-        // if(this.props.store.activation.errorValues){
-        //     this.refs.input0.focus();
-        // }
-        
-    }
+    _keyboardDidShow = (e) => {
 
-    _keyboardDidShow = (e) => {          
+        console.log(this.props.store, 'keyboard did show' );
+        this.props.store.errorText = null;
         const keyboardHeightAndSomeMargin = -e.endCoordinates.height + percentH(27);
         Animated.timing(this.animatedTranslateY, {
             toValue: keyboardHeightAndSomeMargin,

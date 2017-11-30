@@ -1,9 +1,10 @@
 import { observable, computed, action } from 'mobx';
 import uniqueId from 'react-native-unique-id';
+import RNSecureKeyStore from 'react-native-secure-key-store';
 import axios from 'axios';
 
 import PageStore from './PageStore';
-import { Login, Service } from '../stores';
+import { Login, Service, Navigation } from '../stores';
 
 class App{
 
@@ -39,10 +40,9 @@ class App{
     @observable showLogo = true;
     showLogoAnimation = true;
     dataLoaded = true;
-    id = null;
-    appHistory = {};
-    history = {};
-    currentPage = 1;
+    id = null;   
+    
+    currentPage = 1;    
 
     constructor(){        
         this.loadData();
@@ -50,6 +50,33 @@ class App{
     
     login = new Login(this);
     service = new Service(this);
+    navigation = new Navigation(this);
+
+    @action
+    setInitialState = () => {
+        this.errorText = null;
+        this.loading = false;
+    }
+
+    saveUserToStorage = () => {        
+        let user = {
+            token: this.token,
+            email: this.email,
+            pass: this.pass,
+            loggedIn: this.loggedIn
+        }
+        user = JSON.stringify(user);
+
+        return RNSecureKeyStore.set('login', data)
+            .then(res => console.log(res))
+            .catch(err => console.log(err));
+    }
+
+    getUserFromStorage = () => {
+        return RNSecureKeyStore.get('login')
+            .then(res => console.log(res))
+            .catch(err => console.log(err));
+    }
 
     // loadData(){
     //     uniqueId()

@@ -21,13 +21,17 @@ export class Activation{
     get appStore(){
         return this.loginStore.appStore;
     }
+
+    get navigation(){
+        return this.appStore.navigation;
+    }
     
     onInputChange = (refs, i, e, keyCode) => {
         const text = e.nativeEvent.text;
-        const length = Object.keys(refs).length - 1;        
+        const length = Object.keys(refs).length - 1;
         if(i != length && text){
             refs['input' + ++i].focus();
-        }        
+        }
     }
 
     onInputDeleteKeyPress = (keyCode) => {
@@ -47,7 +51,13 @@ export class Activation{
 
     @action
     onSubmitEditing = () => {
-        this.onEnter();          
+        this.onEnter();
+    }
+
+    @action
+    resetValues = () => {
+        const valuesNew = this.values.map(value => value = '');
+        this.values = [ ...valuesNew ];
     }
 
     @computed
@@ -80,44 +90,45 @@ export class Activation{
     onSuccessResponse = (res) => {
         this.loginStore.token = res.data.token;
         this.loginStore.phoneVerified = true;
-        this.loginStore.moveBackCount = 2;
-        this.loginStore.history.push('/register');
+        this.navigation.levelTwo.moveBackCount = 2;
+        this.navigation.levelTwo.moveTo('/register');
         this.values = ['', '', '' , ''];
     }
 
     sendData = (data) => {
-        axios.post(this.loginStore.URL_NEWUSER, data)
+        axios.post(this.appStore.URL_NEWUSER, data)
             .then(res => {
+                console.log(res);
                 if(res.data.success){
                     this.onSuccessResponse(res);
                 } 
                 else {
+                    this.appStore.errorText = res.data.message;
                     this.wrongSmsCode = true;
                     this.onError();
                 }
-                    this.loginStore.loading = false;
+                    this.appStore.loading = false;
             })
             .catch( err => {
                 this.appStore.errorText = 'Network error';
-                this.loginStore.loading = false;                    
+                this.appStore.loading = false;                    
                 console.log( 'sendSmsCode function error', err)
             });
     }
 
     @action
-    onEnter = () => {
-        this.loginStore.history.push('/register');
-        // if(this.inputsAreValid){
-        //     this.loginStore.loading = true;
-        //     const data = {
-        //         token: this.loginStore.token,
-        //         code: this.values.join('')
-        //     }
-        //     this.sendData(data);
-        // }
-        // else {
-        //     this.onError();
-        // }
+    onEnter = () => {        
+        if(this.inputsAreValid){
+            this.appStore.loading = true;
+            const data = {
+                token: this.loginStore.token,
+                code: this.values.join('')
+            }
+            this.sendData(data);
+        }
+        else {
+            this.onError();
+        }
     }
 
     enableResendCode = () => {
@@ -129,12 +140,13 @@ export class Activation{
     resendCode = () => {
         if(this.canResend){
             this.values = ['', '', '' , ''];
-            this.loginStore.loading = true;
+            this.appStore.loading = true;
             const data = this.loginStore.signUp.getPhoneAndName();
             
             const send = () => {
-                return axios.post(this.loginStore.URL_NEWUSER, data)
+                return axios.post(this.appStore.URL_NEWUSER, data)
                     .then(res => {
+                        console.log(res);
                         if(res.data.success){
                             this.swingTrigger = true;
                             this.resendMessage = 'Sms will be delivered shortly';
@@ -142,7 +154,7 @@ export class Activation{
                         else {
                             this.appStore.errorText = res.data.message;
                         }
-                        this.loginStore.loading = false;
+                        this.appStore.loading = false;
                         this.enableResendCode();
                     })
                     .catch(err => {

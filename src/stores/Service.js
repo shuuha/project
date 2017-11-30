@@ -11,6 +11,4 @@ export class Service{
 
     menu = new Menu(this);
     loggedIn = new LoggedIn(this);
-
-    history = {};
 }

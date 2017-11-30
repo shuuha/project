@@ -41,7 +41,7 @@ export class LoggedIn extends Component{
     render(){
         const { 
             appStore: { loading, user }, 
-            loggedIn : { onOnlinePress } 
+            loggedIn : { onTestButtonPress, onOnlinePress } 
         } = this.props.store;
 
         return(
@@ -63,10 +63,7 @@ export class LoggedIn extends Component{
                         justifyContent: 'center',
                         alignItems: 'center'
                     }}
-                    onPress={()=> {
-                        this.props.store.appStore.showLogo = false;
-                        console.log(this.props.store);
-                        this.props.store.history.push('/menu')}}
+                    onPress={ onTestButtonPress }
                 >
                     <Text
                         style={{ color: 'white', fontWeight: '500' }}

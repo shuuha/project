@@ -12,6 +12,10 @@ export class LoggedIn{
         return this.serviceStore.appStore;
     }
 
+    get navigation(){
+        return this.appStore.navigation;
+    }
+
     getCurrentLocation = () => {
         const promise = new Promise((resolve, reject)=>{
             navigator.geolocation.getCurrentPosition(({coords}) => {
@@ -46,7 +50,7 @@ export class LoggedIn{
         };
         this.timerId = setInterval(()=>{
             axios.post(this.appStore.URL_ONLINE, userData)
-                // .then((res) => console.log(res.data))
+                .then((res) => console.log(res.data))
                 .catch((err)=> {
                     console.log('startPing function error');
                     this.appStore.errorText = err;
@@ -101,5 +105,13 @@ export class LoggedIn{
         } else {
             this.goOnline();
         }
+    }
+
+    onTestButtonPress = () => {
+        // this.appStore.showLogo = false;
+        // this.navigation.levelTwo.moveTo('/menu');
+        axios.post(this.appStore.URL_AUTH, { token: this.appStore.user.token })
+            .then(res => console.log(res))
+            .catch( err => console.log(err));
     }
 }

@@ -5,7 +5,7 @@ import {
     Main,
     PassRecovery, 
     SignUp,     
-    ActivationCode,
+    Activation,
     Register,
     Photos,
     Logo
@@ -23,16 +23,19 @@ import {
 @observer
 export class Login extends Component{
 
-    componentWillMount () {        
-        BackHandler.addEventListener('hardwareBackPress', ()=> this.props.store.login.backHandler());
+    componentWillMount () {
+        const { levelTwo }= this.props.store.navigation;
+        BackHandler.addEventListener('hardwareBackPress', ()=> levelTwo.backHandler());
     }
 
     componentWillUnmount () {
-        BackHandler.removeEventListener('hardwareBackPress', ()=> this.props.store.login.backHandler());
+        const { levelTwo }= this.props.store.navigation;
+        BackHandler.removeEventListener('hardwareBackPress', ()=> levelTwo.backHandler());
     }
 
     render(){
         const store = this.props.store.login;
+        const { levelTwo }= this.props.store.navigation;
         return(
             <Provider store={store} >
                 <Router>
@@ -43,11 +46,11 @@ export class Login extends Component{
                     
                         <Switch>
                             <Route exact path="/" render={(props)=> {
-                                store.history = props.history;
+                                levelTwo.history = props.history;
                                 return <Main {...props} /> }} />
                             <Route path='/passrecovery' component={PassRecovery} />
                             <Route path='/signup' component={SignUp} />
-                            <Route path='/activation' component={ActivationCode} />
+                            <Route path='/activation' component={Activation} />
                             <Route path='/register' component={Register} />
                             <Route path='/photos' component={Photos} />
                         </Switch>

@@ -64,12 +64,4 @@ export class Login{
         }        
         return true;
     }
-
-    goForward(){
-        if(this.pages.length - 1 >= this.currentPage){
-            const pathname  = this.history.location.pathname.slice(0, 1);
-            const path = pathname + this.currentPage++;
-            this.history.push(path);            
-        }
-    }    
 }
