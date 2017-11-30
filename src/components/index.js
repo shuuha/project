@@ -8,6 +8,7 @@ import { Login } from './login';
 import { Service } from './service/Service';
 import { ErrorText } from './ErrorText';
 import { BackButton } from './BackButton';
+import { Loading } from './Loading';
 
 export {
     Drawer,
@@ -20,4 +21,5 @@ export {
     Service,
     ErrorText,
     BackButton,
+    Loading
 };

@@ -1,6 +1,6 @@
 import { observable, computed, action } from 'mobx';
 import uniqueId from 'react-native-unique-id';
-import RNSecureKeyStore from 'react-native-secure-key-store';
+import { AsyncStorage } from 'react-native';
 import axios from 'axios';
 
 import PageStore from './PageStore';
@@ -16,6 +16,7 @@ class App{
     
     @observable pages = [];
     @observable loading = false;
+    @observable loadingOnTokenCheck = null;
     @observable errorText = null;
     @observable modalVisible = false;
     @observable connectionError = false;
@@ -38,7 +39,7 @@ class App{
     };
     
     @observable showLogo = true;
-    showLogoAnimation = true;
+    @observable showLogoAnimation = true;
     dataLoaded = true;
     id = null;   
     
@@ -58,25 +59,50 @@ class App{
         this.loading = false;
     }
 
-    saveUserToStorage = () => {        
-        let user = {
-            token: this.token,
-            email: this.email,
-            pass: this.pass,
-            loggedIn: this.loggedIn
-        }
-        user = JSON.stringify(user);
+    saveTokenToStorage = () => {
+        return AsyncStorage.setItem('token', this.user.token)            
+            .catch( err => console.log(err));
+    }
 
-        return RNSecureKeyStore.set('login', data)
-            .then(res => console.log(res))
+    getTokenFromStorage = () => {
+        return AsyncStorage.getItem('token')            
             .catch(err => console.log(err));
     }
 
-    getUserFromStorage = () => {
-        return RNSecureKeyStore.get('login')
-            .then(res => console.log(res))
+    removeTokenFromStorage = () => {
+        return AsyncStorage.removeItem('token')
             .catch(err => console.log(err));
+    }    
+
+    appInit = () => {
+        this.loadingOnTokenCheck = true;        
+        this.getTokenFromStorage()
+            .then( token => {
+                if (token) {
+                    const userData = {
+                        token,
+                        position: {
+                            lat: store.user.lat || "0",
+                            lng: store.user.lng || "0"
+                        }
+                    };
+                    return axios.post(this.URL_ONLINE, userData)
+                        .then( res => {
+                            if (res.data.success) {
+                                this.user.loggedIn = true;
+                                this.loadingOnTokenCheck = false;
+                                this.showLogoAnimation = false;
+                            }})
+                } else {
+                    this.loadingOnTokenCheck = false;
+                }
+            })
+            .catch( err => {
+                this.loadingOnTokenCheck = false;
+                console.log('error getting user data ' + err)});
     }
+
+
 
     // loadData(){
     //     uniqueId()

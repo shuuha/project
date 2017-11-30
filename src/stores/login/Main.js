@@ -1,6 +1,4 @@
 import { observable, computed, action } from 'mobx';
-import RNSecureKeyStore from 'react-native-secure-key-store';
-
 import axios from 'axios';
 
 export class Main {
@@ -54,29 +52,38 @@ export class Main {
     }
 
     @action
+    setUserInfo = (res) => {
+        this.appStore.user.token = res.data.token;
+        this.appStore.user.loggedIn = true;
+        this.appStore.user.email = this.email;
+        this.appStore.user.pass = this.pass;
+    }   
+
+    @action
     postData = (data) => {
         return axios.post(this.appStore.URL_AUTH, data)
         .then((res)=> {
             console.log(res);
             if (res.data.token) {
-                this.appStore.user.token = res.data.token;
-                this.appStore.user.loggedIn = true;
-
-                return this.appStore.saveUserToStorage()                
+                this.setUserInfo(res);
+                
+                return this.appStore.saveTokenToStorage()
+                    .then(res => {
+                        this.appStore.loading = false;
+                        console.log(res)})
+                    .then(() => this.navigation.levelOne.moveTo('/service'))
             } else {
                 this.emailError = true;
                 this.passError = false;
                 this.pass = '';
                 this.Vibration.vibrate([300, 100]);
                 this.refs.pass.focus();
-                // this.appStore.errorText = res.data.message;
-            }
-            this.appStore.loading = false;
+                this.appStore.errorText = res.data.message;
+                this.appStore.loading = false;
+            }            
         })
-        .then(() => this.navigation.levelOne.moveTo('/service'))
-        .then(() => this.appStore.getUserFromStorage())
-        .then((res) => console.log(res))
-        .catch((err)=> {
+        
+        .catch(err=> {
             console.log(err, 'error while login in with the existing login credentials');
             this.appStore.errorText = 'Network error';
             this.appStore.loading = false;

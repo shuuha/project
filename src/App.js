@@ -17,16 +17,30 @@ import {
 import { observer, Provider } from 'mobx-react/native';
 import { store } from './stores/App';
 // import { Page, MapAndDraw, Camera } from './components';
-import { Login, Service, ErrorText, BackButton } from './components';
+import { 
+    Login, 
+    Service, 
+    ErrorText, 
+    BackButton, 
+    Loading 
+} from './components';
 
 @observer
 export default class App extends Component{
+
+    componentWillMount(){
+        store.appInit();
+    }
 
     render(){
         console.log(' render ' );
         const { levelOne } = store.navigation;
         // const { pages, dataLoaded } = store;
         return(
+            store.loadingOnTokenCheck
+            ?
+            <Loading />
+            :
             <Provider store={store} >
                 <Router>
                     <View

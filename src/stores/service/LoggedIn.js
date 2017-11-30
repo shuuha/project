@@ -114,4 +114,8 @@ export class LoggedIn{
             .then(res => console.log(res))
             .catch( err => console.log(err));
     }
+
+    clearToken = () => {
+        this.appStore.removeTokenFromStorage();
+    }
 }

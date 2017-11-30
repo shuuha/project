@@ -41,7 +41,7 @@ export class LoggedIn extends Component{
     render(){
         const { 
             appStore: { loading, user }, 
-            loggedIn : { onTestButtonPress, onOnlinePress } 
+            loggedIn : { onTestButtonPress, onOnlinePress, clearToken } 
         } = this.props.store;
 
         return(
@@ -50,7 +50,7 @@ export class LoggedIn extends Component{
                 style={{ 
                     flex: 0.2, 
                     flexDirection: 'row', 
-                    justifyContent: 'center', 
+                    justifyContent: 'space-around', 
                     alignItems: 'center'
                 }}
             >
@@ -68,6 +68,22 @@ export class LoggedIn extends Component{
                     <Text
                         style={{ color: 'white', fontWeight: '500' }}
                     >Fake request</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                    style={{ 
+                        height: percentH(7), 
+                        width: percentW(30), 
+                        backgroundColor: 'rgb(95, 189, 103)', 
+                        borderRadius: 5,                        
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                    }}
+                    onPress={ clearToken }
+                >
+                    <Text
+                        style={{ color: 'white', fontWeight: '500' }}
+                    >clear token from the storage</Text>
                 </TouchableOpacity>
             </View>
                 <TouchableOpacity

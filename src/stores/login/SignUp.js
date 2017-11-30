@@ -91,7 +91,7 @@ export class SignUp{
         axios.post(this.loginStore.appStore.URL_NEWUSER, data)
             .then(res => {
                 if(res.data.success){
-                    this.loginStore.token = res.data.token;
+                    this.appStore.token = res.data.token;
                     this.savedPhoneValue = this.phoneValue;
                     this.loginStore.phoneVerified = false;
                     this.navigation.levelTwo.moveTo('/activation');
