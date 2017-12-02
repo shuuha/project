@@ -91,20 +91,13 @@ export class LoggedIn extends Component{
                     onPress={onOnlinePress}
                 >
                     <View
-                        style={[styles.container, loading && { alignItems: 'center' } ]}
+                        style={[styles.container/*, loading && { alignItems: 'center' }*/ ]}
                     >
-                        {
-                        loading ? 
-                        <ActivityIndicator
-                            size={Platform.OS === 'android' ? percentW(20) : 'large'}
-                            color='rgb(255, 255, 255)'
-                        />
-                        :
+
                         <Icon 
                             name='check-circle-outline'
-                            style={[styles.icon, user.online && { color:'rgb(94, 189, 100)' } ]}
+                            style={[styles.icon/*, user.online && { color:'rgb(94, 189, 100)' }*/ ]}
                         />
-                        }
 
                     </View>
                 </TouchableOpacity>

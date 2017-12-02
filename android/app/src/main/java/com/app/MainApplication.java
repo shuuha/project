@@ -3,6 +3,8 @@ package com.app;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.oblador.vectoricons.VectorIconsPackage;
+import com.ocetnik.timer.BackgroundTimerPackage;
 import com.github.kevinejohn.keyevent.KeyEventPackage;
 import com.lwansbrough.RCTCamera.RCTCameraPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
@@ -30,6 +32,8 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new VectorIconsPackage(),
+            new BackgroundTimerPackage(),
             new KeyEventPackage(),
             new RCTCameraPackage(),
             new RNGestureHandlerPackage(),

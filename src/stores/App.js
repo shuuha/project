@@ -40,6 +40,8 @@ class App{
     
     @observable showLogo = true;
     @observable showLogoAnimation = true;
+
+    appState = null;
     dataLoaded = true;
     id = null;   
     
@@ -78,7 +80,9 @@ class App{
         this.loadingOnTokenCheck = true;        
         this.getTokenFromStorage()
             .then( token => {
+                console.log('getting token from storage');
                 if (token) {
+                    this.user.token = token;
                     const userData = {
                         token,
                         position: {
@@ -88,18 +92,29 @@ class App{
                     };
                     return axios.post(this.URL_ONLINE, userData)
                         .then( res => {
+                            console.log('sending data to verify', res);
                             if (res.data.success) {
                                 this.user.loggedIn = true;
-                                this.loadingOnTokenCheck = false;
                                 this.showLogoAnimation = false;
-                            }})
+                            } 
+                            console.log(res.message);
+                            this.loadingOnTokenCheck = false;
+                        })
                 } else {
+                    console.log('no valid key in the storage');
                     this.loadingOnTokenCheck = false;
                 }
             })
             .catch( err => {
                 this.loadingOnTokenCheck = false;
                 console.log('error getting user data ' + err)});
+    }
+
+    handleAppStateChange = (nextState) => {
+        this.appState = nextState;
+        if (this.service.loggedIn.pingIsActive) {
+            this.service.loggedIn.startPing();
+        }
     }
 
 

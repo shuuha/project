@@ -3,8 +3,8 @@ import {
     View, 
     Text, 
     Dimensions,
-    NetInfo, 
-    StatusBar 
+    StatusBar,
+    AppState
 } from 'react-native';
 
 import { 
@@ -30,6 +30,20 @@ export default class App extends Component{
 
     componentWillMount(){
         store.appInit();
+    }
+
+    componentDidMount(){
+        store.appState = AppState.currentState;
+        AppState.addEventListener('change', this._handleAppStateChange);
+    }
+
+    componentWillUnmount() {
+        AppState.removeEventListener('change', this._handleAppStateChange);
+    }
+
+    _handleAppStateChange = (nextAppState) => {
+        console.log(nextAppState);
+        store.handleAppStateChange(nextAppState);
     }
 
     render(){
