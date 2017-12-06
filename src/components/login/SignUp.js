@@ -190,7 +190,7 @@ export class SignUp extends Component{
                         <Text
                             style={{ 
                                 color: 'rgb(255, 255, 255)', 
-                                fontSize: percentW(5), 
+                                fontSize: percentW(4.5), 
                                 fontWeight: '500'
                             }}
                         >Send</Text>
@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
         flex: 1,
         color: 'rgb(255, 255, 255)', 
         fontFamily: 'Arial', 
-        fontSize: percentW(5), 
+        fontSize: percentW(4.5), 
         /*fontWeight: '500'*/
     },    
     phone : {
@@ -282,7 +282,7 @@ const styles = StyleSheet.create({
         flex: 1,
         color: 'rgb(255, 255, 255)', 
         fontFamily: 'Arial', 
-        fontSize: percentW(5), 
+        fontSize: percentW(4.5), 
         /*fontWeight: '500'*/
     },
     text: {
@@ -291,8 +291,8 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         color: 'rgb(255, 255, 255)',
         fontFamily: 'Arial',
-        fontSize: percentW(5), 
-        fontWeight: '500',
+        fontSize: percentW(4.5),
+        // fontWeight: '500',
         marginBottom: percentH(3)
     },
     loginButton: {        

@@ -4,9 +4,9 @@ import { AsyncStorage } from 'react-native';
 import axios from 'axios';
 
 import PageStore from './PageStore';
-import { Login, Service, Navigation } from '../stores';
+import { Login, Service, Navigation, Token } from '../stores';
 
-class App{
+class App {
 
     URL_NEWUSER = 'http://app.yayintel.com:8883/api/newuser';
     URL_AUTH = 'http://app.yayintel.com:8883/api/authenticate';
@@ -14,19 +14,20 @@ class App{
     URL_FB = 'http://app.yayintel.com:8883/api/authenticate/facebook'; 
     URL_MAIN = "http://app.yayintel.com/";
     
+    appState = null;
+    dataLoaded = true;
+    id = null;
+    currentPage = 1;
+
     @observable pages = [];
     @observable loading = false;
     @observable loadingOnTokenCheck = null;
     @observable errorText = null;
     @observable modalVisible = false;
     @observable connectionError = false;
-    // @observable dataLoaded = false;
-    
-    // @observable _lastPage = 0;    
-
+    @observable requestAvailable = false;
     @observable showBackButton = true;
-    @observable
-    user = {
+    @observable user = {
         fullname: '',
         phone: '',
         email: '',
@@ -36,16 +37,12 @@ class App{
         lng: null,
         online: false,
         loggedIn: false
-    };
-    
+    };    
     @observable showLogo = true;
     @observable showLogoAnimation = true;
-
-    appState = null;
-    dataLoaded = true;
-    id = null;   
     
-    currentPage = 1;    
+    // @observable dataLoaded = false;    
+    // @observable _lastPage = 0;    
 
     constructor(){        
         this.loadData();
@@ -54,52 +51,21 @@ class App{
     login = new Login(this);
     service = new Service(this);
     navigation = new Navigation(this);
+    token = new Token(this);
 
     @action
     setInitialState = () => {
         this.errorText = null;
         this.loading = false;
-    }
-
-    saveTokenToStorage = () => {
-        return AsyncStorage.setItem('token', this.user.token)            
-            .catch( err => console.log(err));
-    }
-
-    getTokenFromStorage = () => {
-        return AsyncStorage.getItem('token')            
-            .catch(err => console.log(err));
-    }
-
-    removeTokenFromStorage = () => {
-        return AsyncStorage.removeItem('token')
-            .catch(err => console.log(err));
     }    
 
     appInit = () => {
-        this.loadingOnTokenCheck = true;        
-        this.getTokenFromStorage()
+        this.loadingOnTokenCheck = true;
+        this.token.getFromStorage()
             .then( token => {
-                console.log('getting token from storage');
                 if (token) {
-                    this.user.token = token;
-                    const userData = {
-                        token,
-                        position: {
-                            lat: store.user.lat || "0",
-                            lng: store.user.lng || "0"
-                        }
-                    };
-                    return axios.post(this.URL_ONLINE, userData)
-                        .then( res => {
-                            console.log('sending data to verify', res);
-                            if (res.data.success) {
-                                this.user.loggedIn = true;
-                                this.showLogoAnimation = false;
-                            } 
-                            console.log(res.message);
-                            this.loadingOnTokenCheck = false;
-                        })
+                    this.user.token = token;                    
+                    this.token.verifyOnServer(token);
                 } else {
                     console.log('no valid key in the storage');
                     this.loadingOnTokenCheck = false;

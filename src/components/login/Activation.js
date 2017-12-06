@@ -91,7 +91,8 @@ export class Activation extends Component{
                 resendCode,
                 resendMessage,
                 canResend,
-                swingTrigger },
+                swingTrigger,
+                shakeTrigger },
             appStore: {
                 loading,
                 errorText
@@ -123,16 +124,19 @@ export class Activation extends Component{
                     animation={swingTrigger ? 'swing' : ''}
                     duration={500}
                     useNativeDrive={true}
-                    onAnimationEnd={()=> this.props.store.activation.swingTrigger = false}
+                    onAnimationEnd={ ()=> this.props.store.activation.swingTrigger = false }
                 >
                     <Text
                         style={styles.text}
-                    >{renderText()}</Text>
+                    >{ renderText() }</Text>
                 </Animatable.View>
                 <Animatable.View
                         duration={500}
-                        animation={ errorValues ? 'shake' : '' }
-                        onAnimationEnd={()=> this.refs.input0.focus()}
+                        animation={ errorValues && shakeTrigger ? 'shake' : '' }
+                        onAnimationEnd={ ()=> {
+                            this.refs.input0.focus();
+                            this.props.store.activation.shakeTrigger = false;
+                        }}
                         useNativeDriver={true}            
                 >
                     <View style={[styles.inputsContainer ]} 

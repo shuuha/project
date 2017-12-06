@@ -90,7 +90,7 @@ export class PassRecovery extends Component{
                         placeholder='email@email.com'
                         keyboardType='email-address'
                         underlineColorAndroid='transparent'
-                        style={[styles.emailText, store.value && { fontWeight: '500' }]}
+                        style={[styles.emailText]}
                         placeholderTextColor='rgb(206, 206, 206)'
                     />
                 </View>
@@ -110,8 +110,8 @@ export class PassRecovery extends Component{
                         <Text
                             style={{ 
                                 color: 'rgb(255, 255, 255)', 
-                                fontSize: percentW(5), 
-                                fontWeight: '500'
+                                fontSize: percentW(4.5), 
+                                // fontWeight: '500'
                             }}
                         >Send</Text>
                     }
@@ -167,7 +167,7 @@ const styles = StyleSheet.create({
         flex: 1,
         color: 'rgb(255, 255, 255)', 
         fontFamily: 'Arial', 
-        fontSize: percentW(5), 
+        fontSize: percentW(4.5), 
         /*fontWeight: '500'*/
     },
     text: {
@@ -176,8 +176,8 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         color: 'rgb(255, 255, 255)',
         fontFamily: 'Arial',
-        fontSize: percentW(5), 
-        fontWeight: '500',
+        fontSize: percentW(4.5), 
+        // fontWeight: '500',
         marginBottom: percentH(2.5)
     },
     sendButton: {

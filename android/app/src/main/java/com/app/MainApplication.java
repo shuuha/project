@@ -8,6 +8,7 @@ import com.ocetnik.timer.BackgroundTimerPackage;
 import com.github.kevinejohn.keyevent.KeyEventPackage;
 import com.lwansbrough.RCTCamera.RCTCameraPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
+import com.dieam.reactnativepushnotification.ReactNativePushNotificationPackage;
 import com.airbnb.android.react.maps.MapsPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -38,7 +39,8 @@ public class MainApplication extends Application implements ReactApplication {
             new RCTCameraPackage(),
             new RNGestureHandlerPackage(),
             new MapsPackage(),
-            new FacebookLoginPackage() // <------ add the package
+            new FacebookLoginPackage(), // <------ add the package
+            new ReactNativePushNotificationPackage()
       );
     }
 

@@ -40,7 +40,7 @@ export class LoggedIn extends Component{
 
     render(){
         const { 
-            appStore: { loading, user }, 
+            appStore: { loading, user, requestAvailable }, 
             loggedIn : { onTestButtonPress, onOnlinePress, clearToken } 
         } = this.props.store;
 
@@ -50,7 +50,7 @@ export class LoggedIn extends Component{
                 style={{ 
                     flex: 0.2, 
                     flexDirection: 'row', 
-                    justifyContent: 'space-around', 
+                    justifyContent: 'center', 
                     alignItems: 'center'
                 }}
             >
@@ -58,32 +58,17 @@ export class LoggedIn extends Component{
                     style={{ 
                         height: percentH(7), 
                         width: percentW(30), 
-                        backgroundColor: 'rgb(95, 189, 103)', 
+                        backgroundColor: requestAvailable ? 'rgb(95, 189, 103)' : 'rgb(158, 158, 158)', 
                         borderRadius: 5,                        
                         justifyContent: 'center',
                         alignItems: 'center'
                     }}
+                    disabled={!requestAvailable}
                     onPress={ onTestButtonPress }
                 >
                     <Text
                         style={{ color: 'white', fontWeight: '500' }}
-                    >Fake request</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                    style={{ 
-                        height: percentH(7), 
-                        width: percentW(30), 
-                        backgroundColor: 'rgb(95, 189, 103)', 
-                        borderRadius: 5,                        
-                        justifyContent: 'center',
-                        alignItems: 'center'
-                    }}
-                    onPress={ clearToken }
-                >
-                    <Text
-                        style={{ color: 'white', fontWeight: '500' }}
-                    >clear token from the storage</Text>
+                    >Accept request</Text>
                 </TouchableOpacity>
             </View>
                 <TouchableOpacity
@@ -91,12 +76,12 @@ export class LoggedIn extends Component{
                     onPress={onOnlinePress}
                 >
                     <View
-                        style={[styles.container/*, loading && { alignItems: 'center' }*/ ]}
+                        style={[styles.container, loading && { alignItems: 'center' } ]}
                     >
 
                         <Icon 
                             name='check-circle-outline'
-                            style={[styles.icon/*, user.online && { color:'rgb(94, 189, 100)' }*/ ]}
+                            style={[styles.icon, user.online && { color:'rgb(94, 189, 100)' } ]}
                         />
 
                     </View>

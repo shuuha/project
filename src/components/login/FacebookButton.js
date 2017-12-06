@@ -13,11 +13,11 @@ export const FacebookButton = (props) => {
               style={[{ backgroundColor: 'rgb(59, 89, 152)', justifyContent: 'center' }, props.style]}
               >
                 <Text 
-                    style={{ 
+                    style={[{ 
                         fontFamily: 'Arial', 
-                        fontSize: 15, 
+                        fontSize: 15,
                         color: 'rgb(255, 255, 255)'
-                    }}                
+                    }, props.textStyle]}                
                 >Sign in with Facebook</Text>                
             </Icon.Button>
     );

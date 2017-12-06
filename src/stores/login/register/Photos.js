@@ -2,7 +2,7 @@ import { observable, computed, action } from 'mobx';
 import { ListView, CameraRoll, Platform } from 'react-native';
 import { _ } from 'lodash';
 
-export class Photos{   
+export class Photos {   
 
     @observable photos = [];
     @observable imageUri;
@@ -11,16 +11,20 @@ export class Photos{
     noMorePhotos = false;
     _dataSource = {};
     
-    constructor(registerStore){
+    constructor(registerStore) {
         this.register = registerStore;
     }
 
-    get appStore(){
+    get appStore() {
         return this.register.loginStore.appStore;
     }
 
+    get navigation() {
+        return this.appStore.navigation;
+    }
+
     @computed
-    get dataSource(){
+    get dataSource() {
         const ds = new ListView.DataSource({
             rowHasChanged: (r1, r2) => r1 != r2
         });
@@ -38,18 +42,18 @@ export class Photos{
             assetType: 'Photos',
             ...newProp
         };
-        if(Platform.OS === 'android'){
+        if (Platform.OS === 'android') {
             delete params.groupTypes;
-        }
-        else {
+        } else {
             delete params.groupName;
         }
+
         return params;
     }
 
 
     getInitialPhotos = () => {
-        if(!this.noMorePhotos){
+        if (!this.noMorePhotos) {
             CameraRoll.getPhotos(this.getFetchParams())
             .then((res) => {
                 this.noMorePhotos = !res.page_info.has_next_page;
@@ -110,6 +114,6 @@ export class Photos{
 
     selectImage = (uri) => {
         this.imageUri = uri;
-        this.appStore.secondNavigation.moveBack();
+        this.navigation.levelTwo.moveBack();
     }
 }

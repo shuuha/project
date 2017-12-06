@@ -209,7 +209,7 @@ export class Main extends Component{
                         disabled={loading}
                     >                    
                         <Text
-                            style={{ color: 'rgb(255, 255, 255)', fontSize: percentW(5), fontWeight: '500'}}
+                            style={{ color: 'rgb(255, 255, 255)', fontSize: percentW(4.5)}}
                         >Log in</Text>
                     </TouchableOpacity>
                 }
@@ -230,6 +230,7 @@ export class Main extends Component{
                     disabled={loading}
                     onPress={this.login}
                     style={styles.fbButton}
+                    textStyle={{ fontSize: percentW(4)}}
                 />
                 
 
@@ -313,7 +314,7 @@ const styles = StyleSheet.create({
         flex: 1,
         color: 'rgb(255, 255, 255)', 
         fontFamily: 'Arial', 
-        fontSize: percentW(5), 
+        fontSize: percentW(4.5), 
     },
     loginButton: {        
         height: percentH(5.5),        
@@ -335,9 +336,10 @@ const styles = StyleSheet.create({
     },
     forgetPassText: {
         fontFamily: 'Arial', 
-        fontSize: percentW(4.4), 
+        // fontSize: percentW(4.4),
+        fontSize: percentW(4),
         color: 'rgb(255, 255, 255)', 
-        fontWeight: '500'
+        // fontWeight: '500'
     },
     error: {
         borderBottomColor: 'rgb(188, 0, 0)',

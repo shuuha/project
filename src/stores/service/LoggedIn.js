@@ -1,19 +1,20 @@
 import { observable, computed, action } from 'mobx';
 import BackgroundTimer from 'react-native-background-timer';
-import { Platform } from 'react-native';
-
 import { store } from '../App';
 import axios from 'axios';
+import PushNotification from 'react-native-push-notification';
 
 let timerId;
-
-const startTimer = (delay, allowedTime, fn) => {
-    let count = delay;
+// need to declare the background timer function outside the class to get it work correctly
+const startTimer = (delay, maxTimeInBackground, appState,  fn) => {
     BackgroundTimer.clearInterval(timerId);    
+
+    let count = delay;
+
     timerId = BackgroundTimer.setInterval( () => {
-        console.log('timer at work', delay);
-        if (allowedTime) {
-            if (count >= allowedTime) {
+        if (appState === 'background') {
+            console.log('timer at work on background', delay, count);
+            if (count >= maxTimeInBackground) {
                 console.log(count, 'terminating connection as the limit is reached');
                 store.service.loggedIn.pingIsActive = false;
                 BackgroundTimer.clearInterval(timerId);
@@ -21,7 +22,8 @@ const startTimer = (delay, allowedTime, fn) => {
                 fn();
             }
             count += delay;
-        } else {
+        } else if (appState === 'active') {
+            console.log('timer at work on active mode');
             fn();
         }
     }, delay);
@@ -36,46 +38,27 @@ export class LoggedIn {
     PING_DELAY_ACTIVE = 5000;
     PING_DELAY_BACKGROUND = 30000;
     PING_TIME_MULTIPLIER = 6;
-    PING_TIME_ALLOWED_IN_BACKGROUND = 
-        this.PING_DELAY_BACKGROUND * this.PING_TIME_MULTIPLIER;
-    CURRENT_LOCATION_CONFIG_TIMEOUT = 10000;
-
-    constructor(serviceStore){
-        this.serviceStore = serviceStore;
-    }
+    MAX_TIME_IN_BACKGROUND = 
+        this.PING_DELAY_BACKGROUND * this.PING_TIME_MULTIPLIER;   
 
     pingIsActive = false;
 
-    get appStore(){
+    constructor(serviceStore) {
+        this.serviceStore = serviceStore;
+    }
+    get appStore() {
         return this.serviceStore.appStore;
     }
-
-    get navigation(){
+    get menu () {
+        return this.serviceStore.menu;
+    }
+    get navigation() {
         return this.appStore.navigation;
     }
 
-    getCurrentLocation = () => {
-        const promise = new Promise((resolve, reject)=>{
-            navigator.geolocation.getCurrentPosition(({coords}) => {
-                const { latitude, longitude } = coords;
-                // this.appStore.user.lat = latitude;
-                // this.appStore.user.lng = longitude;
-                this.appStore.user.lat = 100;
-                this.appStore.user.lng = 100;
-                resolve(coords);
-            },
-            (error) => {
-                this.appStore.loading = false;
-                this.appStore.errorText = 'No location provider available';
-                console.log(JSON.stringify(error));
-                reject(error)},
-            {timeout: this.CURRENT_LOCATION_CONFIG_TIMEOUT} 
-            );
-        });
-
-        return promise;
-    }  
-
+    get geolocation() {
+        return this.serviceStore.geolocation;
+    }
 
     getUserData = () => {
         const userData = { 
@@ -88,31 +71,67 @@ export class LoggedIn {
         return userData;
     }
 
+    @action
+    handleSuccessResponse = (res) => {
+        console.log(res);
+        if (res.data.success) {
+            this.stopPing();
+            switch (this.appStore.appState) {
+                case 'active':                
+                    setTimeout( ()=> {
+                        this.appStore.requestAvailable = true;
+                    }, 10000);
+
+                    break;
+                case 'background':
+                    this.appStore.requestAvailable = true;
+                    PushNotification.localNotification({
+                        message: "You got a request" 
+                    });
+
+                    break;
+            }
+            const { request } = res.data;
+            this.menu.name = request.Name;
+            this.menu.price = request.Price;
+            this.menu.timeStart = request.TimeStart;
+            this.menu.timeLength = request.TimeLength;
+            this.menu.id = request.RequestID;
+        } else { 
+            console.log(res);
+        }
+    }
+
+
+    @action
+    handleErrorResponse = (err) => {
+        console.log('startPing function error');
+        this.appStore.errorText = err;
+    }
+
     postData = (url, data) => {
         return axios.post(url, data)
-            .then((res) => console.log(res.data))
-            .catch((err)=> {
-                console.log('startPing function error');
-                this.appStore.errorText = err;
-            })
+            .then( res => this.handleSuccessResponse(res))
+            .catch( err => this.handleErrorResponse() )
     }
 
     getPingDelay = () => {
         if (this.appStore.appState === 'active') {
-            this.PING_TIME_ALLOWED_IN_BACKGROUND = null;
+            this.MAX_TIME_IN_BACKGROUND = null;
             return this.PING_DELAY_ACTIVE;
         } else {
-            this.PING_TIME_ALLOWED_IN_BACKGROUND = 
+            this.MAX_TIME_IN_BACKGROUND = 
                 this.PING_DELAY_BACKGROUND * this.PING_TIME_MULTIPLIER;
             return this.PING_DELAY_BACKGROUND;            
         }
     }
 
-    startPingAndroid = () => {
+    startPing = () => {
         this.pingIsActive= true;
         startTimer(
             this.getPingDelay(),
-            this.PING_TIME_ALLOWED_IN_BACKGROUND,
+            this.MAX_TIME_IN_BACKGROUND,
+            this.appStore.appState,
             () => {
                 this.postData(
                     this.appStore.URL_ONLINE,
@@ -122,74 +141,41 @@ export class LoggedIn {
         );
     }
 
-    startPingIOS = () => {
-        console.log('start ping ios');
-        BackgroundTimer.start();
-        this.timerId = setInterval(()=> {
-            this.postData(this.appStore.URL_ONLINE, this.getUserData());            
-        }, this.PING_DELAY);
-    }
-
-    stopPingAndroid = () => {
+    stopPing = () => {
         this.pingIsActive = false;
         stopTimer();
-    }
+    }   
 
-    stopPingIOS = () => {
-        // BackgroundTimer.stop();
-        clearInterval(this.timerId);
-    }
+    goOnline = () => {        
+        this.appStore.loading = true;
+        this.appStore.errorText = true;
+        this.appStore.requestAvailable = false;
+        this.geolocation.getCurrentLocation()
+            .then( res => { 
+                const data = { 
+                    position: { lat: this.appStore.user.lat, lng: this.appStore.user.lng },
+                    token: this.appStore.user.token
+                };
+                console.log(data);
 
-    startPing = () => {
-        // if (Platform.OS === 'ios') {
-        //     this.startPingIOS();
-        // } else {
-            this.startPingAndroid();
-        // }
-
-    }
-
-    stopPing = () => {
-        // if (Platform.OS = 'ios') {
-        //     this.stopPingIOS();
-        // } else {
-            this.stopPingAndroid();
-        // }
-    }
-
-    goOnline = () => {
-        this.startPing();
-        // this.appStore.loading = true;
-        // this.appStore.errorText = true;
-        // this.getCurrentLocation()
-        //     .then(()=> { 
-        //         const data = { 
-        //             position: { lat: this.appStore.user.lat, lng: this.appStore.user.lng },
-        //             token: this.appStore.user.token
-        //         };
-        //         console.log(data);
-        //         return axios.post(this.appStore.URL_ONLINE, data);
-        //     })
-        //     .then((res)=> {
-        //         if(res.data.success){
-        //             this.appStore.user.online = true;
-        //             this.appStore.loading = false;
-
-        //             // this.timerId = BackgroundTimer.setInterval(()=>{
-        //             //     this.postData(this.appStore.URL_ONLINE, this.getUserData());
-        //             // }, this.PING_DELAY);
-
-        //             this.startPing();
-        //         }
-        //     })
-        //     .catch((err)=> console.log( 'goOnline function error', err))
+                return axios.post(this.appStore.URL_ONLINE, data);
+            })
+            .then( res => {
+                if (res.data.success) {
+                    this.appStore.user.online = true;
+                    this.appStore.loading = false;
+                    this.startPing();
+                }
+            })
+            .catch((err)=> console.log( 'goOnline function error', err))
     }
 
     goOffline = () => {
+                                    
+        this.stopPing();
+        this.appStore.loading = false;
 
-        // this.appStore.loading = false;
         // this.appStore.user.online = false;
-        // this.stopPing();
         // this.appStore.loading = true;
         // const data = {
         //     goOffline: true,
@@ -198,7 +184,7 @@ export class LoggedIn {
         // axios.post(this.appStore.URL_ONLINE, data)
         //     .then(res => {
         //         console.log(res);
-        //         if(res.data.success){
+        //         if (res.data.success) {
         //             this.appStore.user.online = false;
         //             this.appStore.loading = false;
         //         }
@@ -215,16 +201,9 @@ export class LoggedIn {
     }
 
     onTestButtonPress = () => {
-        // this.appStore.showLogo = false;
-        // this.navigation.levelTwo.moveTo('/menu');
-        axios.post(this.appStore.URL_AUTH, { token: this.appStore.user.token })
-            .then(res => console.log(res))
-            .catch( err => console.log(err));
-    }
-
-    clearToken = () => {
-        console.log('timer is cleared');
-        stopTimer();
-        // this.appStore.removeTokenFromStorage();
-    }
+        if (this.appStore.requestAvailable) {
+            this.appStore.showLogo = false;
+            this.navigation.levelTwo.moveTo('/menu');
+        }        
+    }    
 }

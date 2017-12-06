@@ -1,14 +1,14 @@
 import { observable, computed, action } from 'mobx';
 
-import { Menu, LoggedIn } from './service';
+import { Menu, LoggedIn, Geolocation } from '../service';
 
+export class Service {
 
-export class Service{
-
-    constructor(appStore){
+    constructor(appStore) {
         this.appStore = appStore;
     }
 
     menu = new Menu(this);
     loggedIn = new LoggedIn(this);
+    geolocation = new Geolocation(this);
 }

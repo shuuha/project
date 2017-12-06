@@ -32,9 +32,11 @@ export class LevelTwo {
         if (this.pathname == '/register') {
             this.appStore.showLogo = true;
             this.moveBack(this.moveBackCount);
-        } else if ( this.pathname === '/signup' 
+        } else if ( 
+            this.pathname === '/signup'
             || this.pathname === '/menu'
-            || this.pathname ==='/passrecovery' ) {
+            || this.pathname ==='/passrecovery'
+            ) { 
                 this.moveBack();
                 this.navigationStore.showBackButton = false;
         } else {

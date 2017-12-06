@@ -1,11 +1,13 @@
 import { observable, computed, action } from 'mobx';
-// import localStorage from 'react-native-local-storage';
 import axios from 'axios';
-import { Photos } from './register';
+import { Photos } from '../register';
 
 const NUMBERS = '0123456789';
 
-export class Register{
+export class Register {
+
+    refs;
+    Vibration;
 
     @observable email = '';
     @observable pass = '';
@@ -16,21 +18,22 @@ export class Register{
     @observable passConfirmError = false;
     @observable shakeTrigger = false;
 
-    photos = new Photos(this);   
-
-    refs;
-    Vibration;
-
-    constructor(loginStore){
+    constructor(loginStore) {
         this.loginStore = loginStore;
     }
 
-    get appStore(){
+    photos = new Photos(this);
+
+    get appStore() {
         return this.loginStore.appStore;
     }
 
-    get navigation(){
+    get navigation() {
         return this.appStore.navigation;
+    }
+
+    get token() {
+        return this.appStore.token;
     }
 
     @action
@@ -62,10 +65,12 @@ export class Register{
     }
 
     @computed
-    get isEmailValid(){
-        let i, tail, dot;
+    get isEmailValid() {
+        let i;
+        let tail;
+        let dot;        
 
-        if(this.email.includes('@')){
+        if (this.email.includes('@')) {
             i = this.email.indexOf('@');
             tail = this.email.slice(++i);
             dot = tail.indexOf('.');            
@@ -76,20 +81,21 @@ export class Register{
     }
 
     @computed
-    get isPassValid(){
-        const valid = this.pass.length >=8 && this.pass.split('').some(q => NUMBERS.includes(q));
+    get isPassValid() {
+        const valid = this.pass.length >=8 && 
+            this.pass.split('').some(q => NUMBERS.includes(q));
         return valid;
     }
 
     @computed 
-    get isPassConfirmValid(){
+    get isPassConfirmValid() {
         return this.pass.length != 0 && this.pass === this.passConfirm;
     }
 
     @computed
-    get inputsAreValid(){
+    get inputsAreValid() {
         return this.isEmailValid && this.isPassValid && this.isPassConfirmValid;
-    }
+    }    
      
     onError = (propName) => {
         this[propName + 'Error'] = true;
@@ -104,64 +110,55 @@ export class Register{
         this.appStore.user.token = token;
     }
 
+    getUserInfo = () => {
+        return {
+            token: this.appStore.user.token,
+            mail: this.email,
+            pass: this.pass
+        }
+    }
+
+    postData = () => {
+        return axios.post(this.appStore.URL_NEWUSER, this.getUserInfo())
+            .then(res => { 
+                console.log(res);
+                if (res.data.success) {
+                    this.saveUserInfo(res.data.token);
+                    return this.token.saveToStorage('token', this.appStore.user.token);
+                } else {
+                    this.appStore.errorText = res.data.message;
+                    throw new Error(res.data.message);
+                }
+            })
+            .then( () => {                    
+                this.appStore.showLogo = true;                    
+                this.appStore.loading = false;
+                this.appStore.user.loggedIn = true;
+                this.navigation.levelOne.moveTo('/service');
+            })
+            .catch(err => {
+                this.appStore.loading = false;
+                this.appStore.errorText = 'Network error';
+                console.log(err, 'register, on register press');
+            })
+    }
+
     @action
     onRegisterPress = () => {
-        if(!this.isEmailValid){
+        if (!this.isEmailValid) {
             this.emailError = true;
             this.onError('email');
-        }
-        else if(!this.isPassValid){
+        } else if (!this.isPassValid) {
             this.passError = true;
             this.onError('pass');
-        }
-        else if(!this.isPassConfirmValid){
+        } else if (!this.isPassConfirmValid) {
             this.passConfirmError = true;
             this.onError('passConfirm');
-        }        
-        else if(this.inputsAreValid){
+        } else if (this.inputsAreValid) {
             this.appStore.loading = true;
-            const data = {
-                token: this.loginStore.token,
-                mail: this.email,
-                pass: this.pass
-            };
-            console.log('sent data on register: ', data); 
-            axios.post(this.appStore.URL_NEWUSER, data)
-                .then(res => { 
-                    console.log(res);
-                    if(res.data.success){
-                        this.saveUserInfo(res.data.token);
-                        this.loginStore.token = res.data.token;
-                        // return localStorage.save('serverToken', this.loginStore.token);
-                    }
-                    else {
-                        this.appStore.errorText = res.data.message;
-                    }
-                })
-                // .then(() => {
-                //     return localStorage.get('serverToken')
-                //             .then((res) => console.log(res, this.loginStore.token))
-                //             .then(()=> {
-                //                 console.log('registration complete');
-                //                 this.loginStore.showLogo = true;
-                //                 this.appStore.loading = false;
-                //                 this.loginStore.showBackButton = false;
-                //                 this.loginStore.history.push('/loggedin')})
-                //             .catch((e)=> console.log(e, 'register, local storage'))
-                // })
-                .then(()=> {
-                    console.log('registration complete');
-                    this.appStore.showLogo = true;                    
-                    this.appStore.loading = false;
-                    this.appStore.user.loggedIn = true;
-                    this.navigation.levelOne.moveTo('/service');
-                })
-                .catch(err => {
-                    this.appStore.loading = false;
-                    this.appStore.errorText = 'Network error';
-                    console.log(err, 'register, on register press')})
-        }        
-    }    
+            this.postData();            
+        }
+    }
 
     @action
     onInputFocus = () => {

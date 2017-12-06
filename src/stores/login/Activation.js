@@ -8,6 +8,7 @@ export class Activation{
     @observable resendStatus = '';
     @observable canResend = true;
     @observable swingTrigger = false;
+    @observable shakeTrigger = false;
 
     RESEND_CODE_DELAY = 10000;
     activeInputIndex;
@@ -26,6 +27,10 @@ export class Activation{
         return this.appStore.navigation;
     }
     
+    get signUp() {
+        return this.loginStore.signUp;
+    }
+
     onInputChange = (refs, i, e, keyCode) => {
         const text = e.nativeEvent.text;
         const length = Object.keys(refs).length - 1;
@@ -72,7 +77,8 @@ export class Activation{
         return codeInputsAreValid;
     }
 
-    onError = () => {        
+    onError = () => { 
+        this.shakeTrigger = true;       
         let count = 0;
         this.values.forEach((q, i) => {
             if(q.length == 0 && count == 0){
@@ -80,7 +86,7 @@ export class Activation{
                 count++;
             }
         })
-        if(this.wrongSmsCode){
+        if (this.wrongSmsCode) {
             this.errorValues = true;
             this.Vibration.vibrate([300, 100]);
             this.refs.input0.focus();
@@ -88,7 +94,7 @@ export class Activation{
     }
 
     onSuccessResponse = (res) => {
-        this.loginStore.token = res.data.token;
+        this.appStore.user.token = res.data.token;
         this.loginStore.phoneVerified = true;
         this.navigation.levelTwo.moveBackCount = 2;
         this.navigation.levelTwo.moveTo('/register');
@@ -98,7 +104,6 @@ export class Activation{
     sendData = (data) => {
         axios.post(this.appStore.URL_NEWUSER, data)
             .then(res => {
-                console.log(res);
                 if(res.data.success){
                     this.onSuccessResponse(res);
                 } 
@@ -121,7 +126,7 @@ export class Activation{
         if(this.inputsAreValid){
             this.appStore.loading = true;
             const data = {
-                token: this.loginStore.token,
+                token: this.appStore.user.token,
                 code: this.values.join('')
             }
             this.sendData(data);
@@ -141,9 +146,10 @@ export class Activation{
         if(this.canResend){
             this.values = ['', '', '' , ''];
             this.appStore.loading = true;
-            const data = this.loginStore.signUp.getPhoneAndName();
+            const data = this.signUp.getPhoneAndName();
             
             const send = () => {
+                console.log(data);
                 return axios.post(this.appStore.URL_NEWUSER, data)
                     .then(res => {
                         console.log(res);
@@ -159,7 +165,8 @@ export class Activation{
                     })
                     .catch(err => {
                         this.enableResendCode();
-                        console.log('resend code function error', err)});
+                        console.log('resend code function error', err);
+                    });
             }
 
             setTimeout(send, 5000);

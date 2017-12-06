@@ -1,30 +1,47 @@
 import { observable, computed, action } from 'mobx';
 import { Vibration } from 'react-native';
 
-export class Menu{
-    @observable currentTime = '13:00';
-    @observable timeToComplete = '4 Hours';
+export class Menu {
+    
+    @observable timeStart = '13:00';
+    @observable timeLength = '4 Hours';
     @observable _seconds = 10;
-    @observable balance = '$200';
-    @observable _companyName ='Yay Intelligence as';
-    @observable companyAddress = 'Markvein  35A, 0554 Oslo';
+    @observable price = '$200';
+    @observable _name ='Yay Intelligence as';
+    @observable address = 'Markvein  35A, 0554 Oslo';
 
-    constructor(serviceStore){
+    constructor(serviceStore) {
         this.serviceStore = serviceStore;
     }
 
-    @computed
-    get companyName(){
-        return this._companyName.toUpperCase();
+    get appStore() {
+        return this.serviceStore.appStore;
+    }
+
+    get token() {
+        return this.token = this.appStore.token;
     }
 
     @computed
-    get seconds(){
-        return this._seconds + ' S';
+    get companyName() {
+        return this._name.toUpperCase();
     }
+
+    set companyName(value) {
+        this._name = value;
+    }
+
+    @computed
+    get seconds() {
+        return this._seconds + ' S';
+    }    
 
     onPhotoshopPress = () => {
-
+        return this.token.removeFromStorage()
+            .then( res => {
+                console.log('token deleted: ', res);
+            })
+            .catch(err => console.log(err));
     }
     
     onHtmlPress = () => {

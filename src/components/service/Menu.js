@@ -63,12 +63,12 @@ export class Menu extends Component {
 
     render(){
         const { 
-            companyName, 
-            companyAddress, 
-            currentTime, 
-            timeToComplete,
+            name, 
+            address, 
+            timeStart, 
+            timeLength,
             seconds,
-            balance,
+            price,
             onPhotoshopPress,
             onHtmlPress,
             onWebDesignPress,
@@ -79,11 +79,11 @@ export class Menu extends Component {
                 style={[styles.container,  { opacity: this.animatedView } ]}
             >
                 <Text
-                    style={styles.companyName}
-                > { companyName } </Text>         
+                    style={styles.name}
+                > { name } </Text>         
                 <Text
-                    style={styles.companyAddress}
-                > { companyAddress } </Text>
+                    style={styles.address}
+                > { address } </Text>
 
                 <View
                     style={styles.mapContainer}
@@ -97,9 +97,9 @@ export class Menu extends Component {
                     <View
                         style={styles.iconAndTextContainer}
                     >            
-                        { this.renderIconAndText('clock1', currentTime) }
-                        { this.renderIconAndText('money', balance) }
-                        { this.renderIconAndText('clock', timeToComplete, { borderBottomWidth: 0}) }
+                        { this.renderIconAndText('clock1', timeStart) }
+                        { this.renderIconAndText('money', price) }
+                        { this.renderIconAndText('clock', timeLength, { borderBottomWidth: 0}) }
                     </View>
 
                     <View
@@ -134,10 +134,10 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,        
     },
-    companyName: {
+    name: {
         color: 'rgb(255, 255, 255)', 
         fontFamily: 'Arial', 
-        fontSize: percentW(8),
+        fontSize: percentW(7),
         alignSelf: 'center',        
         marginBottom: percentH(4),
         ...Platform.select({
@@ -149,11 +149,11 @@ const styles = StyleSheet.create({
             }
         })
     },
-    companyAddress: {
+    address: {
         color: 'rgb(255, 255, 255)', 
         fontFamily: 'Arial', 
         fontStyle: 'italic',
-        fontSize: percentW(6),
+        fontSize: percentW(5),
         alignSelf: 'center',
         marginBottom: percentH(2)
     },
@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
     text: {
         color: 'rgb(255, 255, 255)', 
         fontFamily: 'Arial', 
-        fontSize: percentW(7),
+        fontSize: percentW(6),
         marginVertical: percentH(1)
     },
     icon: {
