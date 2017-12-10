@@ -67,7 +67,7 @@ export class Main {
             if (res.data.token) {
                 this.setUserInfo(res);
                 
-                return this.appStore.saveTokenToStorage()
+                return this.appStore.token.saveToStorage()
                     .then(res => {
                         this.appStore.loading = false;
                         console.log(res)})

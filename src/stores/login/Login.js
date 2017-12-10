@@ -7,7 +7,7 @@ import {
     SignUp
 } from '../login';
 
-export class Login{
+export class Login {
     
     constructor(appStore) {
         this.appStore = appStore;

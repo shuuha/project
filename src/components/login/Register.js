@@ -20,7 +20,7 @@ import { images } from './assets';
 
 @inject('store')
 @observer
-export class Register extends Component{
+export class Register extends Component {
 
     state = { showToS: true };
 
@@ -39,26 +39,26 @@ export class Register extends Component{
         extrapolate: 'clamp'
     })
 
-    componentDidMount = () => {
-            setTimeout(()=>{
-                Animated.timing(this.animatedValue, {
-                    toValue: 1,
-                    duration: 200
-                }).start();
-            }, 200)
+    componentDidMount() {
+        setTimeout(()=>{
+            Animated.timing(this.animatedValue, {
+                toValue: 1,
+                duration: 200
+            }).start();
+        }, 200)
 
-            this.props.store.register.refs = this.refs;
-            this.props.store.register.Vibration = Vibration;
+        this.props.store.register.refs = this.refs;
+        this.props.store.register.Vibration = Vibration;
         }
 
-    componentWillMount () {
+    componentWillMount() {
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
         this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
         
         this.props.store.appStore.showLogo = false;
     }
 
-    componentWillUnmount () {
+    componentWillUnmount() {
         this.keyboardDidShowListener.remove();
         this.keyboardDidHideListener.remove();
     }
@@ -79,13 +79,13 @@ export class Register extends Component{
         }).start(this.setState({ showToS: true }));
     }
     
-    render(){
+    render() {
         const { 
             register : store, 
             register : { photos }, 
             appStore: { loading, errorText }
             } = this.props.store;
-        return(
+        return (
             <Animated.View             
                 style={[
                     styles.container, 
@@ -262,14 +262,10 @@ const percentW = (num) => {
 }
 
 const styles = StyleSheet.create({
-    container: {        
-        // height: percentH(45),
-        // flex: 1,
+    container: {
         height,
         width: percentW(74),
         alignSelf: 'center',
-        // marginTop: percentH(20),
-        // paddingBottom: percentH(0)
         paddingHorizontal: percentW(5)
     },
     icon: {
@@ -287,10 +283,8 @@ const styles = StyleSheet.create({
         }),
     },
     userNameView : {
-        // height: percentH(10),
         justifyContent: 'center',
         alignItems: 'center',
-        // marginVertical: percentH(3),
         },
     userNameText: {
         alignSelf: 'center',            
@@ -342,7 +336,7 @@ const styles = StyleSheet.create({
         flex: 1,
         color: 'rgb(255, 255, 255)', 
         fontFamily: 'Arial', 
-        fontSize: percentW(5.6)
+        fontSize: percentW(4.5)
     },
     registerButton: {
         height: percentH(5.5),

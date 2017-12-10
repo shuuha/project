@@ -74,9 +74,7 @@ export default class App extends Component{
                                 }
                                 return <Login />
                             }} />
-                            <Route path='/service' render={(props) => {                                
-                                return <Service />
-                            }} />
+                            <Route path='/service' component={Service} />
                         </Switch>
                         <BackButton />
                     </View>

@@ -44,5 +44,11 @@ export class Token {
                 console.log(res.message);
                 this.appStore.loadingOnTokenCheck = false;
             })
+            .catch(err => {
+                console.log('error while verifying token on the server ', err);
+                this.appStore.loadingOnTokenCheck = false;
+                this.appStore.showLogoAnimation = false;
+                this.appStore.errorText = 'Network error, please check you internet connection';
+            })
     }
 }

@@ -8,7 +8,7 @@ export class LevelTwo {
     constructor(navigationStore) {
         this.navigationStore = navigationStore;
     }
-
+    
     get appStore() {
         return this.navigationStore.appStore;
     }
@@ -17,9 +17,10 @@ export class LevelTwo {
         return this.history.location.pathname;
     }
 
-
-    backHandler = () => {
+    backHandler = () => {        
         if (this.pathname == '/') {
+            this.appStore.setInitialState();
+            this.appStore.setUserOffline();
             return false;
         } else {
             return this.handleBackNavigation();
@@ -27,7 +28,7 @@ export class LevelTwo {
     }
 
     handleBackNavigation = () => {
-        this.appStore.setInitialState();
+        this.appStore.setInitialState(); 
 
         if (this.pathname == '/register') {
             this.appStore.showLogo = true;

@@ -19,6 +19,9 @@ import { observer, inject } from 'mobx-react';
 export class LoggedIn extends Component{
     
     animatedView = new Animated.Value(0);
+    state = {
+        buttonSize: {}
+    }
 
     componentWillMount(){
         this.props.store.appStore.showLogo = true;
@@ -38,7 +41,13 @@ export class LoggedIn extends Component{
         this.props.store.loggedIn.stopPing();
     }
 
-    render(){
+    setButtonRadius = () => {
+        const { height, width } = this.state.buttonSize;
+        const buttonRadius = (height + width) / 2;        
+        return buttonRadius;
+    }
+
+    render(){        
         const { 
             appStore: { loading, user, requestAvailable }, 
             loggedIn : { onTestButtonPress, onOnlinePress, clearToken } 
@@ -71,21 +80,33 @@ export class LoggedIn extends Component{
                     >Accept request</Text>
                 </TouchableOpacity>
             </View>
-                <TouchableOpacity
-                    style={{ flex: 0.8}}
-                    onPress={onOnlinePress}
-                >
                     <View
-                        style={[styles.container, loading && { alignItems: 'center' } ]}
-                    >
-
-                        <Icon 
-                            name='check-circle-outline'
-                            style={[styles.icon, user.online && { color:'rgb(94, 189, 100)' } ]}
+                        style={{ 
+                            flex: 0.8, 
+                            justifyContent: 'center', 
+                            alignItems: 'center',
+                            paddingBottom: percentH(15),
+                        }}
+                    >                    
+                    {
+                        loading 
+                        ? 
+                        <ActivityIndicator
+                            size={ Platform.OS === 'android' ? 60 : 'large' }
                         />
-
+                        :
+                        <TouchableOpacity
+                            onPress={onOnlinePress}
+                            style={{ borderRadius: this.setButtonRadius() }}
+                            onLayout={e => this.setState({ buttonSize: e.nativeEvent.layout })}
+                        >
+                                <Icon 
+                                    name='check-circle-outline'
+                                    style={[styles.icon, user.online && { color:'rgb(94, 189, 100)' } ]}
+                                />
+                        </TouchableOpacity>
+                    }
                     </View>
-                </TouchableOpacity>
             </Animated.View>
         );
     }
@@ -111,6 +132,6 @@ const styles = StyleSheet.create({
     icon: {
         fontSize: percentW(65),
         color: 'rgb(255, 255, 255)',
-        marginBottom: percentH(15)
+        // marginBottom: percentH(15)
     }
 })

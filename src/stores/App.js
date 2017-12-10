@@ -13,6 +13,8 @@ class App {
     URL_ONLINE = 'http://app.yayintel.com:8883/api/online';
     URL_FB = 'http://app.yayintel.com:8883/api/authenticate/facebook'; 
     URL_MAIN = "http://app.yayintel.com/";
+    // URL_PASSRECOVERY = 'http://app.yayintel.com:8883/api/passrecovery';
+    URL_PASSRECOVERY = 'http://192.168.3.11:8883/api/passrecovery';    
     
     appState = null;
     dataLoaded = true;
@@ -57,7 +59,12 @@ class App {
     setInitialState = () => {
         this.errorText = null;
         this.loading = false;
-    }    
+    }
+
+    @action
+    setUserOffline = () => {
+        this.user.online = false;
+    }
 
     appInit = () => {
         this.loadingOnTokenCheck = true;

@@ -30,24 +30,24 @@ export class SignUp{
     }
 
     @action
-    onChangeName = (e) => {
+    onChangeName = (value) => {
         this.fullnameError = false;
-        this.fullname = e;
+        this.fullname = value;
     }
 
     @action
-    onChangeCode = (e) => {
+    onChangeCode = (value) => {
         this.codeValueError = false;
-        this.codeValue = e;
+        this.codeValue = value;
         if(this.codeValue.length == 0){
             this.codeValue = '+';
         }
     }
 
     @action
-    onChangePhone = (e) => {
+    onChangePhone = (value) => {
         this.phoneValueError = false;
-        this.phoneValue = e;
+        this.phoneValue = value;
     }
 
     @action
@@ -65,7 +65,7 @@ export class SignUp{
     @action
     onCodeFocus = () => {
         this.appStore.errorText = null;
-        if(this.codeValue.length == 0){
+        if (this.codeValue.length == 0) {
             this.codeValue = '+'
         }
     }
@@ -88,9 +88,9 @@ export class SignUp{
     }    
 
     sendData = (data) => {
-        axios.post(this.loginStore.appStore.URL_NEWUSER, data)
+        axios.post(this.appStore.URL_NEWUSER, data)
             .then(res => {
-                if(res.data.success){
+                if (res.data.success) {
                     this.appStore.user.token = res.data.token;
                     this.savedPhoneValue = this.phoneValue;
                     this.loginStore.phoneVerified = false;
@@ -115,30 +115,25 @@ export class SignUp{
         return {
                 name: this.fullname,
                 phon: this.codeValue + this.phoneValue
-                // 420 773186737
+                // 420 773194752
         }
     }
 
     onSendPress = () => {
-        if(!this.fullname){
+        if (!this.fullname) {
             this.onError('fullname');
-        } 
-        else if(!this.codeValue){
+        } else if (!this.codeValue) {
             this.onError('codeValue');
-        } 
-        else if(!this.phoneValue){
+        } else if (!this.phoneValue) {
             this.onError('phoneValue');
-        }        
-        else if (this.phoneIsNotResubmitted()){
-            if(this.loginStore.phoneVerified){
+        } else if (this.phoneIsNotResubmitted()) {
+            if (this.loginStore.phoneVerified) {
                 this.navigation.levelTwo.moveBackCount = 1;
                 this.navigation.levelTwo.moveTo('/register');
-            }
-            else {
+            } else {
                 this.navigation.levelTwo.moveTo('/activation');
             }
-        }
-        else {
+        } else {
             this.appStore.loading = true;
             this.saveUserInfo();
             this.sendData(this.getPhoneAndName());

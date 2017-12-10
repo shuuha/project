@@ -11,7 +11,7 @@ const startTimer = (delay, maxTimeInBackground, appState,  fn) => {
 
     let count = delay;
 
-    timerId = BackgroundTimer.setInterval( () => {
+    timerId = BackgroundTimer.setInterval( () => { 
         if (appState === 'background') {
             console.log('timer at work on background', delay, count);
             if (count >= maxTimeInBackground) {
@@ -117,7 +117,6 @@ export class LoggedIn {
 
     getPingDelay = () => {
         if (this.appStore.appState === 'active') {
-            this.MAX_TIME_IN_BACKGROUND = null;
             return this.PING_DELAY_ACTIVE;
         } else {
             this.MAX_TIME_IN_BACKGROUND = 
@@ -148,7 +147,7 @@ export class LoggedIn {
 
     goOnline = () => {        
         this.appStore.loading = true;
-        this.appStore.errorText = true;
+        this.appStore.errorText = null;
         this.appStore.requestAvailable = false;
         this.geolocation.getCurrentLocation()
             .then( res => { 
