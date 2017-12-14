@@ -1,12 +1,12 @@
 import { observable, computed, action } from 'mobx';
 
-export class LevelOne{
+export class LevelOne {
 
     constructor(navigationStore){
         this.navigationStore = navigationStore;
     }
 
-    history = {};
+    // history = {};
     moveBackCount = 1;
 
 
@@ -42,8 +42,8 @@ export class LevelOne{
         this.history.push(path)
     }
 
-    resetHistory = () => {
-        this.history = [];
+    resetHistory = () => {        
+        this.history.entries = [];
     }
     
 }

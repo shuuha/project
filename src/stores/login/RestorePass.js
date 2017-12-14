@@ -2,9 +2,12 @@ import { observable, computed, action } from 'mobx';
 import axios from 'axios';
 import { Vibration } from 'react-native';
 
-export class PassRecovery {
+export class RestorePass {
 
     refs = {};
+    submittedPhone;
+    submittedEmail;
+    submittedCode;
 
     @observable email = '';
     @observable code = '';
@@ -29,7 +32,6 @@ export class PassRecovery {
 
     @action
     onChangeText = propName => value => {
-
         this[propName] = value;
         this[propName + 'Error'] = false;
 
@@ -51,6 +53,24 @@ export class PassRecovery {
         if (codeHasOneChar()) {
             this[propName] = '';
         }
+    }    
+
+    submitPhoneAndEmail = () => {
+        this.submittedPhone = this.phone;
+        this.submittedEmail = this.email;
+        this.submittedCode = this.code;
+    }
+
+    submittedDataDidChange = () => {
+        if ( this.submittedPhone !== this.phone 
+            || this.submittedEmail !== this.email
+            || this.submittedCode !== this.code ) {
+
+            this.loginStore.phoneVerified = false;
+            
+            return true;
+        } 
+        return false;
     }
 
     saveUserInfo = () => {
@@ -59,8 +79,8 @@ export class PassRecovery {
         this.appStore.phone = this.phone;
     }
 
-    postToRoutePassrecovery = (data) => {
-        return axios.post(this.appStore.URL_PASSRECOVERY, data)
+    postToRestorePass = (data) => {
+        return axios.post(this.appStore.URL_RESTORE_PASS, data)
             .then(res => this.handleResponse(res))
             .catch(err => this.handleError(err));
     }
@@ -69,14 +89,19 @@ export class PassRecovery {
         this.appStore.loading = false;
 
         if (res.data.success) {
-            this.navigation.levelTwo.moveTo('/activation'); 
+            this.submitPhoneAndEmail();
+            this.appStore.user.token = res.data.token;
+            this.appStore.restorePassProcedure = true;
+            this.navigation.levelTwo.moveTo('/smsconfirm');
         } else {
             this.appStore.errorText = 'No such user found'
         }
     }
 
-    handleErorr = (err) => {
+    handleError = (err) => {
         console.log(err, 'error while sending data to reset pass');
+        this.appStore.loading = false;
+        this.appStore.errorText = 'Network error';
     }
 
     getPhoneAndEmail = () => {
@@ -86,17 +111,25 @@ export class PassRecovery {
         }
     }
 
-    onResetButtondPress = () => {
-        if (!this.email) {
-            this.onError('email');
-        } else if (!this.code) {
-            this.onError('code');
-        } else if (!this.phone) {
-            this.onError('phone');
+    onResetButtonPress = () => {
+        if (this.submittedDataDidChange()) {
+            if (!this.email) {
+                this.onError('email');
+            } else if (!this.code) {
+                this.onError('code');
+            } else if (!this.phone) {
+                this.onError('phone');
+            } else {
+                this.appStore.loading = true;
+                this.saveUserInfo();
+                this.postToRestorePass(this.getPhoneAndEmail());
+            }
         } else {
-            this.appStore.loading = true;
-            this.saveUserInfo();
-            this.postToRoutePassrecovery(this.getPhoneAndEmail());
+            if (this.loginStore.phoneVerified) {
+                this.navigation.levelTwo.moveTo('/passchange');    
+            } else {
+                this.navigation.levelTwo.moveTo('/smsconfirm');
+            }
         }
     }
 
@@ -111,7 +144,7 @@ export class PassRecovery {
         let nextRef = refsProps[++inputIndex]
 
         if (inputIndex == refsLength) {
-            this.onSendPress();
+            this.onResetButtonPress();
         } else {
             this.refs[nextRef].focus();
         }

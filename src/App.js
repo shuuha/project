@@ -66,9 +66,9 @@ export default class App extends Component{
                         />
                         <ErrorText />
 
-                        <Switch>                            
+                        <Switch>
                             <Route exact path='/' render={(props) => {
-                                levelOne.history = props.history;
+                                levelOne.history = props.history;                                
                                 if(store.user.loggedIn) {
                                     return <Redirect to='/service' />
                                 }

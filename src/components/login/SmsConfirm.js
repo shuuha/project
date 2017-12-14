@@ -20,7 +20,7 @@ const NUMBER_OF_INPUTS = [1, 2, 3, 4];
 
 @inject('store')
 @observer
-export class Activation extends Component{    
+export class SmsConfirm extends Component {    
 
     animatedView = new Animated.Value(0);
     animatedTranslateY = new Animated.Value(0);
@@ -34,8 +34,8 @@ export class Activation extends Component{
         this.refs.input0.focus();
         }, 200)
 
-        this.props.store.activation.refs = this.refs;
-        this.props.store.activation.Vibration = Vibration;
+        this.props.store.smsConfirm.refs = this.refs;
+        this.props.store.smsConfirm.Vibration = Vibration;
         Keyboard.dismiss();
     }
 
@@ -43,7 +43,7 @@ export class Activation extends Component{
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
         this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
         KeyEvent.onKeyDownListener((keyCode) => { 
-            this.props.store.activation.onInputDeleteKeyPress(keyCode, this.refs);
+            this.props.store.smsConfirm.onInputDeleteKeyPress(keyCode, this.refs);
 
         });
     }
@@ -54,12 +54,10 @@ export class Activation extends Component{
         KeyEvent.removeKeyDownListener();
 
         console.log('component will unmount');
-        this.props.store.activation.resetValues();
+        this.props.store.smsConfirm.resetValues();
     }
 
     _keyboardDidShow = (e) => {
-
-        console.log(this.props.store, 'keyboard did show' );
         this.props.store.errorText = null;
         const keyboardHeightAndSomeMargin = -e.endCoordinates.height + percentH(27);
         Animated.timing(this.animatedTranslateY, {
@@ -76,9 +74,18 @@ export class Activation extends Component{
     }
     
 
-    render(){
+    render() {
+        const renderText = () => {
+            if (errorText) {
+                return ' ';
+            } else if(resendMessage) {
+                return resendMessage;
+            } else {
+                return 'Enter activation code';
+            }
+        };
         const { 
-            activation: {
+            smsConfirm: {
                 values,
                 onInputChange,
                 onChangeText,
@@ -99,20 +106,7 @@ export class Activation extends Component{
                 }
             } = this.props.store;
 
-            const renderText = () => {
-                if(errorText){
-                    return ' ';
-                }
-                else if(resendMessage){
-                    return resendMessage;
-                }
-                else {
-                    return 'Enter activation code';
-                }
-            }
-
-        return(
-            
+        return (            
             <Animated.View style={[
                     styles.container, 
                     { transform: [ { translateY: this.animatedTranslateY } ]}, 
@@ -124,7 +118,7 @@ export class Activation extends Component{
                     animation={swingTrigger ? 'swing' : ''}
                     duration={500}
                     useNativeDrive={true}
-                    onAnimationEnd={ ()=> this.props.store.activation.swingTrigger = false }
+                    onAnimationEnd={ ()=> this.props.store.smsConfirm.swingTrigger = false }
                 >
                     <Text
                         style={styles.text}
@@ -135,7 +129,7 @@ export class Activation extends Component{
                         animation={ errorValues && shakeTrigger ? 'shake' : '' }
                         onAnimationEnd={ ()=> {
                             this.refs.input0.focus();
-                            this.props.store.activation.shakeTrigger = false;
+                            this.props.store.smsConfirm.shakeTrigger = false;
                         }}
                         useNativeDriver={true}            
                 >

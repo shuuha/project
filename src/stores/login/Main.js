@@ -110,7 +110,7 @@ export class Main {
 
     onForgotPassPress = () => {
         this.appStore.errorText = null;
-        this.navigation.levelTwo.moveTo('/passrecovery'); 
+        this.navigation.levelTwo.moveTo('/restorepass'); 
     }
 
     onSignUpPress = () => {
@@ -119,7 +119,7 @@ export class Main {
     }
 
     onEnterPhoneNo = () => {
-        this.navigation.levelTwo.moveTo('/activation');
+        this.navigation.levelTwo.moveTo('/smsconfirm');
     }
     
     createFacebookData = (data, profile) => {

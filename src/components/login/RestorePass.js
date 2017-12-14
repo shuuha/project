@@ -18,10 +18,20 @@ import { images } from './assets';
 
 @inject('store')
 @observer
-export class PassRecovery extends Component{   
+export class RestorePass extends Component{   
+
+    state = {
+        newText: false
+    }
 
     animatedView = new Animated.Value(0);
     animatedTranslateY = new Animated.Value(0);
+
+    heightInterpolate = this.animatedTranslateY.interpolate({
+        inputRange: [-40, 0],
+        outputRange: [percentH(6), percentH(20)],
+        extrapolate: 'clamp'
+    })
 
     componentDidMount = () => {
         setTimeout(()=>{
@@ -31,7 +41,7 @@ export class PassRecovery extends Component{
             }).start();
         }, 200);
 
-        this.props.store.passRecovery.refs = this.refs;
+        this.props.store.restorePass.refs = this.refs;
     }
     
     componentWillMount () {
@@ -45,28 +55,43 @@ export class PassRecovery extends Component{
     }
 
     _keyboardDidShow = (e) => {
-        const keyboardHeightAndSomeMargin = -e.endCoordinates.height + percentH(28);
+        const keyboardHeightAndSomeMargin = -e.endCoordinates.height + percentH(35);
         Animated.timing(this.animatedTranslateY, {
             toValue: keyboardHeightAndSomeMargin,
-            duration: 200
-        }).start();
+            duration: 200,
+            useNativeDrive: true
+        }).start(this.setState({ newText: true }));
 
         const { appStore } = this.props.store;
         appStore.setInitialState();        
-        this.props.store.passRecovery.toggleTextVisibility();
+        this.props.store.restorePass.toggleTextVisibility();
     }
 
-    _keyboardDidHide = () => {
+    _keyboardDidHide = () => {        
         Animated.timing(this.animatedTranslateY, {
             toValue: 0,
-            duration: 200
-        }).start();
-        this.props.store.passRecovery.toggleTextVisibility();
+            duration: 200,
+            useNativeDrive: true
+        }).start(this.setState({ newText: false }));
+        this.props.store.restorePass.toggleTextVisibility();
+    }
+
+    renderText = () => {
+        if (this.props.store.appStore.errorText) {
+            return <Text style={styles.text}>  </Text>
+        } else if (this.state.newText) {
+            return <Text style={styles.text}
+                >Enter your email address and phone number</Text>
+        } else {
+            return <Text style={styles.text}
+                >To reset your password, please enter 
+                your email address and phone number</Text>
+        }
     }
 
     render(){
         const { 
-            passRecovery : store, 
+            restorePass : store, 
             appStore: { loading, errorText },
         } = this.props.store;
         return(
@@ -76,13 +101,14 @@ export class PassRecovery extends Component{
                     { opacity: this.animatedView }
                 ]} 
             >
-                {   !errorText
-                    &&
-                    <Text
-                        style={styles.text}
-                    >To reset your password, please enter 
-                        your email address and phone number</Text>
-                }
+                    <Animated.View
+                        style={{ 
+                            height: this.heightInterpolate,
+                            justifyContent: 'center'
+                        }}
+                    >
+                        {this.renderText()}
+                    </Animated.View>
 
                 <Animatable.View 
                         animation={store.emailError && store.shakeTrigger ? 'shake' : ''}
@@ -176,7 +202,7 @@ export class PassRecovery extends Component{
                 <View style={[ styles.sendButton, loading && { backgroundColor: 'transparent'} ]} >
                     <TouchableOpacity
                         style={{ flex: 1, alignItems: 'center', justifyContent: 'center', }}                        
-                        onPress={store.onResetButtondPress}
+                        onPress={store.onResetButtonPress}
                         disabled={loading}
                     >
                     {
@@ -190,8 +216,7 @@ export class PassRecovery extends Component{
                         <Text
                             style={{ 
                                 color: 'rgb(255, 255, 255)', 
-                                fontSize: percentW(4.5), 
-                                // fontWeight: '500'
+                                fontSize: percentW(4.5)
                             }}
                         >Reset password</Text>
                     }
@@ -217,7 +242,6 @@ const styles = StyleSheet.create({
         height: percentH(45),
         width: percentW(74),
         alignSelf: 'center',
-        marginTop: percentH(10),
         paddingHorizontal: percentW(5)
     },
     icon: {
@@ -289,9 +313,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         color: 'rgb(255, 255, 255)',
         fontFamily: 'Arial',
-        fontSize: percentW(4.5), 
-        // fontWeight: '500',
-        marginBottom: percentH(2.5)
+        fontSize: percentW(4.5)
     },
     sendButton: {
         height: percentH(5.5),

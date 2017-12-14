@@ -9,21 +9,22 @@ import { observer, inject } from 'mobx-react';
 
 @inject('store')
 @observer
-export class ErrorText extends Component{
+export class ErrorText extends Component {
 
     animatedOpacity = new Animated.Value(0);
 
-    render(){
+    render() {
         const { errorText} = this.props.store;
 
-        if(errorText){
+        if (errorText) {
             Animated.timing(this.animatedOpacity,{
                 toValue: 1,
-                duration: 700
+                duration: 200
             }).start();
         }
-        return(
-            errorText &&
+        return (
+            errorText 
+            &&
             <Animated.View
                 style={[{ 
                     position: 'absolute', 

@@ -85,16 +85,21 @@ export class SignUp{
 
     phoneIsNotResubmitted = () => {
         return this.phoneValue === this.savedPhoneValue;
-    }    
+    }
+
+    handleSuccessResponse = (res) => {
+        this.appStore.user.token = res.data.token;
+        this.appStore.signUpProcedure = true;
+        this.savedPhoneValue = this.phoneValue;
+        this.loginStore.phoneVerified = false;
+        this.navigation.levelTwo.moveTo('/smsconfirm');
+    }
 
     sendData = (data) => {
         axios.post(this.appStore.URL_NEWUSER, data)
             .then(res => {
                 if (res.data.success) {
-                    this.appStore.user.token = res.data.token;
-                    this.savedPhoneValue = this.phoneValue;
-                    this.loginStore.phoneVerified = false;
-                    this.navigation.levelTwo.moveTo('/activation');
+                    this.handleSuccessResponse(res);
                 } else {
                     this.appStore.errorText = res.data.message;    
                 }
@@ -131,7 +136,7 @@ export class SignUp{
                 this.navigation.levelTwo.moveBackCount = 1;
                 this.navigation.levelTwo.moveTo('/register');
             } else {
-                this.navigation.levelTwo.moveTo('/activation');
+                this.navigation.levelTwo.moveTo('/smsconfirm');
             }
         } else {
             this.appStore.loading = true;

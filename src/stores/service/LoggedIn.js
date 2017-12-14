@@ -112,7 +112,7 @@ export class LoggedIn {
     postData = (url, data) => {
         return axios.post(url, data)
             .then( res => this.handleSuccessResponse(res))
-            .catch( err => this.handleErrorResponse() )
+            .catch( err => this.handleErrorResponse(err) )
     }
 
     getPingDelay = () => {
@@ -151,7 +151,7 @@ export class LoggedIn {
         this.appStore.requestAvailable = false;
         this.geolocation.getCurrentLocation()
             .then( res => { 
-                const data = { 
+                const data = {
                     position: { lat: this.appStore.user.lat, lng: this.appStore.user.lng },
                     token: this.appStore.user.token
                 };
@@ -170,25 +170,20 @@ export class LoggedIn {
     }
 
     goOffline = () => {
-                                    
-        this.stopPing();
-        this.appStore.loading = false;
-
-        // this.appStore.user.online = false;
-        // this.appStore.loading = true;
-        // const data = {
-        //     goOffline: true,
-        //     token: this.appStore.user.token
-        // };
-        // axios.post(this.appStore.URL_ONLINE, data)
-        //     .then(res => {
-        //         console.log(res);
-        //         if (res.data.success) {
-        //             this.appStore.user.online = false;
-        //             this.appStore.loading = false;
-        //         }
-        //     })
-        //     .catch(err => console.log('goOffline function error', err));
+        this.appStore.loading = true;
+        const data = {
+            offline: true,
+            token: this.appStore.user.token
+        };
+        axios.post(this.appStore.URL_ONLINE, data)
+            .then(res => {
+                if (res.data.success) {
+                    this.appStore.user.online = false;
+                    this.stopPing();
+                }
+                    this.appStore.loading = false;                    
+            })
+            .catch(err => console.log('goOffline function error', err));
     }
 
     onOnlinePress = () => {

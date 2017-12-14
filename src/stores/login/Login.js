@@ -1,21 +1,25 @@
 import { observable, computed, action } from 'mobx';
 import { 
-    Activation, 
+    SmsConfirm, 
     Main, 
-    PassRecovery, 
+    RestorePass, 
     Register,
-    SignUp
+    SignUp,
+    PassChange
 } from '../login';
 
 export class Login {
     
+    phoneVerified = false;
+
     constructor(appStore) {
         this.appStore = appStore;
     };
 
-    activation = new Activation(this);
+    smsConfirm = new SmsConfirm(this);
     main = new Main(this);
-    passRecovery = new PassRecovery(this);
+    restorePass = new RestorePass(this);
     signUp = new SignUp(this);
-    register = new Register(this);    
+    register = new Register(this);
+    passChange = new PassChange(this);
 }

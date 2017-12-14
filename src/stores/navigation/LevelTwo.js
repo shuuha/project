@@ -30,16 +30,24 @@ export class LevelTwo {
     handleBackNavigation = () => {
         this.appStore.setInitialState(); 
 
-        if (this.pathname == '/register') {
-            this.appStore.showLogo = true;
-            this.moveBack(this.moveBackCount);
+        if (
+            this.pathname == '/register'
+            || this.pathname == '/passchange'
+            ) {                
+                this.appStore.showLogo = true;
+                this.moveBack(this.moveBackCount);
+                this.moveBackCount = 1;
         } else if ( 
             this.pathname === '/signup'
             || this.pathname === '/menu'
-            || this.pathname ==='/passrecovery'
+            || this.pathname ==='/restorepass'
             ) { 
                 this.moveBack();
                 this.navigationStore.showBackButton = false;
+        } else if (this.pathname == '/passchangedone') {
+            console.log('leveltwo navigation ');
+            this.navigationStore.showBackButton = false;
+            this.navigationStore.levelOne.moveTo('/');
         } else {
             this.moveBack();
         }
@@ -57,7 +65,7 @@ export class LevelTwo {
     }
 
     moveTo = (path) => {
-        if (path === '/menu') {
+        if (path === '/menu' || path === '/passchangedone') {
             this.navigationStore.showBackButton = false;
         } else { 
             this.navigationStore.showBackButton = true;
@@ -67,6 +75,6 @@ export class LevelTwo {
     }
 
     resetHistory = () => {
-        this.history = [];
+        this.history.entries = [];
     }
 }

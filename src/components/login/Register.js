@@ -245,7 +245,7 @@ export class Register extends Component {
                             >Register</Text>
                         </TouchableOpacity>
                         }
-                    </View>                    
+                    </View>
             </Animated.View>
         );
     }

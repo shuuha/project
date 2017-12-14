@@ -1,19 +1,23 @@
 import { Login } from './Login';
 import { Main }  from './Main';
-import { PassRecovery } from './PassRecovery';
+import { RestorePass } from './RestorePass';
 import { SignUp } from './SignUp';
-import { Activation } from './Activation';
+import { SmsConfirm } from './SmsConfirm';
 import { Register } from './Register';
 import { Photos } from './Photos';
 import { Logo } from './Logo';
+import { PassChange } from './PassChange';
+import { PassChangeDone } from './PassChangeDone';
 
 export {
     Login,
     Main,
-    PassRecovery,
+    RestorePass,
     SignUp,
-    Activation,
+    SmsConfirm,
     Register,
     Photos,
-    Logo
+    Logo,
+    PassChange,
+    PassChangeDone
 };
