@@ -65,7 +65,7 @@ export class PassChange {
         } else if (
             !this.passConfirm
             || this.pass !== this.passConfirm
-            ) {
+        ) {
             this.onError('passConfirm');
         } else {
             this.appStore.loading = true;

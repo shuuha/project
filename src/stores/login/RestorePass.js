@@ -62,14 +62,15 @@ export class RestorePass {
     }
 
     submittedDataDidChange = () => {
-        if ( this.submittedPhone !== this.phone 
+        if ( 
+            this.submittedPhone !== this.phone
             || this.submittedEmail !== this.email
-            || this.submittedCode !== this.code ) {
-
+            || this.submittedCode !== this.code
+        ) {
             this.loginStore.phoneVerified = false;
-            
             return true;
-        } 
+        }
+
         return false;
     }
 
@@ -87,7 +88,6 @@ export class RestorePass {
 
     handleResponse =(res) => {
         this.appStore.loading = false;
-
         if (res.data.success) {
             this.submitPhoneAndEmail();
             this.appStore.user.token = res.data.token;
@@ -124,6 +124,7 @@ export class RestorePass {
                 this.saveUserInfo();
                 this.postToRestorePass(this.getPhoneAndEmail());
             }
+
         } else {
             if (this.loginStore.phoneVerified) {
                 this.navigation.levelTwo.moveTo('/passchange');    

@@ -20,7 +20,6 @@ export class SignUp{
         this.loginStore = loginStore; 
     }
 
-
     get appStore(){
         return this.loginStore.appStore;
     }
@@ -39,6 +38,7 @@ export class SignUp{
     onChangeCode = (value) => {
         this.codeValueError = false;
         this.codeValue = value;
+
         if(this.codeValue.length == 0){
             this.codeValue = '+';
         }
@@ -65,6 +65,7 @@ export class SignUp{
     @action
     onCodeFocus = () => {
         this.appStore.errorText = null;
+
         if (this.codeValue.length == 0) {
             this.codeValue = '+'
         }
@@ -84,7 +85,7 @@ export class SignUp{
     }    
 
     phoneIsNotResubmitted = () => {
-        return this.phoneValue === this.savedPhoneValue;
+        return this.phoneValue === this.savedPhoneValue;   
     }
 
     handleSuccessResponse = (res) => {
@@ -103,6 +104,7 @@ export class SignUp{
                 } else {
                     this.appStore.errorText = res.data.message;    
                 }
+
                     this.appStore.loading = false;                
             })
             .catch(err => {
@@ -118,9 +120,9 @@ export class SignUp{
 
     getPhoneAndName = () => {
         return {
-                name: this.fullname,
-                phon: this.codeValue + this.phoneValue
-                // 420 773194752
+            name: this.fullname,
+            phon: this.codeValue + this.phoneValue
+            // 420 773194752
         }
     }
 
@@ -133,11 +135,12 @@ export class SignUp{
             this.onError('phoneValue');
         } else if (this.phoneIsNotResubmitted()) {
             if (this.loginStore.phoneVerified) {
-                this.navigation.levelTwo.moveBackCount = 1;
+                // this.navigation.levelTwo.moveBackCount = 1;
                 this.navigation.levelTwo.moveTo('/register');
             } else {
                 this.navigation.levelTwo.moveTo('/smsconfirm');
             }
+
         } else {
             this.appStore.loading = true;
             this.saveUserInfo();

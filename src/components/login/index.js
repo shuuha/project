@@ -8,6 +8,7 @@ import { Photos } from './Photos';
 import { Logo } from './Logo';
 import { PassChange } from './PassChange';
 import { PassChangeDone } from './PassChangeDone';
+import { CameraView } from './CameraView';
 
 export {
     Login,
@@ -19,5 +20,6 @@ export {
     Photos,
     Logo,
     PassChange,
-    PassChangeDone
+    PassChangeDone,
+    CameraView
 };

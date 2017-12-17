@@ -88,9 +88,7 @@ class CameraStore{
         const options = {};
         //options.location = ...
         camera.capture({metadata: options})
-        .then((data) => {
-            this.picturesList.push(new Picture(data.path, this));
-        })
+        .then( data => console.log(data))
         .catch(err => console.error(err));
     }
 

@@ -8,10 +8,12 @@ import {
     Platform,
     Dimensions,
     Image,
-    TouchableOpacity
+    TouchableOpacity,
+    TouchableWithoutFeedback
 } from 'react-native';
 
 import { observer, inject } from 'mobx-react';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 @inject('store')
 @observer
@@ -22,19 +24,20 @@ export class Photos extends Component{
     }
 
     
-    renderRow = (data) => {
+    renderRow = (data) => {        
         const uri = data.node.image.uri;
         const { photos : store } = this.props.store.register;
+        
         return(
             <TouchableOpacity
-                onPress={()=>store.selectImage(uri)}
+                onPress={() => store.selectImage(uri)}
                 style={[styles.row, { 
                     borderColor: 'white', 
                     borderWidth: 1,
                     borderStyle: 'solid',  }]}
             >
                 <Image 
-                    style={{flex: 1}}
+                    style={{ flex: 1 }}
                     source={{ uri }}
                 />
             </TouchableOpacity>
@@ -43,6 +46,7 @@ export class Photos extends Component{
 
     render(){
         const { photos : store } = this.props.store.register;
+
         return(
             <View style = {{ flex: 1 }} >
                 <ListView
@@ -52,7 +56,7 @@ export class Photos extends Component{
                     renderRow={this.renderRow}
                     enableEmptySections
                     pageSize={15}
-                    onEndReached={store.endReached}
+                    onEndReached={store.endReached}                    
                 >
                 </ListView>
                 <View
@@ -61,6 +65,16 @@ export class Photos extends Component{
                     <Text
                         style={styles.headerText}
                     >Photos</Text>
+
+                    <TouchableWithoutFeedback 
+                        onPress={store.onCameraIconPress}
+                    >
+                        <Icon 
+                            name={'camera'}
+                            size={percentH(7)}
+                            style={styles.cameraIcon}
+                        />
+                    </TouchableWithoutFeedback>
                 </View>
             </View>
         );
@@ -71,17 +85,16 @@ const { height, width } = Dimensions.get('window');
 
 const percentH = (num) => {
     return (height / 100) * num;
-}
+};
 
 const percentW = (num) => {
     return (width / 100) * num;
-}
+};
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        marginTop: percentH(10)
-        // flexDirection: 'row'
+        marginTop: percentH(12)
     },
     grid: {
         flexDirection: 'row',
@@ -93,15 +106,21 @@ const styles = StyleSheet.create({
     },
     header: {
         position: 'absolute',
-        top: percentH(5),
-        left: percentW(40),
-        justifyContent: 'center',
-        alignItems: 'center',
+        top: percentH(2),
+        left: percentW(37),
+        width: percentW(63),
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center'
     },
     headerText: {
-        fontSize: 25,
+        fontSize: percentW(8),
         fontWeight: '500',
         fontFamily: 'Arial',
+        color: 'rgb(255, 255, 255)'
+    },
+    cameraIcon: {
+        marginRight: percentW(3),
         color: 'rgb(255, 255, 255)'
     }
 })

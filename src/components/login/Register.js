@@ -84,12 +84,13 @@ export class Register extends Component {
             register : store, 
             register : { photos }, 
             appStore: { loading, errorText }
-            } = this.props.store;
+        } = this.props.store;
+        
         return (
             <Animated.View             
                 style={[
                     styles.container, 
-                    { transform: [ { translateY: this.animatedTranslateY } ]},
+                    { transform: [ { translateY: this.animatedTranslateY } ]}, 
                     { opacity: this.animatedValue }
                 ]}
             >                

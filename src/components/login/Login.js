@@ -10,7 +10,8 @@ import {
     Photos,
     Logo,
     PassChange,
-    PassChangeDone
+    PassChangeDone,
+    CameraView
 } from '../login';
     
 import { observer, inject, Provider } from 'mobx-react';
@@ -57,6 +58,7 @@ export class Login extends Component{
                             <Route path='/restorepass' component={RestorePass} />
                             <Route path='/passchange' component={PassChange} />
                             <Route path='/passchangedone' component={PassChangeDone} />
+                            <Route path='/camera' component={CameraView} />
                         </Switch>
                     </View>
                 </Router>

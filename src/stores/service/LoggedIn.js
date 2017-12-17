@@ -1,37 +1,7 @@
 import { observable, computed, action } from 'mobx';
-import BackgroundTimer from 'react-native-background-timer';
-import { store } from '../App';
 import axios from 'axios';
 import PushNotification from 'react-native-push-notification';
-
-let timerId;
-// need to declare the background timer function outside the class to get it work correctly
-const startTimer = (delay, maxTimeInBackground, appState,  fn) => {
-    BackgroundTimer.clearInterval(timerId);    
-
-    let count = delay;
-
-    timerId = BackgroundTimer.setInterval( () => { 
-        if (appState === 'background') {
-            console.log('timer at work on background', delay, count);
-            if (count >= maxTimeInBackground) {
-                console.log(count, 'terminating connection as the limit is reached');
-                store.service.loggedIn.pingIsActive = false;
-                BackgroundTimer.clearInterval(timerId);
-            } else { 
-                fn();
-            }
-            count += delay;
-        } else if (appState === 'active') {
-            console.log('timer at work on active mode');
-            fn();
-        }
-    }, delay);
-};
-
-const stopTimer = () => {
-    BackgroundTimer.clearInterval(timerId);
-};
+import { startTimer, stopTimer } from './backgroundTimer';
 
 export class LoggedIn {
 
@@ -91,6 +61,7 @@ export class LoggedIn {
 
                     break;
             }
+
             const { request } = res.data;
             this.menu.name = request.Name;
             this.menu.price = request.Price;
@@ -101,7 +72,6 @@ export class LoggedIn {
             console.log(res);
         }
     }
-
 
     @action
     handleErrorResponse = (err) => {
@@ -118,11 +88,11 @@ export class LoggedIn {
     getPingDelay = () => {
         if (this.appStore.appState === 'active') {
             return this.PING_DELAY_ACTIVE;
-        } else {
-            this.MAX_TIME_IN_BACKGROUND = 
-                this.PING_DELAY_BACKGROUND * this.PING_TIME_MULTIPLIER;
-            return this.PING_DELAY_BACKGROUND;            
         }
+
+        this.MAX_TIME_IN_BACKGROUND = 
+            this.PING_DELAY_BACKGROUND * this.PING_TIME_MULTIPLIER;
+        return this.PING_DELAY_BACKGROUND;            
     }
 
     startPing = () => {
@@ -131,12 +101,7 @@ export class LoggedIn {
             this.getPingDelay(),
             this.MAX_TIME_IN_BACKGROUND,
             this.appStore.appState,
-            () => {
-                this.postData(
-                    this.appStore.URL_ONLINE,
-                    this.getUserData()
-                )
-            }
+            () => { this.postData(this.appStore.URL_ONLINE, this.getUserData()) }
         );
     }
 
@@ -156,7 +121,6 @@ export class LoggedIn {
                     token: this.appStore.user.token
                 };
                 console.log(data);
-
                 return axios.post(this.appStore.URL_ONLINE, data);
             })
             .then( res => {
@@ -175,13 +139,15 @@ export class LoggedIn {
             offline: true,
             token: this.appStore.user.token
         };
+
         axios.post(this.appStore.URL_ONLINE, data)
             .then(res => {
                 if (res.data.success) {
                     this.appStore.user.online = false;
                     this.stopPing();
                 }
-                    this.appStore.loading = false;                    
+
+                    this.appStore.loading = false;
             })
             .catch(err => console.log('goOffline function error', err));
     }

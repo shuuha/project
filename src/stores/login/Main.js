@@ -62,32 +62,31 @@ export class Main {
     @action
     postData = (data) => {
         return axios.post(this.appStore.URL_AUTH, data)
-        .then((res)=> {
-            console.log(res);
-            if (res.data.token) {
-                this.setUserInfo(res);
-                
-                return this.appStore.token.saveToStorage()
-                    .then(res => {
-                        this.appStore.loading = false;
-                        console.log(res)})
-                    .then(() => this.navigation.levelOne.moveTo('/service'))
-            } else {
-                this.emailError = true;
-                this.passError = false;
-                this.pass = '';
-                this.Vibration.vibrate([300, 100]);
-                this.refs.pass.focus();
-                this.appStore.errorText = res.data.message;
+            .then((res)=> {
+                console.log(res);
+                if (res.data.token) {
+                    this.setUserInfo(res);
+                    
+                    return this.appStore.token.saveToStorage()
+                        .then(res => {
+                            this.appStore.loading = false;
+                            console.log(res)})
+                        .then(() => this.navigation.levelOne.moveTo('/service'))
+                }
+
+                    this.emailError = true;
+                    this.passError = false;
+                    this.pass = '';
+                    this.Vibration.vibrate([300, 100]);
+                    this.refs.pass.focus();
+                    this.appStore.errorText = res.data.message;
+                    this.appStore.loading = false;
+            })
+            .catch(err=> {
+                console.log(err, 'error while login in with the existing login credentials');
+                this.appStore.errorText = 'Network error';
                 this.appStore.loading = false;
-            }            
-        })
-        
-        .catch(err=> {
-            console.log(err, 'error while login in with the existing login credentials');
-            this.appStore.errorText = 'Network error';
-            this.appStore.loading = false;
-        });
+            });
     }
 
     @action
@@ -98,12 +97,13 @@ export class Main {
             this.ifPropHasNoValue('pass');
         } else if (!this.emailError && !this.passError) {
             this.appStore.loading = true;
-            this.appStore.errorText = null;            
+            this.appStore.errorText = null;
 
             const userCredentials = {
                 user: this.email,
                 pass: this.pass + ''                
-            };            
+            };
+
             this.postData(userCredentials);
         }
     }
@@ -143,6 +143,7 @@ export class Main {
     onLoginWithFbButtonPress = (error, data) => {
         const profile = JSON.parse(data.profile);
         const facebookData = this.createFacebookData(data, profile);
+        
         return axios.post(this.appStore.URL_AUTH, facebookData)
             .then((res)=> {
             // return localStorage.merge('facebookData', facebookData) 

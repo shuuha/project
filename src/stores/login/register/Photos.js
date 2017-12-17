@@ -6,6 +6,8 @@ export class Photos {
 
     @observable photos = [];
     @observable imageUri;
+    @observable type = 'back';
+    cameraPhotos = [];    
     loadingMore = false;
     lastCursor = null;
     noMorePhotos = false;
@@ -42,6 +44,7 @@ export class Photos {
             assetType: 'Photos',
             ...newProp
         };
+
         if (Platform.OS === 'android') {
             delete params.groupTypes;
         } else {
@@ -57,14 +60,14 @@ export class Photos {
             CameraRoll.getPhotos(this.getFetchParams())
             .then((res) => {
                 this.noMorePhotos = !res.page_info.has_next_page;
-                this.photos = this.photos.concat(res.edges);
+                this.photos = this.photos.concat(this.cameraPhotos, res.edges);
+                console.log(this.photos);
             })
             .catch((err) => console.log(err));
         }
     }
 
-    tryPhotoLoad = () => {
-        
+    tryPhotoLoad = () => {        
         if (!this.loadingMore && !this.noMorePhotos) {
             this.loadingMore = true;
             this.loadPhotos();
@@ -98,8 +101,8 @@ export class Photos {
             this.photos = this.photos.concat(assets);
             this._dataSource = this._dataSource.cloneWithRows(
             _.chunk(nextState.assets, 3)
-        );
-    }
+            );
+        }
 
         this.loadingMore = nextState.loadingMore;
         this.lastCursor = nextState.lastCursor;
@@ -115,5 +118,24 @@ export class Photos {
     selectImage = (uri) => {
         this.imageUri = uri;
         this.navigation.levelTwo.moveBack();
+    }
+
+    switchCamera = (camera) => {
+        this.type = this.type === 'back' ? 'front' : 'back';
+    }
+
+    onCameraIconPress = () => {
+        this.navigation.levelTwo.moveTo('/camera');
+        this.photos = [];
+    }
+
+    useCamera = (camera) => {
+        const options = {};
+        camera.capture({ metadata: options })
+            .then( res => {
+                const dataSourceTemplate = { node: { image: { uri: res.path }}};
+                this.cameraPhotos.unshift(dataSourceTemplate);
+            })
+            .catch( err => console.log(err, 'camera function error'));
     }
 }

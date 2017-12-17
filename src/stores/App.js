@@ -8,12 +8,19 @@ import { Login, Service, Navigation, Token } from '../stores';
 
 class App {
 
+    // URL_NEWUSER = 'http://app.yayintel.com:8883/api/newuser';
+    // URL_AUTH = 'http://app.yayintel.com:8883/api/authenticate';
+    // URL_ONLINE = 'http://app.yayintel.com:8883/api/online';
+    // URL_FB = 'http://app.yayintel.com:8883/api/authenticate/facebook';
+    // URL_MAIN = "http://app.yayintel.com:8883/";
+    // URL_RESTORE_PASS = 'http://app.yayintel.com:8883/api/restorepassword';
+
     URL_NEWUSER = 'http://192.168.3.6:8883/api/newuser';
     URL_AUTH = 'http://192.168.3.6:8883/api/authenticate';
     URL_ONLINE = 'http://192.168.3.6:8883/api/online';
     URL_FB = 'http://192.168.3.6:8883/api/authenticate/facebook'; 
     URL_MAIN = "http://192.168.3.6:8883/";
-    URL_RESTORE_PASS = 'http://192.168.3.6:8883/api/restorepassword';    
+    URL_RESTORE_PASS = 'http://192.168.3.6:8883/api/restorepassword';
     
     appState = null;
     dataLoaded = true;
@@ -47,7 +54,7 @@ class App {
     // @observable dataLoaded = false;    
     // @observable _lastPage = 0;    
 
-    constructor(){        
+    constructor() {
         this.loadData();
     };
     
@@ -90,8 +97,6 @@ class App {
             this.service.loggedIn.startPing();
         }
     }
-
-
 
     // loadData(){
     //     uniqueId()

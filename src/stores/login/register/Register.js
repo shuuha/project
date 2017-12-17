@@ -37,14 +37,6 @@ export class Register {
     }
 
     @action
-    setInitialState = () => {
-        // this.emailValidError = false;
-        // this.passValidError = false;
-        // this.passConfirmValidError = false;
-        this.appStore.loading = false;
-    }
-
-    @action
     onChangeEmail = (e) => {
         this.email = e;
         this.emailError = false;
@@ -68,15 +60,15 @@ export class Register {
     get isEmailValid() {
         let i;
         let tail;
-        let dot;        
-
+        let dot;
+        
         if (this.email.includes('@')) {
             i = this.email.indexOf('@');
             tail = this.email.slice(++i);
             dot = tail.indexOf('.');            
         }
-        const result = dot >= 2 && tail.length - dot >= 3
 
+        const result = dot >= 2 && tail.length - dot >= 3
         return result;
     }
 
@@ -162,7 +154,7 @@ export class Register {
 
     @action
     onInputFocus = () => {
-        this.setInitialState();
+        this.appStore.setInitialState();
     }
 
     onTosPress = () => {

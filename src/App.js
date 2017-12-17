@@ -28,11 +28,11 @@ import {
 @observer
 export default class App extends Component{
 
-    componentWillMount(){
+    componentWillMount() {
         store.appInit();
     }
 
-    componentDidMount(){
+    componentDidMount() {
         store.appState = AppState.currentState;
         AppState.addEventListener('change', this._handleAppStateChange);
     }
@@ -46,7 +46,7 @@ export default class App extends Component{
         store.handleAppStateChange(nextAppState);
     }
 
-    render(){
+    render() {
         console.log(' render ' );
         const { levelOne } = store.navigation;
         // const { pages, dataLoaded } = store;
@@ -74,7 +74,7 @@ export default class App extends Component{
                                 }
                                 return <Login />
                             }} />
-                            <Route path='/service' component={Service} />
+                           <Route path='/service' component={Service} />
                         </Switch>
                         <BackButton />
                     </View>

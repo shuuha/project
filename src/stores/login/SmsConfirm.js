@@ -38,13 +38,15 @@ export class SmsConfirm {
         const text = e.nativeEvent.text;
         const length = Object.keys(refs).length - 1;
         const inputIsNotLastAndHasText = ( i != length && text );
+
         if (inputIsNotLastAndHasText) {
             refs['input' + ++i].focus();
         }
     }
 
     onInputDeleteKeyPress = (keyCode) => {
-        let i = this.activeInputIndex;        
+        let i = this.activeInputIndex;
+
         if (keyCode == 67 && i > 0 && this.values[i].length == 0) { 
             this.refs['input' + --i].focus();
         }
@@ -60,6 +62,7 @@ export class SmsConfirm {
     onFocus = (i) => {
         this.appStore.errorText = null;
         this.resendMessage = '';
+
         if (i) {
             this.activeInputIndex = i;
         }
@@ -77,43 +80,46 @@ export class SmsConfirm {
     }
 
     @computed
-    get inputsAreValid(){
+    get inputsAreValid() {
         const NUMBERS = '0123456789';
         const codeInputsAreValid = this.values.every(q => {
             if (q !== '') {
                 return NUMBERS.includes(q);
             }
+
             return false;
         });
 
         return codeInputsAreValid;
     }
 
-    onError = () => { 
-        this.shakeTrigger = true;       
+    onError = () => {
         let count = 0;
+        this.shakeTrigger = true;       
         this.values.forEach((q, i) => {
             if (q.length == 0 && count == 0) {
                 this.refs['input' + i].focus();
                 count++;
             }
         })
+
         if (this.wrongSmsCode) {
             this.errorValues = true;
             this.Vibration.vibrate([300, 100]);
-            this.refs.input0.focus();
+            Object.keys(this.refs).forEach((prop, i) => (
+                i == 0 ? this.refs[prop].focus() : null));
         }
     }
 
     handleSuccessResponse = (res) => {
         if (this.appStore.restorePassProcedure) {
-            this.navigation.levelTwo.moveTo('/passchange');
+            this.navigation.levelTwo.replace('/passchange');
         } else if (this.appStore.signUpProcedure) {
-            this.navigation.levelTwo.moveTo('/register');
+            this.navigation.levelTwo.replace('/register');
         }
 
         this.loginStore.phoneVerified = true;
-        this.navigation.levelTwo.moveBackCount = 2;
+        // this.navigation.levelTwo.moveBackCount = 2;
         this.appStore.user.token = res.data.token;
         this.appStore.restorePassProcedure = false;
         this.appStore.signUpProcedure = false;
@@ -135,6 +141,7 @@ export class SmsConfirm {
                 } else {
                     this.handleFailResponse(res)
                 }
+
                     this.appStore.loading = false;
             })
             .catch( err => {
@@ -151,10 +158,12 @@ export class SmsConfirm {
         }
     }
 
-    getUrl() {
+    getUrl = () => {
         if (this.appStore.restorePassProcedure) {
             return this.appStore.URL_RESTORE_PASS;
-        } else if (this.appStore.signUpProcedure) {
+        } 
+        
+        if (this.appStore.signUpProcedure) {
             return this.appStore.URL_NEWUSER;
         }
     }
@@ -178,7 +187,9 @@ export class SmsConfirm {
     getUserInfo = () => {
         if (this.appStore.restorePassProcedure) {
             return this.restorePass.getPhoneAndEmail();
-        } else if (this.appStore.signUpProcedure) {
+        }
+        
+        if (this.appStore.signUpProcedure) {
             return this.signUp.getPhoneAndName();
         }
     }
@@ -189,10 +200,11 @@ export class SmsConfirm {
                 if (res.data.success) {
                     this.swingTrigger = true;
                     this.appStore.user.token = res.data.token;
-                    this.resendMessage = 'Sms will be delivered shortly';
+                    this.resendMessage = 'Your code should arrive soon.';
                 } else {
                     this.appStore.errorText = res.data.message;
                 }
+                
                 this.appStore.loading = false;
                 this.enableResendCode();
             })
