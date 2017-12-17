@@ -5,6 +5,7 @@
 	};
 	objectVersion = 46;
 	objects = {
+
 /* Begin PBXBuildFile section */
 		00C302E51ABCBA2D00DB3ED1 /* libRCTActionSheet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302AC1ABCB8CE00DB3ED1 /* libRCTActionSheet.a */; };
 		00C302E71ABCBA2D00DB3ED1 /* libRCTGeolocation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 00C302BA1ABCB90400DB3ED1 /* libRCTGeolocation.a */; };
@@ -63,6 +64,7 @@
 		84F59DF61FC746A500D6C7BF /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84F59DEB1FC7469000D6C7BF /* Octicons.ttf */; };
 		84F59DF71FC746A500D6C7BF /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84F59DEC1FC7469000D6C7BF /* SimpleLineIcons.ttf */; };
 		84F59DF81FC746A500D6C7BF /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 84F59DED1FC7469000D6C7BF /* Zocial.ttf */; };
+		84FC58DE1FE6C73C00BF9ABD /* libRCTPushNotification.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 84FC58DB1FE6C71F00BF9ABD /* libRCTPushNotification.a */; };
 		9E60048438D14DC685BA3A44 /* MaterialCommunityIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 38E6873414564CABB883915A /* MaterialCommunityIcons.ttf */; };
 		A9A06FC16EA647C587D313BE /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4B2144F92FE045529C1FAC28 /* EvilIcons.ttf */; };
 		ADAB62E529A74BBA96A37C43 /* libRNGestureHandler.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 418C0A319E504CDBBCB44D1B /* libRNGestureHandler.a */; };
@@ -394,6 +396,20 @@
 			remoteGlobalIDString = 9936F32F1F5F2E5B0010BF04;
 			remoteInfo = "privatedata-tvOS";
 		};
+		84FC58DA1FE6C71F00BF9ABD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 84FC58D51FE6C71F00BF9ABD /* RCTPushNotification.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 134814201AA4EA6300B7C361;
+			remoteInfo = RCTPushNotification;
+		};
+		84FC58DC1FE6C71F00BF9ABD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 84FC58D51FE6C71F00BF9ABD /* RCTPushNotification.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 3D05745F1DE6004600184BB4;
+			remoteInfo = "RCTPushNotification-tvOS";
+		};
 		ADBDB9261DFEBF0700ED6528 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = ADBDB91F1DFEBF0600ED6528 /* RCTBlob.xcodeproj */;
@@ -458,6 +474,7 @@
 		84F59DEB1FC7469000D6C7BF /* Octicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Octicons.ttf; sourceTree = "<group>"; };
 		84F59DEC1FC7469000D6C7BF /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = SimpleLineIcons.ttf; sourceTree = "<group>"; };
 		84F59DED1FC7469000D6C7BF /* Zocial.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Zocial.ttf; sourceTree = "<group>"; };
+		84FC58D51FE6C71F00BF9ABD /* RCTPushNotification.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTPushNotification.xcodeproj; path = "../node_modules/react-native/Libraries/PushNotificationIOS/RCTPushNotification.xcodeproj"; sourceTree = "<group>"; };
 		89F7700534424003A1A3F432 /* RNBackgroundTimer.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNBackgroundTimer.xcodeproj; path = "../node_modules/react-native-background-timer/ios/RNBackgroundTimer.xcodeproj"; sourceTree = "<group>"; };
 		8ED0C35F7585432797FADD49 /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; };
 		925750FFC53F4BD0A5E007A5 /* RNVectorIcons.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNVectorIcons.xcodeproj; path = "../node_modules/react-native-vector-icons/RNVectorIcons.xcodeproj"; sourceTree = "<group>"; };
@@ -482,6 +499,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				84FC58DE1FE6C73C00BF9ABD /* libRCTPushNotification.a in Frameworks */,
 				8443082E1FD1292300C9BCFD /* libART.a in Frameworks */,
 				84F59DD61FC7104500D6C7BF /* libRCTCameraRoll.a in Frameworks */,
 				84727E381FC57FCB0076C0CD /* libRCTFBLogin.a in Frameworks */,
@@ -686,6 +704,7 @@
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				84FC58D51FE6C71F00BF9ABD /* RCTPushNotification.xcodeproj */,
 				844307FD1FD128F300C9BCFD /* ART.xcodeproj */,
 				84F59D9D1FC7103100D6C7BF /* RCTCameraRoll.xcodeproj */,
 				84727E321FC57DDC0076C0CD /* RCTFBLogin.xcodeproj */,
@@ -839,6 +858,15 @@
 			);
 			name = Fonts;
 			path = "../node_modules/react-native-vector-icons/Fonts";
+			sourceTree = "<group>";
+		};
+		84FC58D61FE6C71F00BF9ABD /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				84FC58DB1FE6C71F00BF9ABD /* libRCTPushNotification.a */,
+				84FC58DD1FE6C71F00BF9ABD /* libRCTPushNotification-tvOS.a */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 		ADBDB9201DFEBF0600ED6528 /* Products */ = {
@@ -1008,6 +1036,10 @@
 				{
 					ProductGroup = 00C302D41ABCB9D200DB3ED1 /* Products */;
 					ProjectRef = 00C302D31ABCB9D200DB3ED1 /* RCTNetwork.xcodeproj */;
+				},
+				{
+					ProductGroup = 84FC58D61FE6C71F00BF9ABD /* Products */;
+					ProjectRef = 84FC58D51FE6C71F00BF9ABD /* RCTPushNotification.xcodeproj */;
 				},
 				{
 					ProductGroup = 139105B71AF99BAD00B5F7CC /* Products */;
@@ -1361,6 +1393,20 @@
 			remoteRef = 84F59DD31FC7103100D6C7BF /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		84FC58DB1FE6C71F00BF9ABD /* libRCTPushNotification.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRCTPushNotification.a;
+			remoteRef = 84FC58DA1FE6C71F00BF9ABD /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		84FC58DD1FE6C71F00BF9ABD /* libRCTPushNotification-tvOS.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libRCTPushNotification-tvOS.a";
+			remoteRef = 84FC58DC1FE6C71F00BF9ABD /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */ = {
 			isa = PBXReferenceProxy;
 			fileType = archive.ar;
@@ -1599,11 +1645,22 @@
 				DEAD_CODE_STRIPPING = NO;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(SRCROOT)..\node_modules\neact-native-mapslibios/**",
-					"$(SRCROOT)..\node_modules\neact-native-gesture-handlerios",
-					"$(SRCROOT)..\node_modules\neact-native-cameraios",
-					"$(SRCROOT)..\node_modules\neact-native-background-timerios",
-					"$(SRCROOT)..\node_modules\neact-native-vector-iconsRNVectorIconsManager",
+					"$(SRCROOT)..",
+					ode_modules,
+					"eact-native-mapslibios/**",
+					"$(SRCROOT)..",
+					ode_modules,
+					"eact-native-gesture-handlerios",
+					"$(SRCROOT)..",
+					ode_modules,
+					"eact-native-cameraios",
+					"$(SRCROOT)..",
+					ode_modules,
+					"eact-native-background-timerios",
+					"$(SRCROOT)..",
+					ode_modules,
+					"eact-native-vector-iconsRNVectorIconsManager",
+					"$(SRCROOT)/../node_modules/react-native/Libraries/PushNotificationIOS/**",
 				);
 				INFOPLIST_FILE = app/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1625,11 +1682,22 @@
 				CURRENT_PROJECT_VERSION = 1;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(SRCROOT)..\node_modules\neact-native-mapslibios/**",
-					"$(SRCROOT)..\node_modules\neact-native-gesture-handlerios",
-					"$(SRCROOT)..\node_modules\neact-native-cameraios",
-					"$(SRCROOT)..\node_modules\neact-native-background-timerios",
-					"$(SRCROOT)..\node_modules\neact-native-vector-iconsRNVectorIconsManager",
+					"$(SRCROOT)..",
+					ode_modules,
+					"eact-native-mapslibios/**",
+					"$(SRCROOT)..",
+					ode_modules,
+					"eact-native-gesture-handlerios",
+					"$(SRCROOT)..",
+					ode_modules,
+					"eact-native-cameraios",
+					"$(SRCROOT)..",
+					ode_modules,
+					"eact-native-background-timerios",
+					"$(SRCROOT)..",
+					ode_modules,
+					"eact-native-vector-iconsRNVectorIconsManager",
+					"$(SRCROOT)/../node_modules/react-native/Libraries/PushNotificationIOS/**",
 				);
 				INFOPLIST_FILE = app/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
