@@ -95,6 +95,7 @@ export class PassChange {
     }
 
     onGoToLogin = () => {
+        this.navigation.showBackButton = true;
         this.navigation.levelTwo.resetHistory();
         this.navigation.levelTwo.moveTo('/');
     }

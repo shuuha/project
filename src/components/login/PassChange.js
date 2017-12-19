@@ -23,10 +23,12 @@ import { images } from './assets';
 export class PassChange extends Component {
 
     animatedValue = new Animated.Value(0);
-    animatedTranslateY = new Animated.Value(0);   
+    animatedTranslateY = new Animated.Value(0);
+
+    minInput = Platform.OS === 'ios' ? -35 : -100;
     
     heightInterpolate = this.animatedTranslateY.interpolate({
-        inputRange: [-100, 0],
+        inputRange: [this.minInput, 0],
         outputRange: [0, percentH(15)],
         extrapolate: 'clamp'
     });

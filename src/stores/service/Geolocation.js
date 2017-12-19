@@ -16,10 +16,10 @@ export class Geolocation {
         const promise = new Promise((resolve, reject)=> {
             navigator.geolocation.getCurrentPosition(({coords}) => {
                 const { latitude, longitude } = coords;
-                // this.appStore.user.lat = latitude;
-                // this.appStore.user.lng = longitude;
-                this.appStore.user.lat = 100;
-                this.appStore.user.lng = 100;
+                this.appStore.user.lat = latitude;
+                this.appStore.user.lng = longitude;
+                // this.appStore.user.lat = 100;
+                // this.appStore.user.lng = 100;
                 resolve(coords);
             },
             (error) => {

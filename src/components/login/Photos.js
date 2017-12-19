@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
     },
     header: {
         position: 'absolute',
-        top: percentH(2),
+        top: percentH(1),
         left: percentW(37),
         width: percentW(63),
         flexDirection: 'row',
@@ -120,6 +120,7 @@ const styles = StyleSheet.create({
         color: 'rgb(255, 255, 255)'
     },
     cameraIcon: {
+        marginTop: percentH(1),
         marginRight: percentW(3),
         color: 'rgb(255, 255, 255)'
     }

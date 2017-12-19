@@ -4,6 +4,7 @@ import {
     Text,
     StyleSheet,
     TouchableWithoutFeedback,
+    Platform
     } from 'react-native';
 import { inject, observer } from 'mobx-react';
 
@@ -68,8 +69,15 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   cameraSwitch: {
-      position: 'absolute',
-      top: '1%',
-      right: '5%'
+    position: 'absolute',
+    ...Platform.select({
+        ios: {
+            top: '3%'
+            },
+        android: {
+            top: '1%',
+        }
+      }),
+    right: '5%'
   }
 });

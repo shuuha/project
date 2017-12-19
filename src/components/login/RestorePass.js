@@ -27,11 +27,14 @@ export class RestorePass extends Component{
     animatedView = new Animated.Value(0);
     animatedTranslateY = new Animated.Value(0);
 
+    minInput = Platform.OS === 'ios' ? -25 : -40;
+    minOutput = Platform.OS === 'ios' ? 4 : 6;
+
     heightInterpolate = this.animatedTranslateY.interpolate({
-        inputRange: [-40, 0],
-        outputRange: [percentH(6), percentH(20)],
+        inputRange: [this.minInput, 0],
+        outputRange: [percentH(this.minOutput), percentH(20)],
         extrapolate: 'clamp'
-    })
+    });
 
     componentDidMount = () => {
         setTimeout(()=>{

@@ -200,7 +200,7 @@ export class SmsConfirm {
                 if (res.data.success) {
                     this.swingTrigger = true;
                     this.appStore.user.token = res.data.token;
-                    this.resendMessage = 'Your code should arrive soon.';
+                    this.resendMessage = 'Your code should arrive soon.'; 
                 } else {
                     this.appStore.errorText = res.data.message;
                 }
@@ -225,6 +225,7 @@ export class SmsConfirm {
             this.resetValues();
             this.unFocusInputs();
             this.appStore.loading = true;
+            this.appStore.errorText = null;
             this.canResend = false;
             setTimeout(this.resendData, 5000);
         }
